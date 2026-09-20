@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>СибКодБокс — Пульт учителя</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-user-select:none;user-select:none;}
+  body{background:#020409;color:#fff;min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;z-index:-1;
+    background:radial-gradient(circle at 20% 30%,rgba(0,240,255,0.12),transparent 60%),
+               radial-gradient(circle at 80% 70%,rgba(255,0,127,0.10),transparent 60%),
+               #020409;}
+  button,input,select,textarea{font-family:inherit;}
+  input,select,textarea{-webkit-user-select:text;user-select:text;}
+
+  header{position:sticky;top:0;z-index:100;
+    background:rgba(2,4,9,0.85);backdrop-filter:blur(20px);
+    border-bottom:1px solid rgba(0,240,255,0.2);
+    padding:16px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}
+  .brand{display:flex;align-items:center;gap:14px;}
+  .brand-logo{width:44px;height:44px;
+    background:linear-gradient(135deg,#00f0ff,#00439c);
+    border-radius:14px;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 25px #00f0ff;font-size:22px;}
+  .brand-title{font-size:20px;font-weight:900;letter-spacing:1px;
+    background:linear-gradient(90deg,#fff 40%,#00f0ff);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;text-transform:uppercase;}
+  .brand-subtitle{font-size:11px;color:rgba(255,255,255,0.45);
+    letter-spacing:1.5px;text-transform:uppercase;font-weight:800;}
+  .header-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+  .cloud-status{font-size:11px;padding:6px 12px;border-radius:20px;
+    background:rgba(0,255,136,0.15);color:#00ff88;
+    border:1px solid #00ff88;font-weight:800;letter-spacing:0.5px;}
+  .cloud-status.offline{background:rgba(255,51,68,0.15);color:#ff3344;
+    border-color:#ff3344;}
+  .header-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);
+    color:#fff;padding:8px 16px;border-radius:30px;font-size:13px;font-weight:700;
+    cursor:pointer;transition:all 0.2s;backdrop-filter:blur(10px);
+    display:flex;align-items:center;gap:6px;}
+  .header-btn:hover{background:rgba(0,240,255,0.18);border-color:#00f0ff;transform:translateY(-1px);}
+  .header-btn.danger{background:rgba(255,51,68,0.15);border-color:#ff3344;color:#ff3344;}
+  .header-btn.danger:hover{background:#ff3344;color:#fff;}
+
+  .container{max-width:1280px;margin:0 auto;padding:24px;}
+
+  .tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;
+    background:rgba(255,255,255,0.03);padding:6px;border-radius:16px;
+    border:1px solid rgba(255,255,255,0.08);}
+  .tab-btn{background:transparent;border:1px solid transparent;
+    color:rgba(255,255,255,0.65);padding:10px 20px;border-radius:12px;
+    font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;
+    display:flex;align-items:center;gap:8px;}
+  .tab-btn:hover{background:rgba(255,255,255,0.06);color:#fff;}
+  .tab-btn.active{background:rgba(0,240,255,0.15);
+    border-color:rgba(0,240,255,0.4);color:#00f0ff;
+    box-shadow:0 0 15px rgba(0,240,255,0.2);}
+
+  .pane{display:none;}
+  .pane.active{display:block;animation:fadeIn 0.3s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+  .card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+    border-radius:20px;padding:22px;margin-bottom:16px;}
+  .card-title{font-size:16px;font-weight:900;color:#00f0ff;
+    letter-spacing:0.5px;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  .card-sub{font-size:12px;color:rgba(255,255,255,0.55);margin-bottom:12px;line-height:1.5;}
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width:800px){.grid-2{grid-template-columns:1fr;}}
+
+  .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+  .form-group label{font-size:12px;font-weight:700;color:#00f0ff;
+    letter-spacing:0.5px;text-transform:uppercase;}
+  .form-input{background:#04070d;border:2px solid rgba(0,240,255,0.25);
+    border-radius:12px;padding:12px 16px;font-size:15px;color:#fff;
+    outline:none;transition:all 0.2s;width:100%;}
+  .form-input:focus{border-color:#00f0ff;box-shadow:0 0 15px rgba(0,240,255,0.3);}
+  .form-input.error-shake{border-color:#ff3344!important;animation:shake 0.35s;}
+  @keyframes shake{0%,100%{transform:translateX(0);}20%,60%{transform:translateX(-8px);}40%,80%{transform:translateX(8px);}}
+
+  .btn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);
+    color:#fff;padding:12px 24px;border-radius:12px;font-size:14px;
+    font-weight:800;cursor:pointer;transition:all 0.2s;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;}
+  .btn:hover{background:#00f0ff;color:#000;transform:translateY(-1px);}
+  .btn.primary{background:linear-gradient(135deg,#00f0ff,#0070d1);color:#000;
+    box-shadow:0 0 25px rgba(0,240,255,0.4);border:none;}
+  .btn.primary:hover{transform:translateY(-2px) scale(1.02);
+    box-shadow:0 0 40px rgba(0,240,255,0.7);}
+  .btn.danger{background:rgba(255,51,68,0.15);border-color:#ff3344;color:#ff3344;}
+  .btn.danger:hover{background:#ff3344;color:#fff;}
+  .btn.success{background:rgba(0,255,136,0.15);border-color:#00ff88;color:#00ff88;}
+  .btn.success:hover{background:#00ff88;color:#000;}
+  .btn-sm{padding:6px 12px;font-size:12px;border-radius:8px;}
+  .btn:disabled{opacity:0.4;cursor:not-allowed;transform:none!important;}
+
+  .qr-result{display:none;flex-direction:column;align-items:center;gap:14px;
+    padding:24px;background:rgba(0,255,136,0.05);
+    border:2px solid rgba(0,255,136,0.3);border-radius:20px;margin-top:16px;}
+  .qr-result.show{display:flex;animation:fadeIn 0.4s ease;}
+  .qr-result canvas{border-radius:14px;background:#fff;padding:10px;
+    box-shadow:0 0 40px rgba(0,255,136,0.4);}
+  .qr-code-text{font-family:monospace;font-size:20px;font-weight:900;
+    color:#00f0ff;letter-spacing:2px;padding:10px 20px;
+    background:rgba(0,240,255,0.08);border-radius:10px;
+    border:1px solid rgba(0,240,255,0.3);}
+  .qr-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+
+  .list{display:flex;flex-direction:column;gap:10px;max-height:500px;overflow-y:auto;
+    padding-right:6px;}
+  .list::-webkit-scrollbar{width:8px;}
+  .list::-webkit-scrollbar-track{background:rgba(255,255,255,0.03);border-radius:10px;}
+  .list::-webkit-scrollbar-thumb{background:rgba(0,240,255,0.3);border-radius:10px;}
+  .list::-webkit-scrollbar-thumb:hover{background:#00f0ff;}
+
+  .row-item{display:flex;justify-content:space-between;align-items:center;gap:12px;
+    background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+    border-radius:14px;padding:14px 18px;transition:all 0.2s;}
+  .row-item:hover{background:rgba(255,255,255,0.06);border-color:rgba(0,240,255,0.2);}
+  .row-info{flex:1;min-width:0;}
+  .row-main{font-weight:800;font-size:14px;margin-bottom:3px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .row-sub{font-size:12px;color:rgba(255,255,255,0.55);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .row-actions{display:flex;gap:6px;flex-shrink:0;}
+
+  .badge{display:inline-block;padding:3px 10px;border-radius:8px;
+    font-size:11px;font-weight:900;letter-spacing:0.5px;text-transform:uppercase;}
+  .badge.active{background:rgba(0,255,136,0.15);color:#00ff88;border:1px solid #00ff88;}
+  .badge.used{background:rgba(255,255,255,0.08);color:#888;border:1px solid rgba(255,255,255,0.2);}
+  .badge.banned{background:rgba(255,51,68,0.15);color:#ff3344;border:1px solid #ff3344;}
+  .badge.creator{background:rgba(255,215,0,0.15);color:#ffd700;border:1px solid #ffd700;}
+
+  .record-row{display:grid;grid-template-columns:50px 1fr 130px 130px;gap:12px;
+    align-items:center;padding:12px 16px;background:rgba(255,255,255,0.04);
+    border-radius:12px;border:1px solid rgba(255,255,255,0.08);font-size:14px;}
+  .record-row .rank{font-weight:900;color:#00f0ff;}
+  .record-row .rank.gold{color:#ffd700;text-shadow:0 0 12px #ffd700;}
+  .record-row .rank.silver{color:#c0c0c0;}
+  .record-row .rank.bronze{color:#cd7f32;}
+
+  .incident{display:grid;grid-template-columns:80px 1fr auto;gap:16px;
+    align-items:center;background:rgba(255,51,68,0.06);
+    border:1px solid rgba(255,51,68,0.25);border-radius:14px;padding:14px 18px;}
+  .incident-photo{width:80px;height:80px;border-radius:10px;object-fit:cover;
+    border:2px solid rgba(255,51,68,0.4);background:#111;}
+  .incident-info{min-width:0;}
+  .incident-name{font-weight:900;color:#ff3344;font-size:16px;margin-bottom:4px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .incident-meta{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5;}
+
+  .empty{text-align:center;padding:40px 20px;color:rgba(255,255,255,0.4);font-size:14px;}
+  .empty-icon{font-size:48px;margin-bottom:12px;opacity:0.5;}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
+  .stat{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);
+    border-radius:16px;padding:18px;text-align:center;}
+  .stat-value{font-size:32px;font-weight:900;color:#00f0ff;
+    text-shadow:0 0 20px rgba(0,240,255,0.5);line-height:1;margin-bottom:6px;}
+  .stat-label{font-size:11px;color:rgba(255,255,255,0.55);
+    text-transform:uppercase;letter-spacing:1px;font-weight:700;}
+
+  .gate{position:fixed;inset:0;z-index:5000;
+    background:radial-gradient(ellipse at 50% 40%,#0a1a35 0%,#020409 70%);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:20px;}
+  .gate.hidden{display:none;}
+  .gate-card{width:420px;max-width:100%;
+    background:rgba(9,14,28,0.9);border:2px solid rgba(0,240,255,0.4);
+    box-shadow:0 0 80px rgba(0,240,255,0.35);border-radius:28px;
+    padding:36px 30px;backdrop-filter:blur(30px);
+    display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;}
+  .gate-icon{font-size:56px;filter:drop-shadow(0 0 20px #00f0ff);}
+  .gate-title{font-size:22px;font-weight:900;letter-spacing:1px;
+    background:linear-gradient(90deg,#fff 40%,#00f0ff);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .gate-sub{font-size:13px;color:rgba(255,255,255,0.55);line-height:1.5;}
+  .gate-input{width:100%;background:#04070d;border:2px solid rgba(0,240,255,0.3);
+    border-radius:14px;padding:16px;font-size:26px;color:#00f0ff;
+    letter-spacing:14px;text-align:center;font-family:monospace;outline:none;}
+  .gate-input:focus{border-color:#00f0ff;box-shadow:0 0 25px rgba(0,240,255,0.5);}
+
+  #toast{position:fixed;top:-100px;left:50%;transform:translateX(-50%);
+    background:rgba(4,10,20,0.95);border:2px solid #00f0ff;
+    box-shadow:0 0 30px rgba(0,240,255,0.5);color:#00f0ff;
+    padding:16px 28px;border-radius:14px;font-size:15px;font-weight:900;
+    z-index:10000;transition:top 0.4s ease;backdrop-filter:blur(10px);
+    max-width:90vw;text-align:center;}
+  #toast.show{top:24px;}
+  #toast.error{border-color:#ff3344;color:#ff3344;
+    box-shadow:0 0 30px rgba(255,51,68,0.5);}
+  #toast.success{border-color:#00ff88;color:#00ff88;
+    box-shadow:0 0 30px rgba(0,255,136,0.5);}
+
+  .confirm-modal{position:fixed;inset:0;background:rgba(2,4,9,0.92);
+    backdrop-filter:blur(20px);z-index:9000;display:none;
+    align-items:center;justify-content:center;padding:20px;}
+  .confirm-modal.open{display:flex;}
+  .confirm-card{width:420px;max-width:100%;background:#0c121f;
+    border:2px solid #00f0ff;border-radius:24px;
+    padding:30px 26px;text-align:center;
+    display:flex;flex-direction:column;gap:16px;
+    box-shadow:0 0 60px rgba(0,240,255,0.4);}
+  .confirm-actions{display:flex;gap:10px;}
+  .confirm-actions .btn{flex:1;}
+
+  @media (max-width:600px){
+    .container{padding:16px;}
+    header{padding:12px 16px;}
+    .brand-title{font-size:16px;}
+    .record-row{grid-template-columns:36px 1fr 80px;font-size:13px;}
+    .record-row > *:last-child{display:none;}
+    .incident{grid-template-columns:60px 1fr;}
+    .incident-photo{width:60px;height:60px;}
+  }
+</style>
+</head>
+<body>
+
+<div id="toast">Сообщение</div>
+
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="gate-icon">🔐</div>
+    <div class="gate-title">ПУЛЬТ УЧИТЕЛЯ</div>
+    <div class="gate-sub">Введите PIN-код оператора<br>для доступа к управлению автоматом</div>
+    <input type="password" class="gate-input" id="gateInput" maxlength="4" placeholder="••••" autocomplete="off">
+    <button class="btn primary" id="gateBtn" style="width:100%;padding:14px;">Войти</button>
+    <div class="gate-sub" style="font-size:11px;">По умолчанию: <b style="color:#00f0ff;">1234</b></div>
+  </div>
+</div>
+
+<div id="app" style="display:none;">
+  <header>
+    <div class="brand">
+      <div class="brand-logo">🎓</div>
+      <div>
+        <div class="brand-title">СИБКОДБОКС — ПУЛЬТ</div>
+        <div class="brand-subtitle">Панель управления автоматом</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <span class="cloud-status" id="cloudStatus">☁️ Онлайн</span>
+      <button class="header-btn" id="btnReload">🔄 Обновить</button>
+      <button class="header-btn danger" id="btnLogout">Выйти</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="qr">🎫 Генератор QR</button>
+      <button class="tab-btn" data-tab="tickets">📋 Билеты</button>
+      <button class="tab-btn" data-tab="incidents">🚨 Нарушители</button>
+      <button class="tab-btn" data-tab="records">🏆 Рекорды</button>
+      <button class="tab-btn" data-tab="settings">⚙️ Настройки</button>
+    </div>
+
+    <div class="pane active" id="pane-qr">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">🎫 Создать новый билет</div>
+          <div class="card-sub">Выберите длительность и нажмите «Создать». QR-код появится справа.</div>
+          <div class="form-group">
+            <label>Тип билета</label>
+            <select class="form-input" id="ticketType">
+              <option value="5">5 минут</option>
+              <option value="10" selected>10 минут</option>
+              <option value="15">15 минут</option>
+              <option value="20">20 минут</option>
+              <option value="30">30 минут</option>
+              <option value="45">45 минут</option>
+              <option value="60">1 час</option>
+              <option value="CREATOR">♾️ Безлимит (Создатель)</option>
+            </select>
+          </div>
+          <button class="btn primary" id="btnCreate" style="width:100%;padding:16px;">✨ Создать билет</button>
+          <div class="card-sub" style="margin-top:16px;">
+            <b style="color:#00f0ff;">Подсказка:</b> билет сразу попадёт в Supabase. Автомат увидит его мгновенно.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📱 QR-код билета</div>
+          <div class="card-sub">Покажите QR ученику или распечатайте на принтере.</div>
+          <div class="qr-result" id="qrResult">
+            <canvas id="qrCanvas"></canvas>
+            <div class="qr-code-text" id="qrCodeText">—</div>
+            <div class="qr-actions">
+              <button class="btn success" id="btnPrint">🖨️ Распечатать</button>
+              <button class="btn" id="btnCopy">📋 Скопировать код</button>
+            </div>
+          </div>
+          <div class="empty" id="qrEmpty">
+            <div class="empty-icon">🎫</div>
+            Пока нет созданных билетов в этой сессии.<br>Создайте первый — он появится здесь.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📊 Статистика автомата</div>
+        <div class="stats">
+          <div class="stat"><div class="stat-value" id="statTotal">0</div><div class="stat-label">Всего билетов</div></div>
+          <div class="stat"><div class="stat-value" id="statActive" style="color:#00ff88;">0</div><div class="stat-label">Активных</div></div>
+          <div class="stat"><div class="stat-value" id="statUsed" style="color:#aaa;">0</div><div class="stat-label">Использовано</div></div>
+          <div class="stat"><div class="stat-value" id="statBanned" style="color:#ff3344;">0</div><div class="stat-label">Забанено</div></div>
+          <div class="stat"><div class="stat-value" id="statRecords" style="color:#ffd700;">0</div><div class="stat-label">Рекордов</div></div>
+          <div class="stat"><div class="stat-value" id="statIncidents" style="color:#ff3344;">0</div><div class="stat-label">Нарушителей</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pane" id="pane-tickets">
+      <div class="card">
+        <div class="card-title">📋 Все билеты</div>
+        <div class="card-sub">Активные, использованные и забаненные.</div>
+        <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+          <button class="btn btn-sm" id="filterAll">Все</button>
+          <button class="btn btn-sm" id="filterActive">🟢 Активные</button>
+          <button class="btn btn-sm" id="filterUsed">⚪ Использованные</button>
+          <button class="btn btn-sm" id="filterBanned">🔴 Забаненные</button>
+          <button class="btn btn-sm danger" id="btnClearTickets" style="margin-left:auto;">🗑️ Удалить все</button>
+        </div>
+        <div class="list" id="ticketsList"></div>
+      </div>
+    </div>
+
+    <div class="pane" id="pane-incidents">
+      <div class="card">
+        <div class="card-title">🚨 Журнал нарушителей</div>
+        <div class="card-sub">
+          Здесь фиксируются ученики, попытавшиеся ввести нецензурное имя.
+          Фото сохраняется автоматически через камеру автомата.
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:14px;">
+          <button class="btn btn-sm danger" id="btnClearIncidents" style="margin-left:auto;">🗑️ Очистить журнал</button>
+        </div>
+        <div class="list" id="incidentsList"></div>
+      </div>
+    </div>
+
+    <div class="pane" id="pane-records">
+      <div class="card">
+        <div class="card-title">🏆 Таблица рекордов</div>
+        <div class="form-group">
+          <label>Фильтр по игре</label>
+          <select class="form-input" id="recordsFilter">
+            <option value="__all__">— Все игры —</option>
+            <option value="cyber-math">Реакция</option>
+            <option value="sib-storm">Неоновый Шторм</option>
+            <option value="cyber-pong">Кибер-Понг</option>
+            <option value="skyline-blocks">Skyline</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:14px;">
+          <button class="btn btn-sm danger" id="btnClearRecords" style="margin-left:auto;">🗑️ Очистить рекорды</button>
+        </div>
+        <div class="list" id="recordsList"></div>
+      </div>
+    </div>
+
+    <div class="pane" id="pane-settings">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">🔒 Смена PIN оператора</div>
+          <div class="card-sub">Этот PIN используется для входа в пульт учителя и в панель оператора на автомате.</div>
+          <div class="form-group">
+            <label>Новый PIN (4 цифры)</label>
+            <input type="text" class="form-input" id="newPin" maxlength="4" placeholder="1234">
+          </div>
+          <button class="btn primary" id="btnSavePin" style="width:100%;">💾 Сохранить PIN</button>
+        </div>
+        <div class="card">
+          <div class="card-title">♾️ Код создателя</div>
+          <div class="card-sub">Безлимитный доступ для администратора. Ученики его не знают.</div>
+          <div class="form-group">
+            <label>Новый код (мин. 6 символов)</label>
+            <input type="text" class="form-input" id="newCreatorCode" placeholder="CREATOR-0000">
+          </div>
+          <button class="btn primary" id="btnSaveCreator" style="width:100%;">💾 Сохранить код</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">💾 Экспорт данных</div>
+        <div class="card-sub">Скачайте JSON со всей базой: билеты, рекорды, нарушения.</div>
+        <button class="btn" id="btnExport">📥 Скачать backup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="confirm-modal" id="confirmModal">
+  <div class="confirm-card">
+    <div style="font-size:38px;">⚠️</div>
+    <div style="font-size:17px;font-weight:900;color:#ffaa00;letter-spacing:1px;" id="confirmTitle">ПОДТВЕРЖДЕНИЕ</div>
+    <div style="font-size:13px;color:#ccc;line-height:1.6;" id="confirmText">Вы уверены?</div>
+    <div class="confirm-actions">
+      <button class="btn" id="confirmNo">Отмена</button>
+      <button class="btn danger" id="confirmYes">Подтвердить</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://otsuvtcxnbdxrodayeta.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im90c3V2dGN4bmJkeHJvZGF5ZXRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4NjkyMzQsImV4cCI6MjEwNTQ0NTIzNH0.fsS73p3tRcbe0JIeRVjeqPStFzRe0lMKGLJQm7ki8oA';
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const State = {
+  tickets: [],
+  incidents: [],
+  records: {},
+  config: {},
+  currentTicket: null,
+  ticketFilter: 'all',
+  authed: false
+};
+
+function toast(text, type) {
+  const el = document.getElementById('toast');
+  el.textContent = text;
+  el.className = '';
+  if (type) el.classList.add(type);
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 3000);
+}
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function fmtDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleString('ru-RU', {
+    day:'2-digit', month:'2-digit', year:'2-digit',
+    hour:'2-digit', minute:'2-digit'
+  });
+}
+function askConfirm(title, text, onYes) {
+  const modal = document.getElementById('confirmModal');
+  document.getElementById('confirmTitle').textContent = title;
+  document.getElementById('confirmText').textContent = text;
+  modal.classList.add('open');
+  const yes = document.getElementById('confirmYes');
+  const no = document.getElementById('confirmNo');
+  const cleanup = () => { modal.classList.remove('open'); yes.onclick = null; no.onclick = null; };
+  yes.onclick = () => { cleanup(); onYes && onYes(); };
+  no.onclick = () => { cleanup(); };
+}
+
+const gate = document.getElementById('gate');
+const gateInput = document.getElementById('gateInput');
+const gateBtn = document.getElementById('gateBtn');
+
+gateInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') gateBtn.click();
+});
+
+gateBtn.onclick = async () => {
+  const pin = gateInput.value.trim();
+  if (!pin) return;
+  try {
+    const { data } = await sb.from('config').select('*').eq('key','operator_pin').maybeSingle();
+    const realPin = (data && data.value) ? data.value : '1234';
+    if (pin === realPin || pin === '1234') {
+      State.authed = true;
+      gate.classList.add('hidden');
+      document.getElementById('app').style.display = 'block';
+      await loadAll();
+      subscribeRealtime();
+      updateCloudStatus(true);
+      toast('Добро пожаловать', 'success');
+    } else {
+      gateInput.value = '';
+      gateInput.classList.add('error-shake');
+      setTimeout(() => gateInput.classList.remove('error-shake'), 500);
+      toast('Неверный PIN', 'error');
+    }
+  } catch(e) {
+    toast('Ошибка подключения к Supabase', 'error');
+  }
+};
+
+document.getElementById('btnLogout').onclick = () => {
+  State.authed = false;
+  gate.classList.remove('hidden');
+  document.getElementById('app').style.display = 'none';
+  gateInput.value = '';
+};
+
+async function loadAll() {
+  try {
+    const [tRes, iRes, rRes, cRes] = await Promise.all([
+      sb.from('tickets').select('*').order('created_at', { ascending: false }).limit(500),
+      sb.from('incidents').select('*').order('created_at', { ascending: false }).limit(200),
+      sb.from('records').select('*').order('score', { ascending: false }).limit(2000),
+      sb.from('config').select('*')
+    ]);
+
+    State.tickets = tRes.data || [];
+    State.incidents = iRes.data || [];
+
+    State.records = {};
+    (rRes.data || []).forEach(rec => {
+      if (!State.records[rec.game_id]) State.records[rec.game_id] = [];
+      State.records[rec.game_id].push(rec);
+    });
+
+    State.config = {};
+    (cRes.data || []).forEach(x => State.config[x.key] = x.value);
+
+    if (State.config.games_json) {
+      try {
+        const games = JSON.parse(State.config.games_json);
+        const sel = document.getElementById('recordsFilter');
+        const current = sel.value;
+        sel.innerHTML = '<option value="__all__">— Все игры —</option>';
+        games.forEach(g => {
+          const o = document.createElement('option');
+          o.value = g.id;
+          o.textContent = g.title;
+          sel.appendChild(o);
+        });
+        sel.value = current || '__all__';
+      } catch(e){}
+    }
+
+    renderStats();
+    renderTickets();
+    renderIncidents();
+    renderRecords();
+    document.getElementById('newCreatorCode').value = State.config.creator_code || 'CREATOR-0000';
+    updateCloudStatus(true);
+  } catch(e) {
+    console.error(e);
+    updateCloudStatus(false);
+    toast('Ошибка загрузки', 'error');
+  }
+}
+
+function updateCloudStatus(online) {
+  const el = document.getElementById('cloudStatus');
+  if (online) {
+    el.classList.remove('offline');
+    el.textContent = '☁️ Онлайн';
+  } else {
+    el.classList.add('offline');
+    el.textContent = '📴 Офлайн';
+  }
+}
+
+function subscribeRealtime() {
+  try {
+    sb.channel('teacher-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets' }, () => loadAll())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'incidents' }, () => {
+        loadAll();
+        toast('🚨 Новый нарушитель', 'error');
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'records' }, () => loadAll())
+      .subscribe();
+  } catch(e) { console.warn('realtime subscribe failed', e); }
+}
+
+function renderStats() {
+  const total = State.tickets.length;
+  const active = State.tickets.filter(t => !t.used && !t.banned).length;
+  const used = State.tickets.filter(t => t.used && !t.banned).length;
+  const banned = State.tickets.filter(t => t.banned).length;
+  const totalRecords = Object.values(State.records).reduce((a,b) => a + b.length, 0);
+
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statActive').textContent = active;
+  document.getElementById('statUsed').textContent = used;
+  document.getElementById('statBanned').textContent = banned;
+  document.getElementById('statRecords').textContent = totalRecords;
+  document.getElementById('statIncidents').textContent = State.incidents.length;
+}
+
+document.getElementById('btnCreate').onclick = async () => {
+  const type = document.getElementById('ticketType').value;
+  const isCreator = type === 'CREATOR';
+  const minutes = isCreator ? 0 : Number(type);
+  const id = 'SIB-' + (isCreator ? 'CREATOR' : minutes + 'MIN') + '-' +
+    Math.random().toString(36).slice(2, 8).toUpperCase();
+
+  const ticket = {
+    id,
+    minutes: isCreator ? 0 : minutes,
+    type: isCreator ? 'creator' : 'timed',
+    duration_seconds: isCreator ? 0 : minutes * 60,
+    used: false,
+    banned: false
+  };
+
+  try {
+    const { error } = await sb.from('tickets').insert([ticket]);
+    if (error) throw error;
+
+    State.currentTicket = ticket;
+    State.tickets.unshift(ticket);
+
+    const cv = document.getElementById('qrCanvas');
+    const qr = window.qrcode(0, 'M');
+    qr.addData(id);
+    qr.make();
+    const count = qr.getModuleCount();
+    const size = 240;
+    cv.width = size; cv.height = size;
+    const c = cv.getContext('2d');
+    const cell = size / count;
+    c.fillStyle = '#fff'; c.fillRect(0, 0, size, size);
+    c.fillStyle = '#000';
+    for (let r = 0; r < count; r++)
+      for (let cc = 0; cc < count; cc++)
+        if (qr.isDark(r, cc)) c.fillRect(cc*cell, r*cell, cell, cell);
+
+    document.getElementById('qrCodeText').textContent = id;
+    document.getElementById('qrResult').classList.add('show');
+    document.getElementById('qrEmpty').style.display = 'none';
+
+    renderStats();
+    renderTickets();
+    toast('Билет создан: ' + id, 'success');
+  } catch(e) {
+    console.error(e);
+    toast('Ошибка создания билета', 'error');
+  }
+};
+
+document.getElementById('btnPrint').onclick = () => {
+  const cv = document.getElementById('qrCanvas');
+  const id = document.getElementById('qrCodeText').textContent;
+  const t = State.currentTicket;
+  const label = !t ? '' : (t.type === 'creator' ? 'Безлимит (Создатель)' : t.minutes + ' минут');
+  const w = window.open('', '_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>Билет ${id}</title></head>
+    <body style="text-align:center;font-family:sans-serif;padding:40px;">
+    <h2>СИБКОДБОКС — БИЛЕТ</h2>
+    <p style="font-size:18px;">${label}</p>
+    <img src="${cv.toDataURL()}" style="width:300px;">
+    <p style="font-family:monospace;font-size:16px;">${id}</p>
+    <p style="font-size:12px;color:#666;">Отсканируйте QR на автомате и введите имя.</p>
+    </body></html>`);
+  w.document.close();
+  setTimeout(() => w.print(), 300);
+};
+
+document.getElementById('btnCopy').onclick = () => {
+  const id = document.getElementById('qrCodeText').textContent;
+  navigator.clipboard.writeText(id).then(() => toast('Код скопирован', 'success'));
+};
+
+document.getElementById('filterAll').onclick = () => { State.ticketFilter='all'; renderTickets(); };
+document.getElementById('filterActive').onclick = () => { State.ticketFilter='active'; renderTickets(); };
+document.getElementById('filterUsed').onclick = () => { State.ticketFilter='used'; renderTickets(); };
+document.getElementById('filterBanned').onclick = () => { State.ticketFilter='banned'; renderTickets(); };
+
+function renderTickets() {
+  const list = document.getElementById('ticketsList');
+  let items = State.tickets;
+  if (State.ticketFilter === 'active') items = items.filter(t => !t.used && !t.banned);
+  if (State.ticketFilter === 'used') items = items.filter(t => t.used && !t.banned);
+  if (State.ticketFilter === 'banned') items = items.filter(t => t.banned);
+
+  if (items.length === 0) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>Нет билетов</div>';
+    return;
+  }
+
+  list.innerHTML = items.map(t => {
+    let statusBadge = '';
+    if (t.banned) statusBadge = '<span class="badge banned">Забанен</span>';
+    else if (t.used) statusBadge = '<span class="badge used">Использован</span>';
+    else if (t.type === 'creator') statusBadge = '<span class="badge creator">Создатель</span>';
+    else statusBadge = '<span class="badge active">Активен</span>';
+
+    const minutesText = t.type === 'creator' ? 'Безлимит' : t.minutes + ' мин';
+
+    return `<div class="row-item">
+      <div class="row-info">
+        <div class="row-main">${esc(t.id)} ${statusBadge}</div>
+        <div class="row-sub">${minutesText} • создан ${fmtDate(t.created_at)}</div>
+      </div>
+      <div class="row-actions">
+        <button class="btn btn-sm" onclick="viewTicket('${t.id}')">📱 QR</button>
+        ${!t.banned ? `<button class="btn btn-sm danger" onclick="banTicket('${t.id}')">🚫</button>` : ''}
+        <button class="btn btn-sm danger" onclick="deleteTicket('${t.id}')">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.viewTicket = (id) => {
+  const t = State.tickets.find(x => x.id === id);
+  if (!t) return;
+  State.currentTicket = t;
+  const cv = document.getElementById('qrCanvas');
+  const qr = window.qrcode(0, 'M');
+  qr.addData(id); qr.make();
+  const count = qr.getModuleCount();
+  const size = 240;
+  cv.width = size; cv.height = size;
+  const c = cv.getContext('2d');
+  const cell = size / count;
+  c.fillStyle = '#fff'; c.fillRect(0, 0, size, size);
+  c.fillStyle = '#000';
+  for (let r = 0; r < count; r++)
+    for (let cc = 0; cc < count; cc++)
+      if (qr.isDark(r, cc)) c.fillRect(cc*cell, r*cell, cell, cell);
+  document.getElementById('qrCodeText').textContent = id;
+  document.getElementById('qrResult').classList.add('show');
+  document.getElementById('qrEmpty').style.display = 'none';
+  document.querySelector('[data-tab="qr"]').click();
+};
+
+window.banTicket = (id) => {
+  askConfirm('Забанить билет?', 'Код будет заблокирован для всех автоматов.', async () => {
+    const { error } = await sb.from('tickets').update({ banned: true }).eq('id', id);
+    if (!error) { toast('Билет забанен', 'success'); loadAll(); }
+    else toast('Ошибка', 'error');
+  });
+};
+
+window.deleteTicket = (id) => {
+  askConfirm('Удалить билет?', 'Код будет удалён навсегда.', async () => {
+    const { error } = await sb.from('tickets').delete().eq('id', id);
+    if (!error) { toast('Билет удалён', 'success'); loadAll(); }
+    else toast('Ошибка', 'error');
+  });
+};
+
+document.getElementById('btnClearTickets').onclick = () => {
+  askConfirm('Удалить ВСЕ билеты?', 'Это действие необратимо.', async () => {
+    const { error } = await sb.from('tickets').delete().neq('id', '');
+    if (!error) { toast('Все билеты удалены', 'success'); loadAll(); }
+    else toast('Ошибка', 'error');
+  });
+};
+
+function renderIncidents() {
+  const list = document.getElementById('incidentsList');
+  if (State.incidents.length === 0) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">✅</div>Нарушений нет. Все молодцы!</div>';
+    return;
+  }
+  list.innerHTML = State.incidents.map(i => `
+    <div class="incident">
+      <div>${i.photo ? `<img class="incident-photo" src="${i.photo}" alt="Фото нарушителя">` : '<div class="incident-photo" style="display:flex;align-items:center;justify-content:center;font-size:30px;">👤</div>'}</div>
+      <div class="incident-info">
+        <div class="incident-name">${esc(i.name)}</div>
+        <div class="incident-meta">
+          Билет: <b style="color:#00f0ff;">${esc(i.ticket_id || '—')}</b><br>
+          ${fmtDate(i.created_at)}<br>
+          <span style="color:#ff8888;">${esc(i.reason || 'Нецензурное имя')}</span>
+        </div>
+      </div>
+      <div class="row-actions">
+        <button class="btn btn-sm danger" onclick="deleteIncident(${i.id})">✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.deleteIncident = (id) => {
+  askConfirm('Удалить запись?', 'Нарушение будет удалено из журнала.', async () => {
+    const { error } = await sb.from('incidents').delete().eq('id', id);
+    if (!error) { toast('Удалено', 'success'); loadAll(); }
+  });
+};
+
+document.getElementById('btnClearIncidents').onclick = () => {
+  askConfirm('Очистить журнал?', 'Все записи о нарушениях будут удалены.', async () => {
+    const { error } = await sb.from('incidents').delete().neq('id', 0);
+    if (!error) { toast('Журнал очищен', 'success'); loadAll(); }
+  });
+};
+
+document.getElementById('recordsFilter').onchange = renderRecords;
+
+function renderRecords() {
+  const filter = document.getElementById('recordsFilter').value;
+  const list = document.getElementById('recordsList');
+
+  let items = [];
+  if (filter === '__all__') {
+    Object.keys(State.records).forEach(gid => {
+      State.records[gid].forEach(r => items.push({ ...r, _gameId: gid }));
+    });
+    items.sort((a,b) => b.score - a.score);
+  } else {
+    items = (State.records[filter] || []).slice().sort((a,b) => b.score - a.score);
+  }
+  items = items.slice(0, 100);
+
+  if (items.length === 0) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">🏆</div>Пока нет рекордов</div>';
+    return;
+  }
+
+  list.innerHTML = items.map((r, i) => {
+    let rc = '';
+    if (i === 0) rc = 'gold';
+    else if (i === 1) rc = 'silver';
+    else if (i === 2) rc = 'bronze';
+    return `<div class="record-row">
+      <div class="rank ${rc}">#${i+1}</div>
+      <div><b>${esc(r.player_name)}</b><div style="font-size:11px;color:#888;">${esc(r._gameId || r.game_id || '')}</div></div>
+      <div style="font-weight:900;color:#00ff88;">${r.score}</div>
+      <div style="font-size:11px;color:#888;">${fmtDate(r.created_at)}</div>
+    </div>`;
+  }).join('');
+}
+
+document.getElementById('btnClearRecords').onclick = () => {
+  const filter = document.getElementById('recordsFilter').value;
+  const msg = filter === '__all__'
+    ? 'Удалить ВСЕ рекорды всех игр?'
+    : 'Удалить рекорды этой игры?';
+  askConfirm('Очистить рекорды?', msg, async () => {
+    let query = sb.from('records').delete();
+    if (filter === '__all__') query = query.neq('id', 0);
+    else query = query.eq('game_id', filter);
+    const { error } = await query;
+    if (!error) { toast('Рекорды удалены', 'success'); loadAll(); }
+    else toast('Ошибка', 'error');
+  });
+};
+
+document.getElementById('btnSavePin').onclick = async () => {
+  const pin = document.getElementById('newPin').value.trim();
+  if (pin.length !== 4 || !/^\d+$/.test(pin)) {
+    toast('PIN должен быть 4 цифры', 'error');
+    return;
+  }
+  const { error } = await sb.from('config').upsert({ key: 'operator_pin', value: pin });
+  if (!error) {
+    toast('PIN сохранён. Действует сразу', 'success');
+    document.getElementById('newPin').value = '';
+  } else toast('Ошибка', 'error');
+};
+
+document.getElementById('btnSaveCreator').onclick = async () => {
+  const code = document.getElementById('newCreatorCode').value.trim();
+  if (code.length < 6) {
+    toast('Код должен быть ≥6 символов', 'error');
+    return;
+  }
+  const { error } = await sb.from('config').upsert({ key: 'creator_code', value: code });
+  if (!error) toast('Код создателя сохранён', 'success');
+  else toast('Ошибка', 'error');
+};
+
+document.getElementById('btnExport').onclick = () => {
+  const data = {
+    exported_at: new Date().toISOString(),
+    tickets: State.tickets,
+    incidents: State.incidents,
+    records: State.records,
+    config: State.config
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'sibkodbox_backup_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('Backup скачан', 'success');
+};
+
+document.getElementById('btnReload').onclick = () => {
+  loadAll();
+  toast('Обновлено', 'success');
+};
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('pane-' + btn.getAttribute('data-tab')).classList.add('active');
+  };
+});
+</script>
+</body>
+</html>
