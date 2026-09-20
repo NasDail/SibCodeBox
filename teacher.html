@@ -408,7 +408,10 @@
 const SUPABASE_URL = 'https://otsuvtcxnbdxrodayeta.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im90c3V2dGN4bmJkeHJvZGF5ZXRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4NjkyMzQsImV4cCI6MjEwNTQ0NTIzNH0.fsS73p3tRcbe0JIeRVjeqPStFzRe0lMKGLJQm7ki8oA';
 
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const TEACHER_TOKEN = 'SibTeacher_2025_x7k9_Arcade';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  global: { headers: { 'x-teacher-token': TEACHER_TOKEN } }
+});
 
 const State = {
   tickets: [],
