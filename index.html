@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>СибКодБокс v8 — Школьный Игровой Автомат</title>
+<title>СибКодБокс — Игровой Автомат</title>
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -363,6 +363,25 @@
   #cyberAlert.error{border-color:#ff3344;color:#ff3344;
     box-shadow:0 0 30px rgba(255,51,68,0.5);}
 
+  .maintenance-screen{position:fixed;inset:0;z-index:99999;
+    background:radial-gradient(ellipse at 50% 40%,#1a0a35 0%,#020409 70%);
+    display:none;align-items:center;justify-content:center;}
+  .maintenance-screen.active{display:flex;}
+  .maintenance-card{width:520px;max-width:94vw;text-align:center;
+    background:rgba(9,14,28,0.9);border:2px solid #ffaa00;
+    box-shadow:0 0 80px rgba(255,170,0,0.35);border-radius:32px;
+    padding:50px 40px;backdrop-filter:blur(30px);
+    display:flex;flex-direction:column;align-items:center;gap:20px;
+    animation:maintenancePulse 2s infinite ease-in-out;}
+  .maintenance-icon{font-size:80px;filter:drop-shadow(0 0 30px #ffaa00);
+    animation:maintenanceSpin 3s infinite linear;}
+  .maintenance-title{font-size:28px;font-weight:900;letter-spacing:3px;
+    color:#ffaa00;text-shadow:0 0 30px #ffaa00;}
+  .maintenance-text{font-size:16px;color:#ccc;line-height:1.6;max-width:400px;}
+  .maintenance-spinner{width:50px;height:50px;border:4px solid rgba(255,170,0,0.2);
+    border-top-color:#ffaa00;border-radius:50%;
+    animation:maintenanceSpin 1s infinite linear;margin-top:10px;}
+
   @keyframes barDown{from{transform:translateY(-35px);opacity:0;}to{transform:translateY(0);opacity:1;}}
   @keyframes shimmerPass{0%{transform:translateX(-160%) rotate(35deg);}35%,100%{transform:translateX(220%) rotate(35deg);}}
   @keyframes pulseGlyphs{0%{transform:scale(0.85);opacity:0.6;}100%{transform:scale(1.15);opacity:1;}}
@@ -373,6 +392,11 @@
   @keyframes orbFloat{0%{transform:translate(0,0) scale(1);}100%{transform:translate(60px,-40px) scale(1.15);}}
   @keyframes scanLine{0%{top:0;}100%{top:100%;}}
   @keyframes blink{50%{opacity:0.3;}}
+  @keyframes maintenanceSpin{to{transform:rotate(360deg);}}
+  @keyframes maintenancePulse{
+    0%,100%{box-shadow:0 0 80px rgba(255,170,0,0.35);}
+    50%{box-shadow:0 0 120px rgba(255,170,0,0.6);}
+  }
 </style>
 </head>
 <body>
@@ -431,7 +455,6 @@
     <div class="action-row">
       <button class="btn-play-hero" id="btnLaunch"><div class="play-arrow"></div>Играть</button>
       <button class="btn-cfg" id="btnShowRecords" style="padding:18px 30px;border-radius:40px;">🏆 Рекорды</button>
-      <button class="btn-cfg" id="btnShowGameRecords" style="padding:18px 30px;border-radius:40px;">📊 Эта игра</button>
     </div>
     <div class="hud-hints">
       <span><span class="glyph-btn">←</span><span class="glyph-btn">→</span> Выбор игры</span>
@@ -588,6 +611,7 @@
         <button class="tab-btn" data-tab="op-tab-leaderboard">🏆 Рекорды по играм</button>
         <button class="tab-btn" data-tab="op-tab-media">🔊 Звук и музыка</button>
         <button class="tab-btn" data-tab="op-tab-kiosk">🕹️ Режим киоска</button>
+        <button class="tab-btn" data-tab="op-tab-maintenance">🔧 Техработы</button>
       </div>
       <div class="settings-content">
         <div class="tab-pane active" id="op-tab-games">
@@ -691,6 +715,23 @@
               </select>
             </div>
           </div>
+        </div>
+        <div class="tab-pane" id="op-tab-maintenance">
+          <h3 style="color:#ffaa00;font-size:16px;">🔧 Режим технических работ</h3>
+          <div class="setting-item">
+            <div class="setting-info"><h4>Статус</h4><p>Блокирует все автоматы</p></div>
+            <div class="setting-ctrl">
+              <select id="opMaintenanceMode">
+                <option value="off">🟢 Автомат работает</option>
+                <option value="on">🔴 Технические работы</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group full" style="display:flex;flex-direction:column;gap:6px;">
+            <label style="font-size:12px;font-weight:700;color:#00f0ff;">Сообщение для учеников</label>
+            <textarea id="opMaintenanceMessage" style="background:#070a12;border:1px solid rgba(255,255,255,0.18);color:#fff;padding:9px 12px;border-radius:10px;font-size:13px;outline:none;height:70px;resize:none;">Идут технические работы. Автомат скоро вернётся!</textarea>
+          </div>
+          <button class="btn-cfg" id="btnApplyMaintenance" style="background:#ffaa00;color:#000;">💾 Применить на все автоматы</button>
         </div>
       </div>
     </div>
@@ -817,6 +858,18 @@
   </div>
 </div>
 
+<!-- MAINTENANCE SCREEN -->
+<div class="maintenance-screen" id="maintenanceScreen">
+  <div class="maintenance-card">
+    <div class="maintenance-icon">🔧</div>
+    <div class="maintenance-title">ТЕХНИЧЕСКИЕ РАБОТЫ</div>
+    <div class="maintenance-text" id="maintenanceText">
+      Идут технические работы. Автомат скоро вернётся!
+    </div>
+    <div class="maintenance-spinner"></div>
+  </div>
+</div>
+
 <script>
 /* =====================================================================
    1. УТИЛИТЫ
@@ -845,7 +898,7 @@ function escapeHtml(s) {
 }
 
 /* =====================================================================
-   2. ПОЛНЫЙ ЭКРАН
+   2. FULLSCREEN
    ===================================================================== */
 let fsRequested = false;
 async function goFullscreenOnce() {
@@ -865,7 +918,7 @@ document.getElementById('btnFullscreen').onclick = () => {
 };
 
 /* =====================================================================
-   3. КОНФИГУРАЦИЯ
+   3. CONFIG
    ===================================================================== */
 const CONFIG = {
   bgmStyle: 'ambient',
@@ -882,9 +935,7 @@ const CONFIG = {
   hideCursor: true,
   autoArduino: false,
   baudrate: 9600,
-  save() {
-    try { localStorage.setItem('sib_config_v8', JSON.stringify(this)); } catch(e){}
-  },
+  save() { try { localStorage.setItem('sib_config_v8', JSON.stringify(this)); } catch(e){} },
   load() {
     try {
       const s = localStorage.getItem('sib_config_v8');
@@ -895,7 +946,7 @@ const CONFIG = {
 CONFIG.load();
 
 /* =====================================================================
-   4. АУДИО
+   4. AUDIO
    ===================================================================== */
 const SoundMaster = {
   ctx:null, isMuted:false, isBgmPlaying:false,
@@ -1060,7 +1111,7 @@ window.addEventListener('keydown', () => SoundMaster.init(), { once:true });
 document.getElementById('btnAudioToggle').onclick = () => SoundMaster.toggleMute();
 
 /* =====================================================================
-   5. ЧАСТИЦЫ
+   5. PARTICLES
    ===================================================================== */
 const canvas = document.getElementById('ambientCanvas');
 const ctx = canvas.getContext('2d');
@@ -1119,7 +1170,7 @@ function renderAmbientLoop(){
 renderAmbientLoop();
 
 /* =====================================================================
-   6. ИГРЫ
+   6. GAMES (встроенные)
    ===================================================================== */
 const COMMON_GAME_HEADER = `
   function sendScore(gameId, gameName, score){
@@ -1291,7 +1342,7 @@ loop();
 <\/script></body></html>`;
 
 /* =====================================================================
-   7. SIB — Supabase + localStorage fallback
+   7. SUPABASE + SIB
    ===================================================================== */
 const SUPABASE_URL = 'https://otsuvtcxnbdxrodayeta.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im90c3V2dGN4bmJkeHJvZGF5ZXRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4NjkyMzQsImV4cCI6MjEwNTQ0NTIzNH0.fsS73p3tRcbe0JIeRVjeqPStFzRe0lMKGLJQm7ki8oA';
@@ -1305,7 +1356,7 @@ try {
 
 const SIB = {
   LS:{ tickets:'sib_tickets_v1', incidents:'sib_incidents_v1', records:'sib_records_v2', creatorCode:'sib_creator_code_v1' },
-  badWords:['хуй','хуя','хуе','хую','пизд','бляд','блять','бля','еба','ебал','ебан','ебат','ебет','еби','ебо','ебуч','ебу','ебли','заеб','заёб','наеб','наёб','отъеб','отъёб','подъеб','подъёб','перееб','переёб','приеб','приёб','уеб','уёб','разъеб','разъёб','сук','сука','суки','сучар','сучк','муд','муда','муди','манда','пидор','пидар','пидр','гандон','гондон','шлюх','шлюш','хер','херн','хрен','охуе','охуи','ахуе','ахуи','нахуй','нахуя','похуй','похуя','хуесос','соси','сосал','сосет','сосёт','дроч','дрочи','сперм','говн','говна','говно','гавн','срак','срака','срать','сру','срут','перд','пердун','бзд','бзде','жоп','жопа','жопу','попк','анус','очко','письк','писюн','яичк','яйц','член','залуп','проститут','шалав','шала','сись','сися','титьк','тить','пизда','пизде','пизду','пиздой','пиздец','пиздато','пиздю','пиздюк','ебало','ебала','ебану','ебанут','ебаши','ебен','ебет','еблась','ебло','ебля','ебну','ебнут','ебут','залупа','анал','секс','секса','сексу','порн','порно','fuck','fuk','shit','bitch','cunt','dick','pussy','asshole','bastard','whore','slut','nigger','faggot','fag','rape','porn','sex','suck','blowjob','cock','penis','vagina','tits','boobs','nazi','hitler'],
+  badWords:['хуй','хуя','хуе','хую','пизд','бляд','блять','бля','еба','ебал','ебан','ебат','ебет','еби','ебо','ебуч','ебу','ебли','заеб','заёб','наеб','наёб','отъеб','отъёб','подъеб','подъёб','перееб','переёб','приеб','приёб','уеб','уёб','разъеб','разъёб','сук','сука','суки','сучар','сучк','муд','муда','манди','манда','пидор','пидар','пидр','гандон','гондон','шлюх','шлюш','хер','херн','хрен','охуе','охуи','ахуе','ахуи','нахуй','нахуя','похуй','похуя','хуесос','соси','сосал','сосет','сосёт','дроч','дрочи','сперм','говн','говна','говно','гавн','срак','срака','срать','сру','срут','перд','пердун','бзд','бзде','жоп','жопа','жопу','попк','анус','очко','письк','писюн','яичк','яйц','член','залуп','проститут','шалав','шала','сись','сися','титьк','тить','пизда','пизде','пизду','пиздой','пиздец','пиздато','пиздю','пиздюк','ебало','ебала','ебану','ебанут','ебаши','ебен','ебет','еблась','ебло','ебля','ебну','ебнут','ебут','залупа','анал','секс','секса','сексу','порн','порно','fuck','fuk','shit','bitch','cunt','dick','pussy','asshole','bastard','whore','slut','nigger','faggot','fag','rape','porn','sex','suck','blowjob','cock','penis','vagina','tits','boobs','nazi','hitler'],
   records:{}, incidents:[], tickets:[],
   activeSession:null, sessionTimer:null, sessionSecondsLeft:0,
   creatorCode:'CREATOR-0000',
@@ -1564,11 +1615,53 @@ const SIB = {
 };
 SIB.load();
 
-/* Realtime */
+/* =====================================================================
+   ТЕХРАБОТЫ
+   ===================================================================== */
+let maintenanceCheckInterval = null;
+
+async function checkMaintenance(){
+  if(!sb) return;
+  try {
+    const { data } = await sb.from('config')
+      .select('*')
+      .in('key', ['maintenance_mode', 'maintenance_message']);
+    const cfg = {};
+    (data || []).forEach(x => cfg[x.key] = x.value);
+
+    const mode = cfg.maintenance_mode === 'on';
+    const msg = cfg.maintenance_message || 'Идут технические работы. Автомат скоро вернётся!';
+
+    const screen = document.getElementById('maintenanceScreen');
+    const text = document.getElementById('maintenanceText');
+    if(!screen || !text) return;
+
+    if(mode){
+      text.textContent = msg;
+      screen.classList.add('active');
+      if(typeof SIB !== 'undefined' && SIB.activeSession) SIB.endSession(true);
+      if(typeof SoundMaster !== 'undefined') SoundMaster.pauseBGM();
+    } else {
+      screen.classList.remove('active');
+      if(typeof SoundMaster !== 'undefined') SoundMaster.resumeBGM();
+    }
+  } catch(e) { console.warn('checkMaintenance', e); }
+}
+maintenanceCheckInterval = setInterval(checkMaintenance, 10000);
+
+/* =====================================================================
+   REALTIME
+   ===================================================================== */
 if(sb){
   try {
     sb.channel('sibkodbox-realtime')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets' }, () => {
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets' }, (payload) => {
+        if(SIB.activeSession && payload.new && payload.new.id === SIB.activeSession.ticketId && payload.new.banned){
+          showCyberAlert('🚫 Ваш QR-код заблокирован. Сессия завершена.', true);
+          SIB.endSession();
+          SIB.load().then(()=>{ renderCarousel(); });
+          return;
+        }
         SIB.load().then(()=>{ renderCarousel(); if(typeof renderActiveTickets==='function') renderActiveTickets(); });
       })
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'records' }, () => {
@@ -1577,12 +1670,59 @@ if(sb){
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'incidents' }, () => {
         SIB.load().then(()=>{ if(typeof renderIncidents==='function') renderIncidents(); });
       })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'config' }, (payload) => {
+        SIB.load().then(()=>{
+          checkMaintenance();
+          if(payload.new && payload.new.key === 'games_json'){
+            loadGamesFromCloud(payload.new.value);
+          }
+        });
+      })
       .subscribe();
   } catch(e) { console.warn('Realtime subscribe failed', e); }
 }
 
 /* =====================================================================
-   8. КАТАЛОГ
+   ЗАГРУЗКА ИГР ИЗ CLOUD
+   ===================================================================== */
+function loadGamesFromCloud(gamesJsonStr){
+  if(!gamesJsonStr) return;
+  try {
+    const cloudGames = JSON.parse(gamesJsonStr);
+    const builtIn = DEFAULT_GAMES_LIST.slice();
+    const merged = [...builtIn];
+
+    cloudGames.forEach(g => {
+      if(builtIn.find(x => x.id === g.id)) return;
+      merged.push(g);
+    });
+
+    GAMES_CATALOG = merged;
+    GAMES_CATALOG.forEach(g => {
+      if(g.id === 'cyber-math') g.srcdoc = GAME_CYBER_MATH_HTML;
+      if(g.id === 'sib-storm') g.srcdoc = GAME_NEON_STORM_HTML;
+      if(g.id === 'cyber-pong') g.srcdoc = GAME_CYBER_PONG_HTML;
+      if(g.id === 'skyline-blocks') g.srcdoc = GAME_SKYLINE_HTML;
+    });
+
+    localStorage.setItem('sib_games_catalog', JSON.stringify(
+      GAMES_CATALOG.map(g => { const c = {...g}; delete c.srcdoc; return c; })
+    ));
+
+    renderCarousel();
+  } catch(e) { console.warn('loadGamesFromCloud', e); }
+}
+
+async function loadGamesFromCloudOnce(){
+  if(!sb) return;
+  try {
+    const { data } = await sb.from('config').select('value').eq('key','games_json').maybeSingle();
+    if(data && data.value) loadGamesFromCloud(data.value);
+  } catch(e) {}
+}
+
+/* =====================================================================
+   8. CATALOG
    ===================================================================== */
 const DEFAULT_GAMES_LIST = [
   {id:'cyber-math',title:'Реакция',genre:'Математика | Реакция',badge:'МАТЕМАТИКА',
@@ -1625,9 +1765,9 @@ function saveGamesToStorage(){
   const storable=GAMES_CATALOG.map(g=>{ const c={...g}; if(c.srcdoc) delete c.srcdoc; return c; });
   localStorage.setItem('sib_games_catalog',JSON.stringify(storable));
 
-  // Также отправляем в Supabase config — чтобы teacher.html видел каталог
   if(sb){
-    sb.from('config').upsert({ key: 'games_json', value: JSON.stringify(storable) }).then(()=>{}).catch(()=>{});
+    sb.from('config').upsert({ key: 'games_json', value: JSON.stringify(storable) })
+      .then(()=>{}).catch(()=>{});
   }
 }
 
@@ -1636,7 +1776,7 @@ let isGameRunning=false;
 let currentArtSide='A';
 
 /* =====================================================================
-   9. КАРУСЕЛЬ
+   9. CAROUSEL
    ===================================================================== */
 const rail=document.getElementById('carouselRail');
 const heroTitle=document.getElementById('heroTitle');
@@ -1725,7 +1865,7 @@ function updateGameMeta(){
 }
 
 /* =====================================================================
-   10. ЗАПУСК / ВЫХОД
+   10. LAUNCH / EXIT
    ===================================================================== */
 const portal=document.getElementById('launchPortal');
 const viewport=document.getElementById('gameViewport');
@@ -1912,7 +2052,7 @@ function scanLoginFrame(){
   loginRaf = requestAnimationFrame(scanLoginFrame);
 }
 
-function handleLoginCode(raw){
+async function handleLoginCode(raw){
   const code = raw.trim();
   if(!code) return;
   if(code === SIB.creatorCode){
@@ -1921,6 +2061,28 @@ function handleLoginCode(raw){
     openNameInput(pendingTicket);
     return;
   }
+
+  try {
+    if(sb){
+      const { data, error } = await sb.from('tickets').select('*').eq('id', code).maybeSingle();
+      if(error) throw error;
+      if(!data){ SoundMaster.error(); setLoginStatus('QR-код не найден.', true); return; }
+      if(data.banned){ SoundMaster.error(); setLoginStatus('Этот QR-код заблокирован.', true); return; }
+      if(data.used){ SoundMaster.error(); setLoginStatus('Этот QR-код уже использован.', true); return; }
+      pendingTicket = {
+        id: data.id,
+        type: data.type,
+        durationSeconds: data.duration_seconds,
+        minutes: data.type === 'creator' ? '∞' : data.minutes
+      };
+      SoundMaster.secretUnlock();
+      openNameInput(pendingTicket);
+      return;
+    }
+  } catch(e) {
+    console.warn('Быстрая проверка не сработала, работаем локально', e);
+  }
+
   const ticket = SIB.findTicket(code);
   if(!ticket){ SoundMaster.error(); setLoginStatus('QR-код не найден.', true); return; }
   if(ticket.banned){ SoundMaster.error(); setLoginStatus('Этот QR-код заблокирован.', true); return; }
@@ -1964,9 +2126,24 @@ async function submitName(){
     SIB.banTicket(pendingTicket.id);
     playerNameInput.classList.add('error-shake');
     setTimeout(()=>playerNameInput.classList.remove('error-shake'),500);
-    showCyberAlert('Нецензурное имя! QR-код заблокирован, фото сохранено.', true);
+    showCyberAlert('Нецензурное имя! QR-код заблокирован.', true);
     return;
   }
+
+  if(sb && pendingTicket.id !== SIB.creatorCode){
+    try {
+      const { data } = await sb.from('tickets').select('banned, used').eq('id', pendingTicket.id).maybeSingle();
+      if(data && data.banned){
+        SoundMaster.error();
+        nameModal.classList.remove('open');
+        pendingTicket = null;
+        showLoginGate();
+        showCyberAlert('QR-код заблокирован учителем!', true);
+        return;
+      }
+    } catch(e) { console.warn(e); }
+  }
+
   SoundMaster.secretUnlock();
   const t = pendingTicket;
   nameModal.classList.remove('open');
@@ -1988,7 +2165,7 @@ document.getElementById('btnEndSession').onclick = () => {
 };
 
 /* =====================================================================
-   12. РЕКОРДЫ
+   12. RECORDS
    ===================================================================== */
 const recordsModal = document.getElementById('recordsModal');
 const recordsTable = document.getElementById('recordsTable');
@@ -2050,14 +2227,6 @@ recordsGameFilter.onchange = () => {
 document.getElementById('btnCloseRecords').onclick = () => {
   SoundMaster.back(); recordsModal.classList.remove('open');
 };
-document.getElementById('btnShowGameRecords').onclick = () => {
-  SoundMaster.click();
-  buildGameFilter(recordsGameFilter);
-  const gid = GAMES_CATALOG[activeGameIndex].id;
-  recordsGameFilter.value = gid;
-  renderRecordsTable(recordsTable, gid);
-  recordsModal.classList.add('open');
-};
 
 /* =====================================================================
    13. PIN
@@ -2092,10 +2261,17 @@ window.pressKey = function(k){
   pinDisplay.value = currentPinInput;
   if(currentPinInput.length===4) setTimeout(verifyPin,150);
 };
-function verifyPin(){
+async function verifyPin(){
   const e = currentPinInput.trim();
   let ok = false;
-  if(currentPinContext==='OPERATOR'){ if(e===OPERATOR_PIN||e==='1234'){ ok=true; pinModal.classList.remove('open'); openOperatorSettings(); } }
+  let realPin = OPERATOR_PIN;
+  if(currentPinContext==='OPERATOR' && sb){
+    try {
+      const { data } = await sb.from('config').select('value').eq('key','operator_pin').maybeSingle();
+      if(data && data.value) realPin = data.value;
+    } catch(err){}
+  }
+  if(currentPinContext==='OPERATOR'){ if(e===realPin||e==='1234'){ ok=true; pinModal.classList.remove('open'); openOperatorSettings(); } }
   else if(currentPinContext==='MASTER_OS'){ if(e===MASTER_OS_PIN||e==='7777'){ ok=true; pinModal.classList.remove('open'); openSecretOsSettings(); } }
   else if(currentPinContext==='GAME_EDIT'){ if(e===GAME_EDIT_PIN||e==='9999'){ ok=true; pinModal.classList.remove('open'); openGameEditor(pendingGameEditIndex); } }
   if(ok) SoundMaster.secretUnlock();
@@ -2105,7 +2281,7 @@ document.getElementById('btnEnterPin').onclick = verifyPin;
 document.getElementById('btnCancelPin').onclick = closePinDialog;
 document.getElementById('btnOpenOperatorSettings').onclick = () => openPinDialog('OPERATOR');
 
-function openOperatorSettings(){
+async function openOperatorSettings(){
   opModal.classList.add('open');
   renderInstalledGamesTable();
   renderActiveTickets();
@@ -2117,6 +2293,7 @@ function openOperatorSettings(){
   document.getElementById('opSfxStyle').value = CONFIG.sfxStyle;
   document.getElementById('opIdleTimeout').value = CONFIG.idleTimeout;
   document.getElementById('opHideCursor').value = CONFIG.hideCursor?'on':'off';
+  await loadMaintenanceToOperator();
 }
 document.getElementById('btnCloseOpSettings').onclick = () => { SoundMaster.back(); opModal.classList.remove('open'); };
 document.getElementById('btnOpSaveClose').onclick = () => { SoundMaster.back(); opModal.classList.remove('open'); };
@@ -2129,16 +2306,33 @@ document.getElementById('btnClearRecords').onclick = () => {
     if(gid==='__all__') SIB.clearAllRecords(); else SIB.clearGameRecords(gid);
     renderRecordsTable(opRecordsTable, gid);
     renderCarousel();
-
-    // Синхронизация с Supabase
     if(sb){
-      if(gid==='__all__'){
-        sb.from('records').delete().neq('id', 0).then(()=>{}).catch(()=>{});
-      } else {
-        sb.from('records').delete().eq('game_id', gid).then(()=>{}).catch(()=>{});
-      }
+      if(gid==='__all__') sb.from('records').delete().neq('id', 0).then(()=>{}).catch(()=>{});
+      else sb.from('records').delete().eq('game_id', gid).then(()=>{}).catch(()=>{});
     }
   });
+};
+
+async function loadMaintenanceToOperator(){
+  if(!sb) return;
+  try{
+    const { data } = await sb.from('config').select('*').in('key',['maintenance_mode','maintenance_message']);
+    const cfg = {};
+    (data||[]).forEach(x=>cfg[x.key]=x.value);
+    document.getElementById('opMaintenanceMode').value = cfg.maintenance_mode==='on'?'on':'off';
+    document.getElementById('opMaintenanceMessage').value = cfg.maintenance_message||'Идут технические работы. Автомат скоро вернётся!';
+  }catch(e){}
+}
+
+document.getElementById('btnApplyMaintenance').onclick = async () => {
+  const mode = document.getElementById('opMaintenanceMode').value;
+  const msg = document.getElementById('opMaintenanceMessage').value.trim() || 'Идут технические работы. Автомат скоро вернётся!';
+  if(!sb){ showCyberAlert('Нет подключения к Supabase', true); return; }
+  try{
+    await sb.from('config').upsert({ key:'maintenance_mode', value: mode });
+    await sb.from('config').upsert({ key:'maintenance_message', value: msg });
+    showCyberAlert(mode==='on' ? '🔴 Техработы включены' : '🟢 Автомат запущен', false);
+  }catch(e){ showCyberAlert('Ошибка: '+e.message, true); }
 };
 
 let logoClicks = 0, logoTimer = null;
@@ -2178,11 +2372,12 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     if(tabId==='op-tab-qr') renderActiveTickets();
     if(tabId==='op-tab-incidents') renderIncidents();
     if(tabId==='op-tab-leaderboard') renderRecordsTable(opRecordsTable, opRecordsGameFilter.value||'__all__');
+    if(tabId==='op-tab-maintenance') loadMaintenanceToOperator();
   };
 });
 
 /* =====================================================================
-   14. РЕДАКТОР ИГР
+   14. GAME EDITOR
    ===================================================================== */
 function renderInstalledGamesTable(){
   installedGamesList.innerHTML = '';
@@ -2261,7 +2456,7 @@ document.getElementById('btnResetGamesDefault').onclick = () => {
 };
 
 /* =====================================================================
-   15. QR-ГЕНЕРАТОР
+   15. QR GENERATOR (operator)
    ===================================================================== */
 function drawQrToCanvas(cv, text){
   if(!window.qrcode) return false;
@@ -2341,7 +2536,7 @@ document.getElementById('btnClearIncidents').onclick = () => {
 };
 
 /* =====================================================================
-   16. МУЗЫКА
+   16. MUSIC
    ===================================================================== */
 document.getElementById('opBgmStyle').onchange = (e) => {
   CONFIG.bgmStyle = e.target.value; CONFIG.save();
@@ -2392,7 +2587,7 @@ document.getElementById('cfgChimesToggle').onchange = (e) => {
 };
 
 /* =====================================================================
-   17. ВИДЕО И СИСТЕМА
+   17. VIDEO / SYSTEM
    ===================================================================== */
 document.getElementById('cfgCrtToggle').onchange = (e) => document.getElementById('crtFilter').classList.toggle('enabled', e.target.value==='on');
 document.getElementById('cfgParticles').onchange = (e) => { targetParticleCount=parseInt(e.target.value); initParticles(targetParticleCount); };
@@ -2520,9 +2715,12 @@ function showCursor() {
 window.addEventListener('mousemove', showCursor, { passive: true });
 
 /* =====================================================================
-   19. КЛАВИАТУРА
+   19. KEYBOARD
    ===================================================================== */
 window.addEventListener('keydown', (e) => {
+  if(document.getElementById('maintenanceScreen').classList.contains('active')){
+    return;
+  }
   if(loginGate.classList.contains('active')){
     if(document.activeElement === loginManualInput) return;
     return;
@@ -2622,7 +2820,7 @@ async function readArduinoDataStream(){
 btnArduino.addEventListener('click', connectArduino);
 
 /* =====================================================================
-   21. ЧАСЫ И СТАРТ
+   21. CLOCK + START
    ===================================================================== */
 function syncClock(){
   const d = new Date();
@@ -2635,6 +2833,8 @@ syncClock();
 renderCarousel();
 showLoginGate();
 if(CONFIG.hideCursor) setTimeout(hideCursor, 3000);
+checkMaintenance();
+loadGamesFromCloudOnce();
 </script>
 </body>
 </html>
