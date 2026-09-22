@@ -95,6 +95,8 @@
   .btn.danger:hover{background:#ff3344;color:#fff;}
   .btn.success{background:rgba(0,255,136,0.15);border-color:#00ff88;color:#00ff88;}
   .btn.success:hover{background:#00ff88;color:#000;}
+  .btn.warn{background:rgba(255,170,0,0.15);border-color:#ffaa00;color:#ffaa00;}
+  .btn.warn:hover{background:#ffaa00;color:#000;}
   .btn-sm{padding:6px 12px;font-size:12px;border-radius:8px;}
   .btn:disabled{opacity:0.4;cursor:not-allowed;transform:none!important;}
 
@@ -163,6 +165,16 @@
     text-shadow:0 0 20px rgba(0,240,255,0.5);line-height:1;margin-bottom:6px;}
   .stat-label{font-size:11px;color:rgba(255,255,255,0.55);
     text-transform:uppercase;letter-spacing:1px;font-weight:700;}
+
+  .maintenance-banner{
+    display:none;background:rgba(255,170,0,0.15);
+    border:2px solid #ffaa00;color:#ffaa00;
+    border-radius:14px;padding:16px 22px;margin-bottom:16px;
+    font-weight:800;text-align:center;
+    animation:maintenanceBlink 1.5s infinite ease-in-out;
+  }
+  .maintenance-banner.active{display:block;}
+  @keyframes maintenanceBlink{50%{opacity:0.7;}}
 
   .gate{position:fixed;inset:0;z-index:5000;
     background:radial-gradient(ellipse at 50% 40%,#0a1a35 0%,#020409 70%);
@@ -251,11 +263,16 @@
   </header>
 
   <div class="container">
+    <div class="maintenance-banner" id="maintenanceBanner">
+      🔴 АВТОМАТ В РЕЖИМЕ ТЕХРАБОТ
+    </div>
+
     <div class="tabs">
       <button class="tab-btn active" data-tab="qr">🎫 Генератор QR</button>
       <button class="tab-btn" data-tab="tickets">📋 Билеты</button>
       <button class="tab-btn" data-tab="incidents">🚨 Нарушители</button>
       <button class="tab-btn" data-tab="records">🏆 Рекорды</button>
+      <button class="tab-btn" data-tab="maintenance">🔧 Техработы</button>
       <button class="tab-btn" data-tab="settings">⚙️ Настройки</button>
     </div>
 
@@ -278,19 +295,17 @@
             </select>
           </div>
           <button class="btn primary" id="btnCreate" style="width:100%;padding:16px;">✨ Создать билет</button>
-          <div class="card-sub" style="margin-top:16px;">
-            <b style="color:#00f0ff;">Подсказка:</b> билет сразу попадёт в Supabase. Автомат увидит его мгновенно.
-          </div>
         </div>
         <div class="card">
           <div class="card-title">📱 QR-код билета</div>
-          <div class="card-sub">Покажите QR ученику или распечатайте на принтере.</div>
+          <div class="card-sub">Покажите QR ученику или распечатайте.</div>
           <div class="qr-result" id="qrResult">
             <canvas id="qrCanvas"></canvas>
             <div class="qr-code-text" id="qrCodeText">—</div>
             <div class="qr-actions">
               <button class="btn success" id="btnPrint">🖨️ Распечатать</button>
               <button class="btn" id="btnCopy">📋 Скопировать код</button>
+              <button class="btn danger" id="btnBanThis">🚫 Забанить</button>
             </div>
           </div>
           <div class="empty" id="qrEmpty">
@@ -301,7 +316,7 @@
       </div>
 
       <div class="card">
-        <div class="card-title">📊 Статистика автомата</div>
+        <div class="card-title">📊 Статистика</div>
         <div class="stats">
           <div class="stat"><div class="stat-value" id="statTotal">0</div><div class="stat-label">Всего билетов</div></div>
           <div class="stat"><div class="stat-value" id="statActive" style="color:#00ff88;">0</div><div class="stat-label">Активных</div></div>
@@ -316,7 +331,6 @@
     <div class="pane" id="pane-tickets">
       <div class="card">
         <div class="card-title">📋 Все билеты</div>
-        <div class="card-sub">Активные, использованные и забаненные.</div>
         <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
           <button class="btn btn-sm" id="filterAll">Все</button>
           <button class="btn btn-sm" id="filterActive">🟢 Активные</button>
@@ -331,12 +345,9 @@
     <div class="pane" id="pane-incidents">
       <div class="card">
         <div class="card-title">🚨 Журнал нарушителей</div>
-        <div class="card-sub">
-          Здесь фиксируются ученики, попытавшиеся ввести нецензурное имя.
-          Фото сохраняется автоматически через камеру автомата.
-        </div>
+        <div class="card-sub">Ученики, попытавшиеся ввести нецензурное имя. Фото — автоматически.</div>
         <div style="display:flex;gap:10px;margin-bottom:14px;">
-          <button class="btn btn-sm danger" id="btnClearIncidents" style="margin-left:auto;">🗑️ Очистить журнал</button>
+          <button class="btn btn-sm danger" id="btnClearIncidents" style="margin-left:auto;">🗑️ Очистить</button>
         </div>
         <div class="list" id="incidentsList"></div>
       </div>
@@ -362,11 +373,34 @@
       </div>
     </div>
 
+    <div class="pane" id="pane-maintenance">
+      <div class="card">
+        <div class="card-title">🔧 Режим технических работ</div>
+        <div class="card-sub">
+          Когда включено — все автоматы блокируются и показывают сообщение ученикам.
+          Мгновенно через Realtime.
+        </div>
+        <div class="form-group">
+          <label>Статус</label>
+          <select class="form-input" id="maintenanceMode">
+            <option value="off">🟢 Автомат работает</option>
+            <option value="on">🔴 Технические работы</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Сообщение для учеников</label>
+          <textarea class="form-input" id="maintenanceMessage" rows="3" placeholder="Идут технические работы. Автомат скоро вернётся!"></textarea>
+        </div>
+        <button class="btn warn" id="btnSaveMaintenance" style="width:100%;padding:16px;">
+          💾 Применить на все автоматы
+        </button>
+      </div>
+    </div>
+
     <div class="pane" id="pane-settings">
       <div class="grid-2">
         <div class="card">
           <div class="card-title">🔒 Смена PIN оператора</div>
-          <div class="card-sub">Этот PIN используется для входа в пульт учителя и в панель оператора на автомате.</div>
           <div class="form-group">
             <label>Новый PIN (4 цифры)</label>
             <input type="text" class="form-input" id="newPin" maxlength="4" placeholder="1234">
@@ -375,7 +409,6 @@
         </div>
         <div class="card">
           <div class="card-title">♾️ Код создателя</div>
-          <div class="card-sub">Безлимитный доступ для администратора. Ученики его не знают.</div>
           <div class="form-group">
             <label>Новый код (мин. 6 символов)</label>
             <input type="text" class="form-input" id="newCreatorCode" placeholder="CREATOR-0000">
@@ -385,7 +418,6 @@
       </div>
       <div class="card">
         <div class="card-title">💾 Экспорт данных</div>
-        <div class="card-sub">Скачайте JSON со всей базой: билеты, рекорды, нарушения.</div>
         <button class="btn" id="btnExport">📥 Скачать backup</button>
       </div>
     </div>
@@ -405,10 +437,13 @@
 </div>
 
 <script>
+/* =====================================================================
+   TEACHER PANEL
+   ===================================================================== */
 const SUPABASE_URL = 'https://otsuvtcxnbdxrodayeta.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im90c3V2dGN4bmJkeHJvZGF5ZXRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4NjkyMzQsImV4cCI6MjEwNTQ0NTIzNH0.fsS73p3tRcbe0JIeRVjeqPStFzRe0lMKGLJQm7ki8oA';
-
 const TEACHER_TOKEN = 'SibTeacher_2025_x7k9_Arcade';
+
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
   global: { headers: { 'x-teacher-token': TEACHER_TOKEN } }
 });
@@ -484,7 +519,7 @@ gateBtn.onclick = async () => {
       toast('Неверный PIN', 'error');
     }
   } catch(e) {
-    toast('Ошибка подключения к Supabase', 'error');
+    toast('Ошибка подключения', 'error');
   }
 };
 
@@ -536,6 +571,7 @@ async function loadAll() {
     renderTickets();
     renderIncidents();
     renderRecords();
+    loadMaintenanceState();
     document.getElementById('newCreatorCode').value = State.config.creator_code || 'CREATOR-0000';
     updateCloudStatus(true);
   } catch(e) {
@@ -565,24 +601,41 @@ function subscribeRealtime() {
         toast('🚨 Новый нарушитель', 'error');
       })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'records' }, () => loadAll())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'config' }, () => loadAll())
       .subscribe();
   } catch(e) { console.warn('realtime subscribe failed', e); }
 }
 
 function renderStats() {
-  const total = State.tickets.length;
-  const active = State.tickets.filter(t => !t.used && !t.banned).length;
-  const used = State.tickets.filter(t => t.used && !t.banned).length;
-  const banned = State.tickets.filter(t => t.banned).length;
-  const totalRecords = Object.values(State.records).reduce((a,b) => a + b.length, 0);
-
-  document.getElementById('statTotal').textContent = total;
-  document.getElementById('statActive').textContent = active;
-  document.getElementById('statUsed').textContent = used;
-  document.getElementById('statBanned').textContent = banned;
-  document.getElementById('statRecords').textContent = totalRecords;
+  document.getElementById('statTotal').textContent = State.tickets.length;
+  document.getElementById('statActive').textContent = State.tickets.filter(t => !t.used && !t.banned).length;
+  document.getElementById('statUsed').textContent = State.tickets.filter(t => t.used && !t.banned).length;
+  document.getElementById('statBanned').textContent = State.tickets.filter(t => t.banned).length;
+  document.getElementById('statRecords').textContent = Object.values(State.records).reduce((a,b) => a + b.length, 0);
   document.getElementById('statIncidents').textContent = State.incidents.length;
 }
+
+async function loadMaintenanceState() {
+  const mode = State.config.maintenance_mode === 'on';
+  document.getElementById('maintenanceMode').value = mode ? 'on' : 'off';
+  document.getElementById('maintenanceMessage').value =
+    State.config.maintenance_message || 'Идут технические работы. Автомат скоро вернётся!';
+  document.getElementById('maintenanceBanner').classList.toggle('active', mode);
+}
+
+document.getElementById('btnSaveMaintenance').onclick = async () => {
+  const mode = document.getElementById('maintenanceMode').value;
+  const msg = document.getElementById('maintenanceMessage').value.trim() ||
+    'Идут технические работы. Автомат скоро вернётся!';
+  try {
+    await sb.from('config').upsert({ key: 'maintenance_mode', value: mode });
+    await sb.from('config').upsert({ key: 'maintenance_message', value: msg });
+    toast(mode === 'on' ? '🔴 Техработы включены' : '🟢 Автомат запущен', 'success');
+    loadMaintenanceState();
+  } catch(e) {
+    toast('Ошибка: ' + e.message, 'error');
+  }
+};
 
 document.getElementById('btnCreate').onclick = async () => {
   const type = document.getElementById('ticketType').value;
@@ -631,7 +684,7 @@ document.getElementById('btnCreate').onclick = async () => {
     toast('Билет создан: ' + id, 'success');
   } catch(e) {
     console.error(e);
-    toast('Ошибка создания билета', 'error');
+    toast('Ошибка: ' + e.message, 'error');
   }
 };
 
@@ -647,7 +700,6 @@ document.getElementById('btnPrint').onclick = () => {
     <p style="font-size:18px;">${label}</p>
     <img src="${cv.toDataURL()}" style="width:300px;">
     <p style="font-family:monospace;font-size:16px;">${id}</p>
-    <p style="font-size:12px;color:#666;">Отсканируйте QR на автомате и введите имя.</p>
     </body></html>`);
   w.document.close();
   setTimeout(() => w.print(), 300);
@@ -656,6 +708,12 @@ document.getElementById('btnPrint').onclick = () => {
 document.getElementById('btnCopy').onclick = () => {
   const id = document.getElementById('qrCodeText').textContent;
   navigator.clipboard.writeText(id).then(() => toast('Код скопирован', 'success'));
+};
+
+document.getElementById('btnBanThis').onclick = () => {
+  const id = document.getElementById('qrCodeText').textContent;
+  if (!id || id === '—') return;
+  window.banTicket(id);
 };
 
 document.getElementById('filterAll').onclick = () => { State.ticketFilter='all'; renderTickets(); };
@@ -690,7 +748,7 @@ function renderTickets() {
         <div class="row-sub">${minutesText} • создан ${fmtDate(t.created_at)}</div>
       </div>
       <div class="row-actions">
-        <button class="btn btn-sm" onclick="viewTicket('${t.id}')">📱 QR</button>
+        <button class="btn btn-sm" onclick="viewTicket('${t.id}')">📱</button>
         ${!t.banned ? `<button class="btn btn-sm danger" onclick="banTicket('${t.id}')">🚫</button>` : ''}
         <button class="btn btn-sm danger" onclick="deleteTicket('${t.id}')">✕</button>
       </div>
@@ -725,7 +783,7 @@ window.banTicket = (id) => {
   askConfirm('Забанить билет?', 'Код будет заблокирован для всех автоматов.', async () => {
     const { error } = await sb.from('tickets').update({ banned: true }).eq('id', id);
     if (!error) { toast('Билет забанен', 'success'); loadAll(); }
-    else toast('Ошибка', 'error');
+    else toast('Ошибка: ' + error.message, 'error');
   });
 };
 
@@ -733,7 +791,7 @@ window.deleteTicket = (id) => {
   askConfirm('Удалить билет?', 'Код будет удалён навсегда.', async () => {
     const { error } = await sb.from('tickets').delete().eq('id', id);
     if (!error) { toast('Билет удалён', 'success'); loadAll(); }
-    else toast('Ошибка', 'error');
+    else toast('Ошибка: ' + error.message, 'error');
   });
 };
 
@@ -748,12 +806,12 @@ document.getElementById('btnClearTickets').onclick = () => {
 function renderIncidents() {
   const list = document.getElementById('incidentsList');
   if (State.incidents.length === 0) {
-    list.innerHTML = '<div class="empty"><div class="empty-icon">✅</div>Нарушений нет. Все молодцы!</div>';
+    list.innerHTML = '<div class="empty"><div class="empty-icon">✅</div>Нарушений нет</div>';
     return;
   }
   list.innerHTML = State.incidents.map(i => `
     <div class="incident">
-      <div>${i.photo ? `<img class="incident-photo" src="${i.photo}" alt="Фото нарушителя">` : '<div class="incident-photo" style="display:flex;align-items:center;justify-content:center;font-size:30px;">👤</div>'}</div>
+      <div>${i.photo ? `<img class="incident-photo" src="${i.photo}" alt="Фото">` : '<div class="incident-photo" style="display:flex;align-items:center;justify-content:center;font-size:30px;">👤</div>'}</div>
       <div class="incident-info">
         <div class="incident-name">${esc(i.name)}</div>
         <div class="incident-meta">
@@ -770,14 +828,14 @@ function renderIncidents() {
 }
 
 window.deleteIncident = (id) => {
-  askConfirm('Удалить запись?', 'Нарушение будет удалено из журнала.', async () => {
+  askConfirm('Удалить запись?', 'Нарушение будет удалено.', async () => {
     const { error } = await sb.from('incidents').delete().eq('id', id);
     if (!error) { toast('Удалено', 'success'); loadAll(); }
   });
 };
 
 document.getElementById('btnClearIncidents').onclick = () => {
-  askConfirm('Очистить журнал?', 'Все записи о нарушениях будут удалены.', async () => {
+  askConfirm('Очистить журнал?', 'Все записи будут удалены.', async () => {
     const { error } = await sb.from('incidents').delete().neq('id', 0);
     if (!error) { toast('Журнал очищен', 'success'); loadAll(); }
   });
@@ -821,9 +879,7 @@ function renderRecords() {
 
 document.getElementById('btnClearRecords').onclick = () => {
   const filter = document.getElementById('recordsFilter').value;
-  const msg = filter === '__all__'
-    ? 'Удалить ВСЕ рекорды всех игр?'
-    : 'Удалить рекорды этой игры?';
+  const msg = filter === '__all__' ? 'Удалить ВСЕ рекорды?' : 'Удалить рекорды этой игры?';
   askConfirm('Очистить рекорды?', msg, async () => {
     let query = sb.from('records').delete();
     if (filter === '__all__') query = query.neq('id', 0);
@@ -842,9 +898,9 @@ document.getElementById('btnSavePin').onclick = async () => {
   }
   const { error } = await sb.from('config').upsert({ key: 'operator_pin', value: pin });
   if (!error) {
-    toast('PIN сохранён. Действует сразу', 'success');
+    toast('PIN сохранён', 'success');
     document.getElementById('newPin').value = '';
-  } else toast('Ошибка', 'error');
+  } else toast('Ошибка: ' + error.message, 'error');
 };
 
 document.getElementById('btnSaveCreator').onclick = async () => {
