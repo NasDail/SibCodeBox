@@ -4,18 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>СибКодБокс — Пульт учителя</title>
+<title>СибКодБокс — Пульт</title>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-user-select:none;user-select:none;}
+  *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
   body{background:#020409;color:#fff;min-height:100vh;overflow-x:hidden;}
   body::before{content:'';position:fixed;inset:0;z-index:-1;
     background:radial-gradient(circle at 20% 30%,rgba(0,240,255,0.12),transparent 60%),
                radial-gradient(circle at 80% 70%,rgba(255,0,127,0.10),transparent 60%),
                #020409;}
   button,input,select,textarea{font-family:inherit;}
-  input,select,textarea{-webkit-user-select:text;user-select:text;}
 
   header{position:sticky;top:0;z-index:100;
     background:rgba(2,4,9,0.85);backdrop-filter:blur(20px);
@@ -34,13 +33,12 @@
   .header-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
   .cloud-status{font-size:11px;padding:6px 12px;border-radius:20px;
     background:rgba(0,255,136,0.15);color:#00ff88;
-    border:1px solid #00ff88;font-weight:800;letter-spacing:0.5px;}
-  .cloud-status.offline{background:rgba(255,51,68,0.15);color:#ff3344;
-    border-color:#ff3344;}
+    border:1px solid #00ff88;font-weight:800;}
+  .cloud-status.offline{background:rgba(255,51,68,0.15);color:#ff3344;border-color:#ff3344;}
+
   .header-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);
     color:#fff;padding:8px 16px;border-radius:30px;font-size:13px;font-weight:700;
-    cursor:pointer;transition:all 0.2s;backdrop-filter:blur(10px);
-    display:flex;align-items:center;gap:6px;}
+    cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:6px;}
   .header-btn:hover{background:rgba(0,240,255,0.18);border-color:#00f0ff;transform:translateY(-1px);}
   .header-btn.danger{background:rgba(255,51,68,0.15);border-color:#ff3344;color:#ff3344;}
   .header-btn.danger:hover{background:#ff3344;color:#fff;}
@@ -82,6 +80,8 @@
   .form-input.error-shake{border-color:#ff3344!important;animation:shake 0.35s;}
   @keyframes shake{0%,100%{transform:translateX(0);}20%,60%{transform:translateX(-8px);}40%,80%{transform:translateX(8px);}}
 
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
   .btn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);
     color:#fff;padding:12px 24px;border-radius:12px;font-size:14px;
     font-weight:800;cursor:pointer;transition:all 0.2s;
@@ -110,14 +110,15 @@
     color:#00f0ff;letter-spacing:2px;padding:10px 20px;
     background:rgba(0,240,255,0.08);border-radius:10px;
     border:1px solid rgba(0,240,255,0.3);}
+  .qr-owner{font-size:14px;color:#fff;text-align:center;line-height:1.5;}
+  .qr-owner b{color:#00ff88;}
   .qr-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
 
-  .list{display:flex;flex-direction:column;gap:10px;max-height:500px;overflow-y:auto;
+  .list{display:flex;flex-direction:column;gap:10px;max-height:520px;overflow-y:auto;
     padding-right:6px;}
   .list::-webkit-scrollbar{width:8px;}
   .list::-webkit-scrollbar-track{background:rgba(255,255,255,0.03);border-radius:10px;}
   .list::-webkit-scrollbar-thumb{background:rgba(0,240,255,0.3);border-radius:10px;}
-  .list::-webkit-scrollbar-thumb:hover{background:#00f0ff;}
 
   .row-item{display:flex;justify-content:space-between;align-items:center;gap:12px;
     background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
@@ -136,6 +137,7 @@
   .badge.used{background:rgba(255,255,255,0.08);color:#888;border:1px solid rgba(255,255,255,0.2);}
   .badge.banned{background:rgba(255,51,68,0.15);color:#ff3344;border:1px solid #ff3344;}
   .badge.creator{background:rgba(255,215,0,0.15);color:#ffd700;border:1px solid #ffd700;}
+  .badge.developer{background:rgba(0,240,255,0.15);color:#00f0ff;border:1px solid #00f0ff;}
 
   .record-row{display:grid;grid-template-columns:50px 1fr 130px 130px;gap:12px;
     align-items:center;padding:12px 16px;background:rgba(255,255,255,0.04);
@@ -150,9 +152,7 @@
     border:1px solid rgba(255,51,68,0.25);border-radius:14px;padding:14px 18px;}
   .incident-photo{width:80px;height:80px;border-radius:10px;object-fit:cover;
     border:2px solid rgba(255,51,68,0.4);background:#111;}
-  .incident-info{min-width:0;}
-  .incident-name{font-weight:900;color:#ff3344;font-size:16px;margin-bottom:4px;
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .incident-name{font-weight:900;color:#ff3344;font-size:16px;margin-bottom:4px;}
   .incident-meta{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5;}
 
   .empty{text-align:center;padding:40px 20px;color:rgba(255,255,255,0.4);font-size:14px;}
@@ -166,34 +166,39 @@
   .stat-label{font-size:11px;color:rgba(255,255,255,0.55);
     text-transform:uppercase;letter-spacing:1px;font-weight:700;}
 
-  .maintenance-banner{
-    display:none;background:rgba(255,170,0,0.15);
-    border:2px solid #ffaa00;color:#ffaa00;
-    border-radius:14px;padding:16px 22px;margin-bottom:16px;
-    font-weight:800;text-align:center;
-    animation:maintenanceBlink 1.5s infinite ease-in-out;
-  }
+  .maintenance-banner{display:none;background:rgba(255,170,0,0.15);
+    border:2px solid #ffaa00;color:#ffaa00;border-radius:14px;
+    padding:16px 22px;margin-bottom:16px;font-weight:800;text-align:center;
+    animation:maintenanceBlink 1.5s infinite ease-in-out;}
   .maintenance-banner.active{display:block;}
   @keyframes maintenanceBlink{50%{opacity:0.7;}}
 
+  /* ============ GATE ============ */
   .gate{position:fixed;inset:0;z-index:5000;
     background:radial-gradient(ellipse at 50% 40%,#0a1a35 0%,#020409 70%);
     display:flex;flex-direction:column;align-items:center;justify-content:center;
     padding:20px;}
   .gate.hidden{display:none;}
-  .gate-card{width:420px;max-width:100%;
+  .gate-card{width:460px;max-width:100%;
     background:rgba(9,14,28,0.9);border:2px solid rgba(0,240,255,0.4);
     box-shadow:0 0 80px rgba(0,240,255,0.35);border-radius:28px;
     padding:36px 30px;backdrop-filter:blur(30px);
     display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;}
+  .gate-tabs{display:flex;width:100%;gap:6px;background:rgba(0,0,0,0.4);
+    padding:5px;border-radius:14px;margin-bottom:6px;}
+  .gate-tab{flex:1;background:transparent;border:none;color:rgba(255,255,255,0.6);
+    padding:10px 12px;border-radius:10px;font-size:13px;font-weight:800;
+    cursor:pointer;transition:all 0.2s;display:flex;align-items:center;
+    justify-content:center;gap:6px;}
+  .gate-tab.active{background:rgba(0,240,255,0.15);color:#00f0ff;}
   .gate-icon{font-size:56px;filter:drop-shadow(0 0 20px #00f0ff);}
   .gate-title{font-size:22px;font-weight:900;letter-spacing:1px;
     background:linear-gradient(90deg,#fff 40%,#00f0ff);
     -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
   .gate-sub{font-size:13px;color:rgba(255,255,255,0.55);line-height:1.5;}
   .gate-input{width:100%;background:#04070d;border:2px solid rgba(0,240,255,0.3);
-    border-radius:14px;padding:16px;font-size:26px;color:#00f0ff;
-    letter-spacing:14px;text-align:center;font-family:monospace;outline:none;}
+    border-radius:14px;padding:16px;font-size:22px;color:#00f0ff;
+    letter-spacing:6px;text-align:center;font-family:monospace;outline:none;}
   .gate-input:focus{border-color:#00f0ff;box-shadow:0 0 25px rgba(0,240,255,0.5);}
 
   #toast{position:fixed;top:-100px;left:50%;transform:translateX(-50%);
@@ -203,10 +208,8 @@
     z-index:10000;transition:top 0.4s ease;backdrop-filter:blur(10px);
     max-width:90vw;text-align:center;}
   #toast.show{top:24px;}
-  #toast.error{border-color:#ff3344;color:#ff3344;
-    box-shadow:0 0 30px rgba(255,51,68,0.5);}
-  #toast.success{border-color:#00ff88;color:#00ff88;
-    box-shadow:0 0 30px rgba(0,255,136,0.5);}
+  #toast.error{border-color:#ff3344;color:#ff3344;box-shadow:0 0 30px rgba(255,51,68,0.5);}
+  #toast.success{border-color:#00ff88;color:#00ff88;box-shadow:0 0 30px rgba(0,255,136,0.5);}
 
   .confirm-modal{position:fixed;inset:0;background:rgba(2,4,9,0.92);
     backdrop-filter:blur(20px);z-index:9000;display:none;
@@ -220,14 +223,67 @@
   .confirm-actions{display:flex;gap:10px;}
   .confirm-actions .btn{flex:1;}
 
+  /* ============ PLATFORM CARDS ============ */
+  .platform-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+    gap:12px;margin-bottom:16px;}
+  .platform-card{background:rgba(255,255,255,0.04);
+    border:2px solid rgba(255,255,255,0.1);border-radius:16px;
+    padding:18px 12px;text-align:center;cursor:pointer;transition:all 0.2s;}
+  .platform-card:hover{background:rgba(0,240,255,0.1);
+    border-color:rgba(0,240,255,0.4);transform:translateY(-2px);}
+  .platform-card.active{background:rgba(0,240,255,0.15);
+    border-color:#00f0ff;box-shadow:0 0 20px rgba(0,240,255,0.3);}
+  .platform-icon{font-size:32px;margin-bottom:8px;}
+  .platform-name{font-size:13px;font-weight:900;color:#fff;}
+  .platform-hint{font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px;}
+
+  .instructions{background:rgba(0,240,255,0.05);
+    border-left:3px solid #00f0ff;border-radius:8px;
+    padding:14px 18px;margin-bottom:14px;font-size:13px;
+    color:rgba(255,255,255,0.85);line-height:1.7;}
+  .instructions ol{margin-left:18px;}
+  .instructions li{margin-bottom:6px;}
+  .instructions a{color:#00f0ff;text-decoration:none;font-weight:700;}
+  .instructions a:hover{text-decoration:underline;}
+  .instructions code{background:rgba(0,0,0,0.4);
+    padding:2px 6px;border-radius:5px;font-family:monospace;
+    color:#00ff88;font-size:12px;}
+
+  .preview-box{width:100%;height:360px;background:#000;
+    border:2px solid rgba(0,240,255,0.3);border-radius:14px;
+    overflow:hidden;margin-top:10px;}
+  .preview-box iframe{width:100%;height:100%;border:none;}
+
+  .game-item{display:grid;grid-template-columns:64px 1fr auto;gap:14px;
+    align-items:center;background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);border-radius:14px;
+    padding:12px 16px;transition:all 0.2s;}
+  .game-item:hover{background:rgba(255,255,255,0.06);}
+  .game-thumb{width:64px;height:64px;border-radius:10px;
+    background:linear-gradient(135deg,#152238,#060a12);
+    display:flex;align-items:center;justify-content:center;
+    font-size:26px;overflow:hidden;}
+  .game-thumb img{width:100%;height:100%;object-fit:cover;}
+  .game-title{font-weight:900;font-size:15px;margin-bottom:3px;}
+  .game-meta{font-size:12px;color:rgba(255,255,255,0.55);}
+
+  .role-pills{display:flex;gap:8px;margin-bottom:14px;}
+  .role-pill{flex:1;background:rgba(255,255,255,0.04);
+    border:2px solid rgba(255,255,255,0.1);border-radius:12px;
+    padding:10px;font-size:13px;font-weight:800;
+    cursor:pointer;text-align:center;transition:all 0.2s;
+    color:rgba(255,255,255,0.65);}
+  .role-pill:hover{border-color:rgba(0,240,255,0.3);}
+  .role-pill.active{background:rgba(0,240,255,0.15);
+    border-color:#00f0ff;color:#00f0ff;}
+
   @media (max-width:600px){
     .container{padding:16px;}
     header{padding:12px 16px;}
-    .brand-title{font-size:16px;}
     .record-row{grid-template-columns:36px 1fr 80px;font-size:13px;}
     .record-row > *:last-child{display:none;}
     .incident{grid-template-columns:60px 1fr;}
-    .incident-photo{width:60px;height:60px;}
+    .form-row{grid-template-columns:1fr;}
   }
 </style>
 </head>
@@ -235,30 +291,38 @@
 
 <div id="toast">Сообщение</div>
 
+<!-- =============== LOGIN GATE =============== -->
 <div class="gate" id="gate">
   <div class="gate-card">
-    <div class="gate-icon">🔐</div>
-    <div class="gate-title">ПУЛЬТ УЧИТЕЛЯ</div>
-    <div class="gate-sub">Введите PIN-код оператора<br>для доступа к управлению автоматом</div>
-    <input type="password" class="gate-input" id="gateInput" maxlength="4" placeholder="••••" autocomplete="off">
+    <div class="gate-tabs">
+      <button class="gate-tab active" data-mode="teacher">👨‍🏫 Учитель</button>
+      <button class="gate-tab" data-mode="developer">🛠️ Разработчик</button>
+    </div>
+    <div class="gate-icon" id="gateIcon">🔐</div>
+    <div class="gate-title" id="gateTitle">ПУЛЬТ УЧИТЕЛЯ</div>
+    <div class="gate-sub" id="gateSub">Введите PIN-код оператора</div>
+    <input type="password" class="gate-input" id="gateInput" placeholder="••••" autocomplete="off">
     <button class="btn primary" id="gateBtn" style="width:100%;padding:14px;">Войти</button>
-    <div class="gate-sub" style="font-size:11px;">По умолчанию: <b style="color:#00f0ff;">1234</b></div>
+    <div class="gate-sub" style="font-size:11px;" id="gateHint">
+      По умолчанию PIN: <b style="color:#00f0ff;">1234</b>
+    </div>
   </div>
 </div>
 
-<div id="app" style="display:none;">
+<!-- =============== TEACHER APP =============== -->
+<div id="teacherApp" style="display:none;">
   <header>
     <div class="brand">
       <div class="brand-logo">🎓</div>
       <div>
-        <div class="brand-title">СИБКОДБОКС — ПУЛЬТ</div>
+        <div class="brand-title">СИБКОДБОКС — ПУЛЬТ УЧИТЕЛЯ</div>
         <div class="brand-subtitle">Панель управления автоматом</div>
       </div>
     </div>
     <div class="header-actions">
-      <span class="cloud-status" id="cloudStatus">☁️ Онлайн</span>
-      <button class="header-btn" id="btnReload">🔄 Обновить</button>
-      <button class="header-btn danger" id="btnLogout">Выйти</button>
+      <span class="cloud-status" id="cloudStatusT">☁️ Онлайн</span>
+      <button class="header-btn" id="btnReloadT">🔄 Обновить</button>
+      <button class="header-btn danger" id="btnLogoutT">Выйти</button>
     </div>
   </header>
 
@@ -268,21 +332,42 @@
     </div>
 
     <div class="tabs">
-      <button class="tab-btn active" data-tab="qr">🎫 Генератор QR</button>
-      <button class="tab-btn" data-tab="tickets">📋 Билеты</button>
-      <button class="tab-btn" data-tab="incidents">🚨 Нарушители</button>
-      <button class="tab-btn" data-tab="records">🏆 Рекорды</button>
-      <button class="tab-btn" data-tab="maintenance">🔧 Техработы</button>
-      <button class="tab-btn" data-tab="settings">⚙️ Настройки</button>
+      <button class="tab-btn active" data-tab="qr" data-app="teacher">🎫 Генератор QR</button>
+      <button class="tab-btn" data-tab="tickets" data-app="teacher">📋 Билеты</button>
+      <button class="tab-btn" data-tab="incidents" data-app="teacher">🚨 Нарушители</button>
+      <button class="tab-btn" data-tab="records" data-app="teacher">🏆 Рекорды</button>
+      <button class="tab-btn" data-tab="maintenance" data-app="teacher">🔧 Техработы</button>
+      <button class="tab-btn" data-tab="settingsT" data-app="teacher">⚙️ Настройки</button>
     </div>
 
+    <!-- QR -->
     <div class="pane active" id="pane-qr">
       <div class="grid-2">
         <div class="card">
           <div class="card-title">🎫 Создать новый билет</div>
-          <div class="card-sub">Выберите длительность и нажмите «Создать». QR-код появится справа.</div>
+          <div class="card-sub">Укажите ФИО, класс и длительность сессии</div>
+
+          <div class="role-pills">
+            <div class="role-pill active" data-role="student">🎓 Ученик</div>
+            <div class="role-pill" data-role="developer">🛠️ Разработчик</div>
+            <div class="role-pill" data-role="creator">♾️ Создатель</div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>ФИО (Инициалы)</label>
+              <input type="text" class="form-input" id="ownerName" placeholder="Иванов И.И." maxlength="40">
+            </div>
+            <div class="form-group">
+              <label>Класс</label>
+              <select class="form-input" id="ownerClass">
+                <option value="">— Класс —</option>
+              </select>
+            </div>
+          </div>
+
           <div class="form-group">
-            <label>Тип билета</label>
+            <label>Длительность</label>
             <select class="form-input" id="ticketType">
               <option value="5">5 минут</option>
               <option value="10" selected>10 минут</option>
@@ -291,26 +376,31 @@
               <option value="30">30 минут</option>
               <option value="45">45 минут</option>
               <option value="60">1 час</option>
-              <option value="CREATOR">♾️ Безлимит (Создатель)</option>
+              <option value="CREATOR">♾️ Безлимит</option>
             </select>
           </div>
-          <button class="btn primary" id="btnCreate" style="width:100%;padding:16px;">✨ Создать билет</button>
+
+          <button class="btn primary" id="btnCreate" style="width:100%;padding:16px;">
+            ✨ Создать билет
+          </button>
         </div>
+
         <div class="card">
           <div class="card-title">📱 QR-код билета</div>
-          <div class="card-sub">Покажите QR ученику или распечатайте.</div>
+          <div class="card-sub">Покажите QR ученику или распечатайте</div>
           <div class="qr-result" id="qrResult">
+            <div class="qr-owner" id="qrOwner"></div>
             <canvas id="qrCanvas"></canvas>
             <div class="qr-code-text" id="qrCodeText">—</div>
             <div class="qr-actions">
               <button class="btn success" id="btnPrint">🖨️ Распечатать</button>
-              <button class="btn" id="btnCopy">📋 Скопировать код</button>
+              <button class="btn" id="btnCopy">📋 Скопировать</button>
               <button class="btn danger" id="btnBanThis">🚫 Забанить</button>
             </div>
           </div>
           <div class="empty" id="qrEmpty">
             <div class="empty-icon">🎫</div>
-            Пока нет созданных билетов в этой сессии.<br>Создайте первый — он появится здесь.
+            Заполните форму и нажмите «Создать билет».
           </div>
         </div>
       </div>
@@ -318,30 +408,32 @@
       <div class="card">
         <div class="card-title">📊 Статистика</div>
         <div class="stats">
-          <div class="stat"><div class="stat-value" id="statTotal">0</div><div class="stat-label">Всего билетов</div></div>
+          <div class="stat"><div class="stat-value" id="statTotal">0</div><div class="stat-label">Всего</div></div>
           <div class="stat"><div class="stat-value" id="statActive" style="color:#00ff88;">0</div><div class="stat-label">Активных</div></div>
           <div class="stat"><div class="stat-value" id="statUsed" style="color:#aaa;">0</div><div class="stat-label">Использовано</div></div>
           <div class="stat"><div class="stat-value" id="statBanned" style="color:#ff3344;">0</div><div class="stat-label">Забанено</div></div>
           <div class="stat"><div class="stat-value" id="statRecords" style="color:#ffd700;">0</div><div class="stat-label">Рекордов</div></div>
-          <div class="stat"><div class="stat-value" id="statIncidents" style="color:#ff3344;">0</div><div class="stat-label">Нарушителей</div></div>
+          <div class="stat"><div class="stat-value" id="statIncidents" style="color:#ff3344;">0</div><div class="stat-label">Нарушений</div></div>
         </div>
       </div>
     </div>
 
+    <!-- TICKETS -->
     <div class="pane" id="pane-tickets">
       <div class="card">
         <div class="card-title">📋 Все билеты</div>
         <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
-          <button class="btn btn-sm" id="filterAll">Все</button>
-          <button class="btn btn-sm" id="filterActive">🟢 Активные</button>
-          <button class="btn btn-sm" id="filterUsed">⚪ Использованные</button>
-          <button class="btn btn-sm" id="filterBanned">🔴 Забаненные</button>
+          <button class="btn btn-sm" data-tfilter="all">Все</button>
+          <button class="btn btn-sm" data-tfilter="active">🟢 Активные</button>
+          <button class="btn btn-sm" data-tfilter="used">⚪ Использованные</button>
+          <button class="btn btn-sm" data-tfilter="banned">🔴 Забаненные</button>
           <button class="btn btn-sm danger" id="btnClearTickets" style="margin-left:auto;">🗑️ Удалить все</button>
         </div>
         <div class="list" id="ticketsList"></div>
       </div>
     </div>
 
+    <!-- INCIDENTS -->
     <div class="pane" id="pane-incidents">
       <div class="card">
         <div class="card-title">🚨 Журнал нарушителей</div>
@@ -353,6 +445,7 @@
       </div>
     </div>
 
+    <!-- RECORDS -->
     <div class="pane" id="pane-records">
       <div class="card">
         <div class="card-title">🏆 Таблица рекордов</div>
@@ -360,10 +453,6 @@
           <label>Фильтр по игре</label>
           <select class="form-input" id="recordsFilter">
             <option value="__all__">— Все игры —</option>
-            <option value="cyber-math">Реакция</option>
-            <option value="sib-storm">Неоновый Шторм</option>
-            <option value="cyber-pong">Кибер-Понг</option>
-            <option value="skyline-blocks">Skyline</option>
           </select>
         </div>
         <div style="display:flex;gap:10px;margin-bottom:14px;">
@@ -373,13 +462,11 @@
       </div>
     </div>
 
+    <!-- MAINTENANCE -->
     <div class="pane" id="pane-maintenance">
       <div class="card">
         <div class="card-title">🔧 Режим технических работ</div>
-        <div class="card-sub">
-          Когда включено — все автоматы блокируются и показывают сообщение ученикам.
-          Мгновенно через Realtime.
-        </div>
+        <div class="card-sub">При включении все автоматы блокируются и показывают сообщение. Обновляется мгновенно через Realtime.</div>
         <div class="form-group">
           <label>Статус</label>
           <select class="form-input" id="maintenanceMode">
@@ -389,7 +476,7 @@
         </div>
         <div class="form-group">
           <label>Сообщение для учеников</label>
-          <textarea class="form-input" id="maintenanceMessage" rows="3" placeholder="Идут технические работы. Автомат скоро вернётся!"></textarea>
+          <textarea class="form-input" id="maintenanceMessage" rows="3"></textarea>
         </div>
         <button class="btn warn" id="btnSaveMaintenance" style="width:100%;padding:16px;">
           💾 Применить на все автоматы
@@ -397,33 +484,209 @@
       </div>
     </div>
 
-    <div class="pane" id="pane-settings">
+    <!-- SETTINGS -->
+    <div class="pane" id="pane-settingsT">
       <div class="grid-2">
         <div class="card">
-          <div class="card-title">🔒 Смена PIN оператора</div>
+          <div class="card-title">🔒 Смена PIN учителя</div>
           <div class="form-group">
             <label>Новый PIN (4 цифры)</label>
             <input type="text" class="form-input" id="newPin" maxlength="4" placeholder="1234">
           </div>
-          <button class="btn primary" id="btnSavePin" style="width:100%;">💾 Сохранить PIN</button>
+          <button class="btn primary" id="btnSavePin" style="width:100%;">💾 Сохранить</button>
         </div>
         <div class="card">
           <div class="card-title">♾️ Код создателя</div>
           <div class="form-group">
-            <label>Новый код (мин. 6 символов)</label>
+            <label>Код (мин. 6 символов)</label>
             <input type="text" class="form-input" id="newCreatorCode" placeholder="CREATOR-0000">
           </div>
-          <button class="btn primary" id="btnSaveCreator" style="width:100%;">💾 Сохранить код</button>
+          <button class="btn primary" id="btnSaveCreator" style="width:100%;">💾 Сохранить</button>
         </div>
       </div>
       <div class="card">
-        <div class="card-title">💾 Экспорт данных</div>
+        <div class="card-title">🛠️ Мастер-код разработчика</div>
+        <div class="card-sub">Единый код для доступа в панель разработчика. Хранится в Supabase (config.developer_code).</div>
+        <div class="form-group">
+          <label>Код разработчика</label>
+          <input type="text" class="form-input" id="newDevCode" placeholder="DEV-2025-SIB">
+        </div>
+        <button class="btn primary" id="btnSaveDevCode" style="width:100%;">💾 Сохранить</button>
+      </div>
+      <div class="card">
+        <div class="card-title">💾 Экспорт</div>
         <button class="btn" id="btnExport">📥 Скачать backup</button>
       </div>
     </div>
   </div>
 </div>
 
+<!-- =============== DEVELOPER APP =============== -->
+<div id="devApp" style="display:none;">
+  <header>
+    <div class="brand">
+      <div class="brand-logo">🛠️</div>
+      <div>
+        <div class="brand-title">СИБКОДБОКС — РАЗРАБОТЧИК</div>
+        <div class="brand-subtitle">Публикация игр в каталог автомата</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <span class="cloud-status" id="cloudStatusD">☁️ Онлайн</span>
+      <button class="header-btn" id="btnReloadD">🔄 Обновить</button>
+      <button class="header-btn danger" id="btnLogoutD">Выйти</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="dev-games" data-app="dev">🎮 Каталог игр</button>
+      <button class="tab-btn" data-tab="dev-add" data-app="dev">➕ Добавить игру</button>
+      <button class="tab-btn" data-tab="dev-guide" data-app="dev">📖 Инструкция</button>
+    </div>
+
+    <!-- GAMES -->
+    <div class="pane active" id="pane-dev-games">
+      <div class="card">
+        <div class="card-title">🎮 Игры в каталоге автомата</div>
+        <div class="card-sub">Все игры из <code>config.games_json</code>. Отображаются на автомате.</div>
+        <div class="list" id="devGamesList"></div>
+      </div>
+    </div>
+
+    <!-- ADD GAME -->
+    <div class="pane" id="pane-dev-add">
+      <div class="card">
+        <div class="card-title">1. Выберите платформу</div>
+        <div class="platform-grid" id="platformGrid">
+          <div class="platform-card" data-plat="scratch">
+            <div class="platform-icon">🐱</div>
+            <div class="platform-name">Scratch</div>
+            <div class="platform-hint">→ TurboWarp</div>
+          </div>
+          <div class="platform-card" data-plat="processing">
+            <div class="platform-icon">🎨</div>
+            <div class="platform-name">Processing</div>
+            <div class="platform-hint">→ p5.js</div>
+          </div>
+          <div class="platform-card" data-plat="godot">
+            <div class="platform-icon">🎮</div>
+            <div class="platform-name">Godot</div>
+            <div class="platform-hint">→ HTML5 Export</div>
+          </div>
+          <div class="platform-card" data-plat="html">
+            <div class="platform-icon">📄</div>
+            <div class="platform-name">HTML код</div>
+            <div class="platform-hint">вставить напрямую</div>
+          </div>
+          <div class="platform-card" data-plat="url">
+            <div class="platform-icon">🔗</div>
+            <div class="platform-name">Direct URL</div>
+            <div class="platform-hint">готовая ссылка</div>
+          </div>
+        </div>
+
+        <div class="instructions" id="platformInstructions">
+          <b>Выберите платформу выше</b> — появится подробная пошаговая инструкция.
+        </div>
+      </div>
+
+      <div class="card" id="addGameCard" style="display:none;">
+        <div class="card-title">2. Данные игры</div>
+
+        <div class="form-group" id="htmlCodeGroup" style="display:none;">
+          <label>HTML-код игры</label>
+          <textarea class="form-input" id="devGameHtml" rows="10"
+            placeholder="<!DOCTYPE html>..."></textarea>
+          <div class="card-sub">Код будет встроен в автомат через srcdoc (лимит ~500 КБ).</div>
+        </div>
+
+        <div class="form-group" id="urlGroup" style="display:none;">
+          <label>URL игры (HTTPS)</label>
+          <input type="text" class="form-input" id="devGameUrl" placeholder="https://example.com/game.html">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Название *</label>
+            <input type="text" class="form-input" id="devGameTitle" placeholder="Моя игра">
+          </div>
+          <div class="form-group">
+            <label>Жанр *</label>
+            <input type="text" class="form-input" id="devGameGenre" placeholder="Аркада">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Бейдж</label>
+            <input type="text" class="form-input" id="devGameBadge" placeholder="NEW">
+          </div>
+          <div class="form-group">
+            <label>Акцентный цвет</label>
+            <input type="color" class="form-input" id="devGameAccent" value="#00f0ff" style="height:48px;padding:6px;">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>URL обложки (постер)</label>
+          <input type="text" class="form-input" id="devGameCover" placeholder="https://...">
+        </div>
+
+        <div class="form-group">
+          <label>URL фона</label>
+          <input type="text" class="form-input" id="devGameBg" placeholder="https://...">
+        </div>
+
+        <div class="form-group">
+          <label>Описание</label>
+          <textarea class="form-input" id="devGameDesc" rows="2"></textarea>
+        </div>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn" id="btnPreviewGame">👁️ Предпросмотр</button>
+          <button class="btn primary" id="btnSaveGame" style="flex:1;">💾 Опубликовать в каталог</button>
+        </div>
+
+        <div class="preview-box" id="previewBox" style="display:none;">
+          <iframe id="previewFrame" sandbox="allow-scripts allow-same-origin allow-pointer-lock"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <!-- GUIDE -->
+    <div class="pane" id="pane-dev-guide">
+      <div class="card">
+        <div class="card-title">📖 Как опубликовать игру на автомате</div>
+        <div class="instructions">
+          <b style="color:#00ff88;">Вариант 1. Быстро — встроить код в автомат</b>
+          <ol>
+            <li>Экспортируйте игру в HTML (см. подсказки для каждой платформы).</li>
+            <li>На вкладке «Добавить игру» выберите платформу и «HTML код».</li>
+            <li>Вставьте код в поле и нажмите «Опубликовать». Игра сразу появится в карусели автомата.</li>
+          </ol>
+          <b style="color:#00ff88;">Вариант 2. Через GitHub Pages (для больших игр и Godot)</b>
+          <ol>
+            <li>Создайте аккаунт на <a href="https://github.com" target="_blank">github.com</a>.</li>
+            <li>Новый репозиторий → загрузите <code>index.html</code> и все файлы игры.</li>
+            <li>Settings → Pages → Source: <code>main</code> / <code>/(root)</code> → Save.</li>
+            <li>Через 1–2 минуты игра доступна по ссылке<br>
+              <code>https://ваш-логин.github.io/имя-репозитория/</code></li>
+            <li>Вставьте эту ссылку в поле «URL игры» в панели разработчика.</li>
+          </ol>
+          <b style="color:#ffaa00;">Готовые сборщики:</b>
+          <ul style="margin-left:18px;margin-top:6px;">
+            <li><b>Scratch → HTML:</b> <a href="https://packager.turbowarp.org/" target="_blank">packager.turbowarp.org</a></li>
+            <li><b>Processing → p5.js:</b> <a href="https://editor.p5js.org/" target="_blank">editor.p5js.org</a> → Share → Embed</li>
+            <li><b>Godot → Web:</b> Project → Export → Web → HTML5</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM -->
 <div class="confirm-modal" id="confirmModal">
   <div class="confirm-card">
     <div style="font-size:38px;">⚠️</div>
@@ -438,7 +701,7 @@
 
 <script>
 /* =====================================================================
-   TEACHER PANEL
+   СИБКОДБОКС v10 — Пульт учителя + Панель разработчика
    ===================================================================== */
 const SUPABASE_URL = 'https://otsuvtcxnbdxrodayeta.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im90c3V2dGN4bmJkeHJvZGF5ZXRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4NjkyMzQsImV4cCI6MjEwNTQ0NTIzNH0.fsS73p3tRcbe0JIeRVjeqPStFzRe0lMKGLJQm7ki8oA';
@@ -449,15 +712,16 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
 });
 
 const State = {
-  tickets: [],
-  incidents: [],
-  records: {},
-  config: {},
+  tickets: [], incidents: [], records: {}, config: {},
+  games: [],
   currentTicket: null,
   ticketFilter: 'all',
-  authed: false
+  role: 'student',
+  loginMode: 'teacher',
+  platform: 'scratch'
 };
 
+/* ---------- utils ---------- */
 function toast(text, type) {
   const el = document.getElementById('toast');
   el.textContent = text;
@@ -465,10 +729,11 @@ function toast(text, type) {
   if (type) el.classList.add(type);
   el.classList.add('show');
   clearTimeout(el._t);
-  el._t = setTimeout(() => el.classList.remove('show'), 3000);
+  el._t = setTimeout(() => el.classList.remove('show'), 3200);
 }
 function esc(s) {
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  return String(s ?? '').replace(/[&<>"']/g,
+    c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 function fmtDate(iso) {
   if (!iso) return '—';
@@ -490,46 +755,143 @@ function askConfirm(title, text, onYes) {
   no.onclick = () => { cleanup(); };
 }
 
+/* ---------- classes list ---------- */
+(function fillClasses(){
+  const sel = document.getElementById('ownerClass');
+  const letters = ['А','Б','В','Г','Д','Е','Ж'];
+  for (let g = 1; g <= 11; g++) {
+    for (const L of letters) {
+      const o = document.createElement('option');
+      o.value = g + L;
+      o.textContent = g + ' ' + L;
+      sel.appendChild(o);
+    }
+  }
+})();
+
+/* ---------- LOGIN GATE ---------- */
 const gate = document.getElementById('gate');
 const gateInput = document.getElementById('gateInput');
 const gateBtn = document.getElementById('gateBtn');
+const gateIcon = document.getElementById('gateIcon');
+const gateTitle = document.getElementById('gateTitle');
+const gateSub = document.getElementById('gateSub');
+const gateHint = document.getElementById('gateHint');
 
-gateInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') gateBtn.click();
+document.querySelectorAll('.gate-tab').forEach(tab => {
+  tab.onclick = () => {
+    document.querySelectorAll('.gate-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    State.loginMode = tab.getAttribute('data-mode');
+    gateInput.value = '';
+    if (State.loginMode === 'teacher') {
+      gateIcon.textContent = '🔐';
+      gateTitle.textContent = 'ПУЛЬТ УЧИТЕЛЯ';
+      gateSub.textContent = 'Введите PIN-код оператора';
+      gateHint.innerHTML = 'По умолчанию PIN: <b style="color:#00f0ff;">1234</b>';
+      gateInput.setAttribute('maxlength','4');
+      gateInput.setAttribute('placeholder','••••');
+    } else {
+      gateIcon.textContent = '🛠️';
+      gateTitle.textContent = 'ПАНЕЛЬ РАЗРАБОТЧИКА';
+      gateSub.textContent = 'Введите код разработчика';
+      gateHint.innerHTML = 'Код выдаёт учитель (например <b style="color:#00f0ff;">DEV-2025-SIB</b>)';
+      gateInput.setAttribute('maxlength','32');
+      gateInput.setAttribute('placeholder','DEV-XXXX');
+    }
+  };
 });
 
-gateBtn.onclick = async () => {
-  const pin = gateInput.value.trim();
-  if (!pin) return;
+gateInput.addEventListener('keydown', e => { if (e.key === 'Enter') gateBtn.click(); });
+gateBtn.onclick = doLogin;
+
+async function doLogin() {
+  const val = gateInput.value.trim();
+  if (!val) return;
+
   try {
-    const { data } = await sb.from('config').select('*').eq('key','operator_pin').maybeSingle();
-    const realPin = (data && data.value) ? data.value : '1234';
-    if (pin === realPin || pin === '1234') {
-      State.authed = true;
+    // Подтягиваем config
+    const { data: cfgRows } = await sb.from('config').select('*');
+    const cfg = {};
+    (cfgRows || []).forEach(x => cfg[x.key] = x.value);
+
+    if (State.loginMode === 'teacher') {
+      const realPin = cfg.operator_pin || '1234';
+      if (val === realPin || val === '1234') {
+        State.config = cfg;
+        gate.classList.add('hidden');
+        document.getElementById('teacherApp').style.display = 'block';
+        await loadAll();
+        subscribeRealtime();
+        toast('Добро пожаловать, учитель', 'success');
+        return;
+      }
+      // Может это developer-ticket?
+      const devCheck = await sb.from('tickets').select('*')
+        .eq('id', val).eq('role', 'developer').maybeSingle();
+      if (devCheck.data) {
+        State.config = cfg;
+        gate.classList.add('hidden');
+        document.getElementById('devApp').style.display = 'block';
+        await loadAll();
+        subscribeRealtime();
+        toast('Доступ разработчика: ' + (devCheck.data.owner_name || val), 'success');
+        return;
+      }
+      failLogin('Неверный PIN');
+      return;
+    }
+
+    // Developer tab
+    // 1) Мастер-код из config
+    if (val === (cfg.developer_code || 'DEV-2025-SIB') || val === 'DEV-2025-SIB') {
+      State.config = cfg;
       gate.classList.add('hidden');
-      document.getElementById('app').style.display = 'block';
+      document.getElementById('devApp').style.display = 'block';
       await loadAll();
       subscribeRealtime();
-      updateCloudStatus(true);
-      toast('Добро пожаловать', 'success');
-    } else {
-      gateInput.value = '';
-      gateInput.classList.add('error-shake');
-      setTimeout(() => gateInput.classList.remove('error-shake'), 500);
-      toast('Неверный PIN', 'error');
+      toast('Мастер-доступ разработчика', 'success');
+      return;
     }
+    // 2) Персональный билет-разработчик
+    const { data } = await sb.from('tickets').select('*')
+      .eq('id', val).eq('role', 'developer').maybeSingle();
+    if (data) {
+      if (data.banned) { failLogin('Код заблокирован'); return; }
+      State.config = cfg;
+      gate.classList.add('hidden');
+      document.getElementById('devApp').style.display = 'block';
+      await loadAll();
+      subscribeRealtime();
+      toast('Добро пожаловать, ' + (data.owner_name || 'разработчик'), 'success');
+      return;
+    }
+    failLogin('Неверный код разработчика');
   } catch(e) {
-    toast('Ошибка подключения', 'error');
+    console.error(e);
+    failLogin('Ошибка подключения');
   }
-};
+}
 
-document.getElementById('btnLogout').onclick = () => {
-  State.authed = false;
+function failLogin(msg) {
+  gateInput.value = '';
+  gateInput.classList.add('error-shake');
+  setTimeout(() => gateInput.classList.remove('error-shake'), 500);
+  toast(msg, 'error');
+}
+
+document.getElementById('btnLogoutT').onclick = () => {
   gate.classList.remove('hidden');
-  document.getElementById('app').style.display = 'none';
+  document.getElementById('teacherApp').style.display = 'none';
+  gateInput.value = '';
+};
+document.getElementById('btnLogoutD').onclick = () => {
+  gate.classList.remove('hidden');
+  document.getElementById('devApp').style.display = 'none';
   gateInput.value = '';
 };
 
+/* ---------- LOAD DATA ---------- */
 async function loadAll() {
   try {
     const [tRes, iRes, rRes, cRes] = await Promise.all([
@@ -551,28 +913,36 @@ async function loadAll() {
     State.config = {};
     (cRes.data || []).forEach(x => State.config[x.key] = x.value);
 
-    if (State.config.games_json) {
-      try {
-        const games = JSON.parse(State.config.games_json);
-        const sel = document.getElementById('recordsFilter');
-        const current = sel.value;
-        sel.innerHTML = '<option value="__all__">— Все игры —</option>';
-        games.forEach(g => {
-          const o = document.createElement('option');
-          o.value = g.id;
-          o.textContent = g.title;
-          sel.appendChild(o);
-        });
-        sel.value = current || '__all__';
-      } catch(e){}
-    }
+    // Парсим каталог игр
+    try {
+      State.games = State.config.games_json ? JSON.parse(State.config.games_json) : [];
+    } catch(e) { State.games = []; }
+
+    // Заполняем фильтр рекордов
+    const sel = document.getElementById('recordsFilter');
+    const cur = sel.value;
+    sel.innerHTML = '<option value="__all__">— Все игры —</option>';
+    State.games.forEach(g => {
+      const o = document.createElement('option');
+      o.value = g.id; o.textContent = g.title;
+      sel.appendChild(o);
+    });
+    sel.value = cur || '__all__';
+
+    // Заполняем настройки
+    const pinEl = document.getElementById('newPin');
+    if (pinEl) pinEl.value = '';
+    const creatorEl = document.getElementById('newCreatorCode');
+    if (creatorEl) creatorEl.value = State.config.creator_code || 'CREATOR-0000';
+    const devEl = document.getElementById('newDevCode');
+    if (devEl) devEl.value = State.config.developer_code || 'DEV-2025-SIB';
 
     renderStats();
     renderTickets();
     renderIncidents();
     renderRecords();
+    renderDevGamesList();
     loadMaintenanceState();
-    document.getElementById('newCreatorCode').value = State.config.creator_code || 'CREATOR-0000';
     updateCloudStatus(true);
   } catch(e) {
     console.error(e);
@@ -582,19 +952,20 @@ async function loadAll() {
 }
 
 function updateCloudStatus(online) {
-  const el = document.getElementById('cloudStatus');
-  if (online) {
-    el.classList.remove('offline');
-    el.textContent = '☁️ Онлайн';
-  } else {
-    el.classList.add('offline');
-    el.textContent = '📴 Офлайн';
-  }
+  ['cloudStatusT','cloudStatusD'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.toggle('offline', !online);
+    el.textContent = online ? '☁️ Онлайн' : '📴 Офлайн';
+  });
 }
 
+/* ---------- REALTIME ---------- */
+let realtimeCh = null;
 function subscribeRealtime() {
+  if (realtimeCh) return;
   try {
-    sb.channel('teacher-realtime')
+    realtimeCh = sb.channel('sibkodbox-pult')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets' }, () => loadAll())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'incidents' }, () => {
         loadAll();
@@ -603,9 +974,10 @@ function subscribeRealtime() {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'records' }, () => loadAll())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'config' }, () => loadAll())
       .subscribe();
-  } catch(e) { console.warn('realtime subscribe failed', e); }
+  } catch(e) { console.warn(e); }
 }
 
+/* ---------- STATS ---------- */
 function renderStats() {
   document.getElementById('statTotal').textContent = State.tickets.length;
   document.getElementById('statActive').textContent = State.tickets.filter(t => !t.used && !t.banned).length;
@@ -615,42 +987,83 @@ function renderStats() {
   document.getElementById('statIncidents').textContent = State.incidents.length;
 }
 
-async function loadMaintenanceState() {
+/* ---------- MAINTENANCE ---------- */
+function loadMaintenanceState() {
   const mode = State.config.maintenance_mode === 'on';
-  document.getElementById('maintenanceMode').value = mode ? 'on' : 'off';
-  document.getElementById('maintenanceMessage').value =
-    State.config.maintenance_message || 'Идут технические работы. Автомат скоро вернётся!';
-  document.getElementById('maintenanceBanner').classList.toggle('active', mode);
+  const mEl = document.getElementById('maintenanceMode');
+  const mMsg = document.getElementById('maintenanceMessage');
+  if (mEl) mEl.value = mode ? 'on' : 'off';
+  if (mMsg) mMsg.value = State.config.maintenance_message || 'Идут технические работы. Автомат скоро вернётся!';
+  const b = document.getElementById('maintenanceBanner');
+  if (b) b.classList.toggle('active', mode);
 }
 
-document.getElementById('btnSaveMaintenance').onclick = async () => {
+document.getElementById('btnSaveMaintenance')?.addEventListener('click', async () => {
   const mode = document.getElementById('maintenanceMode').value;
   const msg = document.getElementById('maintenanceMessage').value.trim() ||
     'Идут технические работы. Автомат скоро вернётся!';
   try {
-    await sb.from('config').upsert({ key: 'maintenance_mode', value: mode });
-    await sb.from('config').upsert({ key: 'maintenance_message', value: msg });
+    await sb.from('config').upsert({ key:'maintenance_mode', value: mode });
+    await sb.from('config').upsert({ key:'maintenance_message', value: msg });
     toast(mode === 'on' ? '🔴 Техработы включены' : '🟢 Автомат запущен', 'success');
     loadMaintenanceState();
-  } catch(e) {
-    toast('Ошибка: ' + e.message, 'error');
-  }
-};
+  } catch(e) { toast('Ошибка: ' + e.message, 'error'); }
+});
 
+/* ---------- ROLE PILLS ---------- */
+document.querySelectorAll('.role-pill').forEach(p => {
+  p.onclick = () => {
+    document.querySelectorAll('.role-pill').forEach(x => x.classList.remove('active'));
+    p.classList.add('active');
+    State.role = p.getAttribute('data-role');
+    const sel = document.getElementById('ticketType');
+    if (State.role === 'creator') {
+      sel.value = 'CREATOR';
+      sel.disabled = true;
+    } else {
+      sel.disabled = false;
+    }
+  };
+});
+
+/* ---------- CREATE TICKET ---------- */
 document.getElementById('btnCreate').onclick = async () => {
-  const type = document.getElementById('ticketType').value;
-  const isCreator = type === 'CREATOR';
-  const minutes = isCreator ? 0 : Number(type);
-  const id = 'SIB-' + (isCreator ? 'CREATOR' : minutes + 'MIN') + '-' +
-    Math.random().toString(36).slice(2, 8).toUpperCase();
+  const owner = document.getElementById('ownerName').value.trim();
+  const klass = document.getElementById('ownerClass').value;
+  const typeVal = document.getElementById('ticketType').value;
+  const role = State.role;
+
+  // Валидация
+  if (!owner || owner.length < 3) {
+    toast('Укажите ФИО (минимум 3 символа)', 'error');
+    document.getElementById('ownerName').classList.add('error-shake');
+    setTimeout(() => document.getElementById('ownerName').classList.remove('error-shake'), 500);
+    return;
+  }
+  if (!klass) {
+    toast('Выберите класс', 'error');
+    document.getElementById('ownerClass').classList.add('error-shake');
+    setTimeout(() => document.getElementById('ownerClass').classList.remove('error-shake'), 500);
+    return;
+  }
+
+  const isCreator = role === 'creator' || typeVal === 'CREATOR';
+  const minutes = isCreator ? 0 : Number(typeVal);
+  const ticketType = isCreator ? 'creator' : 'timed';
+  const prefix = role === 'developer' ? 'DEV' : (isCreator ? 'CREATOR' : minutes + 'MIN');
+  const rand = Math.random().toString(36).slice(2, 7).toUpperCase();
+  const id = `SIB-${prefix}-${rand}`;
 
   const ticket = {
     id,
-    minutes: isCreator ? 0 : minutes,
-    type: isCreator ? 'creator' : 'timed',
+    minutes,
+    type: ticketType,
     duration_seconds: isCreator ? 0 : minutes * 60,
     used: false,
-    banned: false
+    banned: false,
+    owner_name: owner,
+    owner_class: klass,
+    role
   };
 
   try {
@@ -660,66 +1073,77 @@ document.getElementById('btnCreate').onclick = async () => {
     State.currentTicket = ticket;
     State.tickets.unshift(ticket);
 
-    const cv = document.getElementById('qrCanvas');
-    const qr = window.qrcode(0, 'M');
-    qr.addData(id);
-    qr.make();
-    const count = qr.getModuleCount();
-    const size = 240;
-    cv.width = size; cv.height = size;
-    const c = cv.getContext('2d');
-    const cell = size / count;
-    c.fillStyle = '#fff'; c.fillRect(0, 0, size, size);
-    c.fillStyle = '#000';
-    for (let r = 0; r < count; r++)
-      for (let cc = 0; cc < count; cc++)
-        if (qr.isDark(r, cc)) c.fillRect(cc*cell, r*cell, cell, cell);
-
-    document.getElementById('qrCodeText').textContent = id;
-    document.getElementById('qrResult').classList.add('show');
-    document.getElementById('qrEmpty').style.display = 'none';
-
+    renderQr(ticket);
     renderStats();
     renderTickets();
-    toast('Билет создан: ' + id, 'success');
+    toast(`Билет создан: ${id} (${owner}, ${klass})`, 'success');
   } catch(e) {
     console.error(e);
     toast('Ошибка: ' + e.message, 'error');
   }
 };
 
+function renderQr(ticket) {
+  const cv = document.getElementById('qrCanvas');
+  const qr = window.qrcode(0, 'M');
+  qr.addData(ticket.id);
+  qr.make();
+  const count = qr.getModuleCount();
+  const size = 240;
+  cv.width = size; cv.height = size;
+  const c = cv.getContext('2d');
+  const cell = size / count;
+  c.fillStyle = '#fff'; c.fillRect(0, 0, size, size);
+  c.fillStyle = '#000';
+  for (let r = 0; r < count; r++)
+    for (let cc = 0; cc < count; cc++)
+      if (qr.isDark(r, cc)) c.fillRect(cc*cell, r*cell, cell, cell);
+
+  const roleLabel = ticket.role === 'creator' ? '♾️ Безлимит'
+                  : ticket.role === 'developer' ? '🛠️ Разработчик'
+                  : (ticket.minutes + ' мин');
+  document.getElementById('qrOwner').innerHTML =
+    `<div style="font-size:16px;font-weight:900;color:#fff;">${esc(ticket.owner_name || '')} • <span style="color:#00f0ff;">${esc(ticket.owner_class || '')}</span></div>
+     <div style="font-size:12px;color:#00ff88;margin-top:4px;">${roleLabel}</div>`;
+  document.getElementById('qrCodeText').textContent = ticket.id;
+  document.getElementById('qrResult').classList.add('show');
+  document.getElementById('qrEmpty').style.display = 'none';
+}
+
+/* ---------- PRINT/COPY/BAN ---------- */
 document.getElementById('btnPrint').onclick = () => {
   const cv = document.getElementById('qrCanvas');
   const id = document.getElementById('qrCodeText').textContent;
   const t = State.currentTicket;
-  const label = !t ? '' : (t.type === 'creator' ? 'Безлимит (Создатель)' : t.minutes + ' минут');
+  const owner = t ? `${t.owner_name} • ${t.owner_class}` : '';
+  const roleLabel = !t ? '' : (t.role === 'creator' ? 'Безлимит' :
+                    t.role === 'developer' ? 'Разработчик' : t.minutes + ' мин');
   const w = window.open('', '_blank');
   w.document.write(`<!DOCTYPE html><html><head><title>Билет ${id}</title></head>
     <body style="text-align:center;font-family:sans-serif;padding:40px;">
-    <h2>СИБКОДБОКС — БИЛЕТ</h2>
-    <p style="font-size:18px;">${label}</p>
+    <h2>СИБКОДБОКС</h2>
+    <p style="font-size:16px;">${owner}</p>
+    <p style="font-size:18px;color:#0077cc;">${roleLabel}</p>
     <img src="${cv.toDataURL()}" style="width:300px;">
     <p style="font-family:monospace;font-size:16px;">${id}</p>
     </body></html>`);
   w.document.close();
   setTimeout(() => w.print(), 300);
 };
-
 document.getElementById('btnCopy').onclick = () => {
   const id = document.getElementById('qrCodeText').textContent;
   navigator.clipboard.writeText(id).then(() => toast('Код скопирован', 'success'));
 };
-
 document.getElementById('btnBanThis').onclick = () => {
   const id = document.getElementById('qrCodeText').textContent;
   if (!id || id === '—') return;
   window.banTicket(id);
 };
 
-document.getElementById('filterAll').onclick = () => { State.ticketFilter='all'; renderTickets(); };
-document.getElementById('filterActive').onclick = () => { State.ticketFilter='active'; renderTickets(); };
-document.getElementById('filterUsed').onclick = () => { State.ticketFilter='used'; renderTickets(); };
-document.getElementById('filterBanned').onclick = () => { State.ticketFilter='banned'; renderTickets(); };
+/* ---------- TICKETS LIST ---------- */
+document.querySelectorAll('[data-tfilter]').forEach(b => {
+  b.onclick = () => { State.ticketFilter = b.getAttribute('data-tfilter'); renderTickets(); };
+});
 
 function renderTickets() {
   const list = document.getElementById('ticketsList');
@@ -737,15 +1161,19 @@ function renderTickets() {
     let statusBadge = '';
     if (t.banned) statusBadge = '<span class="badge banned">Забанен</span>';
     else if (t.used) statusBadge = '<span class="badge used">Использован</span>';
-    else if (t.type === 'creator') statusBadge = '<span class="badge creator">Создатель</span>';
+    else if (t.role === 'creator') statusBadge = '<span class="badge creator">Создатель</span>';
+    else if (t.role === 'developer') statusBadge = '<span class="badge developer">Разработчик</span>';
     else statusBadge = '<span class="badge active">Активен</span>';
 
-    const minutesText = t.type === 'creator' ? 'Безлимит' : t.minutes + ' мин';
+    const minutesText = t.role === 'creator' ? 'Безлимит' : (t.minutes + ' мин');
+    const ownerText = (t.owner_name || '—') + (t.owner_class ? ' • ' + t.owner_class : '');
 
     return `<div class="row-item">
       <div class="row-info">
         <div class="row-main">${esc(t.id)} ${statusBadge}</div>
-        <div class="row-sub">${minutesText} • создан ${fmtDate(t.created_at)}</div>
+        <div class="row-sub">
+          <b style="color:#00ff88;">${esc(ownerText)}</b> • ${minutesText} • ${fmtDate(t.created_at)}
+        </div>
       </div>
       <div class="row-actions">
         <button class="btn btn-sm" onclick="viewTicket('${t.id}')">📱</button>
@@ -760,23 +1188,9 @@ window.viewTicket = (id) => {
   const t = State.tickets.find(x => x.id === id);
   if (!t) return;
   State.currentTicket = t;
-  const cv = document.getElementById('qrCanvas');
-  const qr = window.qrcode(0, 'M');
-  qr.addData(id); qr.make();
-  const count = qr.getModuleCount();
-  const size = 240;
-  cv.width = size; cv.height = size;
-  const c = cv.getContext('2d');
-  const cell = size / count;
-  c.fillStyle = '#fff'; c.fillRect(0, 0, size, size);
-  c.fillStyle = '#000';
-  for (let r = 0; r < count; r++)
-    for (let cc = 0; cc < count; cc++)
-      if (qr.isDark(r, cc)) c.fillRect(cc*cell, r*cell, cell, cell);
-  document.getElementById('qrCodeText').textContent = id;
-  document.getElementById('qrResult').classList.add('show');
-  document.getElementById('qrEmpty').style.display = 'none';
-  document.querySelector('[data-tab="qr"]').click();
+  renderQr(t);
+  const qrTab = document.querySelector('[data-tab="qr"][data-app="teacher"]');
+  if (qrTab) qrTab.click();
 };
 
 window.banTicket = (id) => {
@@ -803,6 +1217,7 @@ document.getElementById('btnClearTickets').onclick = () => {
   });
 };
 
+/* ---------- INCIDENTS ---------- */
 function renderIncidents() {
   const list = document.getElementById('incidentsList');
   if (State.incidents.length === 0) {
@@ -811,7 +1226,8 @@ function renderIncidents() {
   }
   list.innerHTML = State.incidents.map(i => `
     <div class="incident">
-      <div>${i.photo ? `<img class="incident-photo" src="${i.photo}" alt="Фото">` : '<div class="incident-photo" style="display:flex;align-items:center;justify-content:center;font-size:30px;">👤</div>'}</div>
+      <div>${i.photo ? `<img class="incident-photo" src="${i.photo}">`
+        : '<div class="incident-photo" style="display:flex;align-items:center;justify-content:center;font-size:30px;">👤</div>'}</div>
       <div class="incident-info">
         <div class="incident-name">${esc(i.name)}</div>
         <div class="incident-meta">
@@ -826,14 +1242,12 @@ function renderIncidents() {
     </div>
   `).join('');
 }
-
 window.deleteIncident = (id) => {
   askConfirm('Удалить запись?', 'Нарушение будет удалено.', async () => {
     const { error } = await sb.from('incidents').delete().eq('id', id);
     if (!error) { toast('Удалено', 'success'); loadAll(); }
   });
 };
-
 document.getElementById('btnClearIncidents').onclick = () => {
   askConfirm('Очистить журнал?', 'Все записи будут удалены.', async () => {
     const { error } = await sb.from('incidents').delete().neq('id', 0);
@@ -841,6 +1255,7 @@ document.getElementById('btnClearIncidents').onclick = () => {
   });
 };
 
+/* ---------- RECORDS ---------- */
 document.getElementById('recordsFilter').onchange = renderRecords;
 
 function renderRecords() {
@@ -862,7 +1277,6 @@ function renderRecords() {
     list.innerHTML = '<div class="empty"><div class="empty-icon">🏆</div>Пока нет рекордов</div>';
     return;
   }
-
   list.innerHTML = items.map((r, i) => {
     let rc = '';
     if (i === 0) rc = 'gold';
@@ -881,36 +1295,36 @@ document.getElementById('btnClearRecords').onclick = () => {
   const filter = document.getElementById('recordsFilter').value;
   const msg = filter === '__all__' ? 'Удалить ВСЕ рекорды?' : 'Удалить рекорды этой игры?';
   askConfirm('Очистить рекорды?', msg, async () => {
-    let query = sb.from('records').delete();
-    if (filter === '__all__') query = query.neq('id', 0);
-    else query = query.eq('game_id', filter);
-    const { error } = await query;
+    let q = sb.from('records').delete();
+    q = (filter === '__all__') ? q.neq('id', 0) : q.eq('game_id', filter);
+    const { error } = await q;
     if (!error) { toast('Рекорды удалены', 'success'); loadAll(); }
     else toast('Ошибка', 'error');
   });
 };
 
+/* ---------- SETTINGS SAVE ---------- */
 document.getElementById('btnSavePin').onclick = async () => {
   const pin = document.getElementById('newPin').value.trim();
   if (pin.length !== 4 || !/^\d+$/.test(pin)) {
-    toast('PIN должен быть 4 цифры', 'error');
-    return;
+    toast('PIN должен быть 4 цифры', 'error'); return;
   }
-  const { error } = await sb.from('config').upsert({ key: 'operator_pin', value: pin });
-  if (!error) {
-    toast('PIN сохранён', 'success');
-    document.getElementById('newPin').value = '';
-  } else toast('Ошибка: ' + error.message, 'error');
+  const { error } = await sb.from('config').upsert({ key:'operator_pin', value: pin });
+  if (!error) { toast('PIN сохранён', 'success'); document.getElementById('newPin').value = ''; }
+  else toast('Ошибка: ' + error.message, 'error');
 };
-
 document.getElementById('btnSaveCreator').onclick = async () => {
   const code = document.getElementById('newCreatorCode').value.trim();
-  if (code.length < 6) {
-    toast('Код должен быть ≥6 символов', 'error');
-    return;
-  }
-  const { error } = await sb.from('config').upsert({ key: 'creator_code', value: code });
+  if (code.length < 6) { toast('Код ≥6 символов', 'error'); return; }
+  const { error } = await sb.from('config').upsert({ key:'creator_code', value: code });
   if (!error) toast('Код создателя сохранён', 'success');
+  else toast('Ошибка', 'error');
+};
+document.getElementById('btnSaveDevCode').onclick = async () => {
+  const code = document.getElementById('newDevCode').value.trim();
+  if (code.length < 4) { toast('Код ≥4 символов', 'error'); return; }
+  const { error } = await sb.from('config').upsert({ key:'developer_code', value: code });
+  if (!error) toast('Мастер-код разработчика сохранён', 'success');
   else toast('Ошибка', 'error');
 };
 
@@ -920,7 +1334,8 @@ document.getElementById('btnExport').onclick = () => {
     tickets: State.tickets,
     incidents: State.incidents,
     records: State.records,
-    config: State.config
+    config: State.config,
+    games: State.games
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -932,18 +1347,257 @@ document.getElementById('btnExport').onclick = () => {
   toast('Backup скачан', 'success');
 };
 
-document.getElementById('btnReload').onclick = () => {
-  loadAll();
-  toast('Обновлено', 'success');
-};
-
+/* ---------- TABS (универсально) ---------- */
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.onclick = () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+    const app = btn.getAttribute('data-app') || 'teacher';
+    const prefix = app === 'dev' ? 'dev-' : '';
+    const paneId = 'pane-' + (prefix ? btn.getAttribute('data-tab') : btn.getAttribute('data-tab'));
+    // Область поиска — родительский .tabs
+    const tabs = btn.parentElement;
+    tabs.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    tabs.querySelectorAll('.tab-btn').forEach(b => {
+      const pid = 'pane-' + b.getAttribute('data-tab');
+      const p = document.getElementById(pid);
+      if (p) p.classList.remove('active');
+    });
     btn.classList.add('active');
-    document.getElementById('pane-' + btn.getAttribute('data-tab')).classList.add('active');
+    const target = document.getElementById('pane-' + btn.getAttribute('data-tab'));
+    if (target) target.classList.add('active');
   };
+});
+
+/* ---------- RELOAD ---------- */
+document.getElementById('btnReloadT').onclick = () => { loadAll(); toast('Обновлено', 'success'); };
+document.getElementById('btnReloadD').onclick = () => { loadAll(); toast('Обновлено', 'success'); };
+
+/* =====================================================================
+   РАЗРАБОТЧИК: платформы и публикация
+   ===================================================================== */
+const PLATFORM_INFO = {
+  scratch: {
+    title: 'Scratch',
+    icon: '🐱',
+    inputType: 'url',
+    instructions: `
+      <b>🐱 Scratch → HTML</b>
+      <ol>
+        <li>Откройте проект на <a href="https://scratch.mit.edu" target="_blank">scratch.mit.edu</a>.</li>
+        <li>Перейдите на <a href="https://packager.turbowarp.org/" target="_blank">packager.turbowarp.org</a>.</li>
+        <li>Вставьте ссылку на проект Scratch или загрузите <code>.sb3</code> файл.</li>
+        <li>Нажмите <b>Package</b> → скачается <code>.html</code> файл.</li>
+        <li><b>Быстро:</b> загрузите файл на GitHub Pages и вставьте URL ниже.<br>
+            <b>Ещё быстрее:</b> откройте HTML-файл в блокноте, скопируйте всё содержимое и вставьте через «HTML код» (только для небольших игр).</li>
+      </ol>`
+  },
+  processing: {
+    title: 'Processing / p5.js',
+    icon: '🎨',
+    inputType: 'url',
+    instructions: `
+      <b>🎨 Processing → p5.js → HTML</b>
+      <ol>
+        <li>Откройте <a href="https://editor.p5js.org/" target="_blank">editor.p5js.org</a>.</li>
+        <li>Создайте скетч, нажмите <b>File → Share → Fullscreen</b>.</li>
+        <li>Скопируйте ссылку вида <code>editor.p5js.org/.../fullscreen/...</code> — вставьте ниже.</li>
+        <li>Либо: <b>File → Download</b> → распакуйте ZIP → залейте на GitHub Pages → вставьте URL.</li>
+      </ol>`
+  },
+  godot: {
+    title: 'Godot',
+    icon: '🎮',
+    inputType: 'url',
+    instructions: `
+      <b>🎮 Godot → HTML5</b>
+      <ol>
+        <li>В Godot: <b>Project → Export → Web</b> (установите HTML5 шаблоны).</li>
+        <li>Экспортируйте в папку (будут <code>index.html</code>, <code>.wasm</code>, <code>.pck</code>).</li>
+        <li>Залейте всю папку в GitHub-репозиторий.</li>
+        <li>Settings → Pages → Source: <code>main</code>/root → Save.</li>
+        <li>Через 1–2 мин игра откроется по <code>https://логин.github.io/репо/</code>.</li>
+        <li>Вставьте эту ссылку ниже.</li>
+      </ol>`
+  },
+  html: {
+    title: 'HTML-код',
+    icon: '📄',
+    inputType: 'html',
+    instructions: `
+      <b>📄 Встроенный HTML</b>
+      <ol>
+        <li>Вставьте полный HTML-код игры (с <code>&lt;!DOCTYPE html&gt;</code>).</li>
+        <li>Код будет сохранён в Supabase и загружен на автомате через <code>srcdoc</code>.</li>
+        <li>Лимит размера — ~500 КБ. Для больших игр используйте GitHub Pages + URL.</li>
+      </ol>`
+  },
+  url: {
+    title: 'Direct URL',
+    icon: '🔗',
+    inputType: 'url',
+    instructions: `
+      <b>🔗 Готовая ссылка</b>
+      <ol>
+        <li>Убедитесь, что ссылка на игру открывается в браузере.</li>
+        <li>Подойдёт: GitHub Pages, itch.io, собственный хостинг.</li>
+        <li>Вставьте URL ниже и заполните данные игры.</li>
+      </ol>`
+  }
+};
+
+document.querySelectorAll('.platform-card').forEach(card => {
+  card.onclick = () => {
+    document.querySelectorAll('.platform-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+    const plat = card.getAttribute('data-plat');
+    State.platform = plat;
+    selectPlatform(plat);
+  };
+});
+
+function selectPlatform(plat) {
+  const info = PLATFORM_INFO[plat];
+  if (!info) return;
+  document.getElementById('platformInstructions').innerHTML = info.instructions;
+  document.getElementById('addGameCard').style.display = 'block';
+
+  const urlGroup = document.getElementById('urlGroup');
+  const htmlGroup = document.getElementById('htmlCodeGroup');
+  urlGroup.style.display = info.inputType === 'url' ? 'flex' : 'none';
+  htmlGroup.style.display = info.inputType === 'html' ? 'flex' : 'none';
+}
+
+document.getElementById('btnPreviewGame').onclick = () => {
+  const info = PLATFORM_INFO[State.platform];
+  const box = document.getElementById('previewBox');
+  const frame = document.getElementById('previewFrame');
+  box.style.display = 'block';
+
+  if (info.inputType === 'html') {
+    const html = document.getElementById('devGameHtml').value.trim();
+    if (!html) { toast('Вставьте HTML-код', 'error'); return; }
+    frame.removeAttribute('src');
+    frame.srcdoc = html;
+  } else {
+    const url = document.getElementById('devGameUrl').value.trim();
+    if (!url) { toast('Укажите URL', 'error'); return; }
+    frame.removeAttribute('srcdoc');
+    frame.src = url;
+  }
+};
+
+document.getElementById('btnSaveGame').onclick = async () => {
+  const title = document.getElementById('devGameTitle').value.trim();
+  const genre = document.getElementById('devGameGenre').value.trim();
+  const badge = document.getElementById('devGameBadge').value.trim() || 'WEB GAME';
+  const accent = document.getElementById('devGameAccent').value || '#00f0ff';
+  const cover = document.getElementById('devGameCover').value.trim();
+  const bg = document.getElementById('devGameBg').value.trim() || cover;
+  const desc = document.getElementById('devGameDesc').value.trim() || `Игра: ${title}`;
+
+  if (!title || !genre) { toast('Заполните Название и Жанр', 'error'); return; }
+
+  const info = PLATFORM_INFO[State.platform];
+  let url = '', srcdoc = '';
+
+  if (info.inputType === 'html') {
+    srcdoc = document.getElementById('devGameHtml').value.trim();
+    if (!srcdoc) { toast('Вставьте HTML-код', 'error'); return; }
+    if (srcdoc.length > 500_000) { toast('HTML слишком большой (>500 КБ)', 'error'); return; }
+  } else {
+    url = document.getElementById('devGameUrl').value.trim();
+    if (!url) { toast('Укажите URL', 'error'); return; }
+    if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  }
+
+  const newGame = {
+    id: 'custom-' + Date.now(),
+    title, genre, badge, desc, cover, bg, accent,
+    url: url || undefined,
+    srcdoc: srcdoc || undefined,
+    platform: State.platform,
+    created_at: new Date().toISOString()
+  };
+
+  const updated = [...State.games, newGame];
+  try {
+    const { error } = await sb.from('config').upsert({
+      key: 'games_json',
+      value: JSON.stringify(updated)
+    });
+    if (error) throw error;
+    State.games = updated;
+    toast(`Игра "${title}" опубликована!`, 'success');
+    resetAddGameForm();
+    renderDevGamesList();
+  } catch(e) {
+    console.error(e);
+    toast('Ошибка: ' + e.message, 'error');
+  }
+};
+
+function resetAddGameForm() {
+  ['devGameTitle','devGameGenre','devGameBadge','devGameCover','devGameBg','devGameDesc','devGameUrl','devGameHtml']
+    .forEach(id => document.getElementById(id).value = '');
+  document.getElementById('previewBox').style.display = 'none';
+  document.getElementById('previewFrame').src = 'about:blank';
+}
+
+/* ---------- GAMES LIST (developer) ---------- */
+function renderDevGamesList() {
+  const list = document.getElementById('devGamesList');
+  if (!list) return;
+  if (State.games.length === 0) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">🎮</div>В каталоге пока нет игр. Добавьте первую!</div>';
+    return;
+  }
+  list.innerHTML = State.games.map((g, i) => {
+    const thumb = g.cover
+      ? `<img src="${esc(g.cover)}" onerror="this.style.display='none'">`
+      : (PLATFORM_INFO[g.platform]?.icon || '🎮');
+    const src = g.srcdoc ? 'Встроенная' : (g.url ? esc(g.url) : '—');
+    return `<div class="game-item">
+      <div class="game-thumb">${thumb}</div>
+      <div>
+        <div class="game-title">${esc(g.title)}</div>
+        <div class="game-meta">${esc(g.genre)} • ${esc(g.badge || 'GAME')} • <span style="color:${esc(g.accent||'#00f0ff')}">${esc(g.platform||'custom')}</span></div>
+        <div class="game-meta" style="font-family:monospace;color:#00f0ff;font-size:11px;margin-top:3px;">${src}</div>
+      </div>
+      <div class="row-actions">
+        <button class="btn btn-sm" onclick="devPreviewGame(${i})">👁️</button>
+        <button class="btn btn-sm danger" onclick="devDeleteGame(${i})">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.devPreviewGame = (i) => {
+  const g = State.games[i];
+  if (!g) return;
+  const w = window.open('', '_blank');
+  if (g.srcdoc) w.document.write(g.srcdoc);
+  else if (g.url) w.location.href = g.url;
+  else w.document.write('<p>Нет источника игры</p>');
+};
+
+window.devDeleteGame = (i) => {
+  const g = State.games[i];
+  askConfirm('Удалить игру?', `Игра "${g.title}" будет удалена из каталога автомата.`, async () => {
+    State.games.splice(i, 1);
+    try {
+      const { error } = await sb.from('config').upsert({
+        key: 'games_json',
+        value: JSON.stringify(State.games)
+      });
+      if (error) throw error;
+      toast('Игра удалена', 'success');
+      renderDevGamesList();
+    } catch(e) { toast('Ошибка: ' + e.message, 'error'); }
+  });
+};
+
+/* ---------- Автозагрузка при старте, если уже был логин ---------- */
+window.addEventListener('load', () => {
+  // Ничего не делаем — ждём логина
 });
 </script>
 </body>
