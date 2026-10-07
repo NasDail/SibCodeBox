@@ -2,33 +2,23 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 <title>СибКодБокс — Игровой Автомат</title>
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  :root{
-    --card-w:210px; --card-h:210px;
-    --card-w-active:270px; --card-h-active:270px;
-    --gap:32px; --ease-ps5:cubic-bezier(0.12,0.95,0.18,1);
-    --accent-theme:#00f0ff;
-  }
+  :root{--card-w:210px;--card-h:210px;--card-w-active:270px;--card-h-active:270px;
+    --gap:32px;--ease-ps5:cubic-bezier(0.12,0.95,0.18,1);--accent-theme:#00f0ff;}
   *{box-sizing:border-box;margin:0;padding:0;user-select:none;-webkit-user-select:none;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
   html,body{width:100%;height:100%;overflow:hidden;background:#020409;color:#fff;}
   body{perspective:1400px;}
-  .crt-overlay{position:fixed;inset:0;pointer-events:none;z-index:9999;
-    background:linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,0.25) 50%),
-               linear-gradient(90deg,rgba(255,0,0,0.03),rgba(0,255,0,0.01),rgba(0,0,255,0.03));
-    background-size:100% 3px,6px 100%;opacity:0;transition:opacity 0.3s;}
-  .crt-overlay.enabled{opacity:0.65;}
   .stage-backdrop{position:absolute;inset:0;z-index:0;overflow:hidden;background:#020409;}
   .aurora-beam{position:absolute;width:150vw;height:120vh;top:-20vh;left:-25vw;
     background:radial-gradient(ellipse at 50% 30%,rgba(0,240,255,0.14),transparent 65%),
                radial-gradient(ellipse at 80% 60%,rgba(0,112,209,0.12),transparent 60%);
-    filter:blur(50px);animation:auroraDrift 18s infinite alternate ease-in-out;
-    pointer-events:none;z-index:1;}
+    filter:blur(50px);animation:auroraDrift 18s infinite alternate ease-in-out;pointer-events:none;z-index:1;}
   .particles-layer{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0.95;}
   .art-crossfade{position:absolute;inset:-40px;background-size:cover;background-position:center 30%;
     filter:brightness(0.38) saturate(1.4) blur(24px);
@@ -43,25 +33,19 @@
   .brand{display:flex;align-items:center;gap:16px;}
   .brand-logo{width:48px;height:48px;background:linear-gradient(135deg,var(--accent-theme),#00439c);
     border-radius:16px;display:flex;align-items:center;justify-content:center;
-    box-shadow:0 0 30px var(--accent-theme),inset 0 0 12px rgba(255,255,255,0.5);
-    transform:rotate(-4deg);transition:transform 0.4s ease;cursor:pointer;}
-  .brand-logo:active{transform:scale(0.92) rotate(-8deg);}
+    box-shadow:0 0 30px var(--accent-theme);transform:rotate(-4deg);cursor:pointer;}
   .brand-logo svg{width:26px;height:26px;fill:#fff;}
   .brand-title{font-size:26px;font-weight:900;letter-spacing:2px;text-transform:uppercase;
     background:linear-gradient(90deg,#fff 40%,var(--accent-theme));
     -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-  .brand-subtitle{font-size:11px;letter-spacing:1.5px;color:rgba(255,255,255,0.45);
-    font-weight:800;text-transform:uppercase;}
+  .brand-subtitle{font-size:11px;letter-spacing:1.5px;color:rgba(255,255,255,0.45);font-weight:800;text-transform:uppercase;}
   .status-dock{display:flex;align-items:center;gap:14px;}
   .header-btn{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.06);
     border:1px solid rgba(255,255,255,0.15);padding:8px 16px;border-radius:30px;
-    font-size:13px;font-weight:700;cursor:pointer;backdrop-filter:blur(15px);
-    transition:all 0.25s var(--ease-ps5);}
-  .header-btn:hover{background:rgba(0,240,255,0.18);border-color:#00f0ff;
-    transform:translateY(-2px);box-shadow:0 0 20px rgba(0,240,255,0.3);}
+    font-size:13px;font-weight:700;cursor:pointer;backdrop-filter:blur(15px);transition:all 0.25s;}
+  .header-btn:hover{background:rgba(0,240,255,0.18);border-color:#00f0ff;transform:translateY(-2px);}
   .audio-badge{width:42px;height:42px;padding:0;border-radius:50%;justify-content:center;font-size:18px;}
-  .led-dot{width:10px;height:10px;border-radius:50%;background:#ff4757;
-    box-shadow:0 0 10px #ff4757;transition:0.3s;}
+  .led-dot{width:10px;height:10px;border-radius:50%;background:#ff4757;box-shadow:0 0 10px #ff4757;transition:0.3s;}
   .led-dot.online{background:#00ff88;box-shadow:0 0 12px #00ff88;}
   .clock-display{font-size:18px;font-weight:700;color:rgba(255,255,255,0.85);margin-left:6px;}
   #cloudStatusBadge{font-size:11px;padding:6px 12px;}
@@ -75,17 +59,13 @@
   .card{position:relative;width:var(--card-w);height:var(--card-h);flex-shrink:0;border-radius:28px;
     cursor:pointer;background:#0e1420;border:2px solid rgba(255,255,255,0.08);
     box-shadow:0 14px 40px rgba(0,0,0,0.75);opacity:0.65;
-    transition:width 0.4s var(--ease-ps5),height 0.4s var(--ease-ps5),
-              transform 0.4s var(--ease-ps5),opacity 0.4s var(--ease-ps5),
-              border-color 0.4s,box-shadow 0.4s;
+    transition:width 0.4s,height 0.4s,transform 0.4s,opacity 0.4s,border-color 0.4s,box-shadow 0.4s;
     transform-style:preserve-3d;overflow:hidden;}
   .card-cover{width:100%;height:100%;object-fit:cover;pointer-events:none;
     filter:brightness(0.7);transition:filter 0.4s,transform 0.6s var(--ease-ps5);}
   .card-custom-icon{width:100%;height:100%;display:flex;align-items:center;justify-content:center;
-    background:radial-gradient(circle at center,#152238 0%,#060a12 100%);
-    position:relative;overflow:hidden;}
-  .card-custom-icon svg{width:80px;height:80px;
-    filter:drop-shadow(0 0 16px var(--accent-theme));animation:floatShip 3.2s infinite ease-in-out;}
+    background:radial-gradient(circle at center,#152238 0%,#060a12 100%);position:relative;overflow:hidden;}
+  .card-custom-icon svg{width:80px;height:80px;filter:drop-shadow(0 0 16px var(--accent-theme));animation:floatShip 3.2s infinite ease-in-out;}
   .card-custom-icon .grid-bg{position:absolute;inset:0;background-size:24px 24px;
     background-image:linear-gradient(to right,rgba(0,240,255,0.12) 1px,transparent 1px),
                      linear-gradient(to bottom,rgba(0,240,255,0.12) 1px,transparent 1px);
@@ -98,19 +78,17 @@
     background:linear-gradient(135deg,rgba(255,255,255,0.5) 0%,transparent 40%,rgba(255,255,255,0.1) 100%);
     z-index:4;pointer-events:none;animation:shimmerPass 2.8s infinite;}
   .card-badge{position:absolute;top:14px;right:14px;background:rgba(0,0,0,0.7);
-    backdrop-filter:blur(10px);padding:4px 10px;border-radius:8px;
-    font-size:11px;font-weight:900;letter-spacing:0.8px;
-    border:1px solid rgba(255,255,255,0.2);z-index:5;}
-  .card-best{position:absolute;bottom:14px;left:14px;
-    background:rgba(0,255,136,0.15);border:1px solid #00ff88;color:#00ff88;
-    padding:4px 10px;border-radius:8px;font-size:11px;font-weight:900;z-index:5;}
+    backdrop-filter:blur(10px);padding:4px 10px;border-radius:8px;font-size:11px;font-weight:900;
+    letter-spacing:0.8px;border:1px solid rgba(255,255,255,0.2);z-index:5;}
+  .card-best{position:absolute;bottom:14px;left:14px;background:rgba(0,255,136,0.15);
+    border:1px solid #00ff88;color:#00ff88;padding:4px 10px;border-radius:8px;
+    font-size:11px;font-weight:900;z-index:5;}
   .meta-display{max-width:820px;display:flex;flex-direction:column;gap:16px;}
   .tags-strip{display:flex;gap:10px;align-items:center;}
   .tag{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);
     backdrop-filter:blur(14px);padding:6px 16px;border-radius:8px;
     font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;}
-  .tag.hero{background:var(--accent-theme);color:#020409;border-color:#fff;
-    box-shadow:0 0 20px var(--accent-theme);}
+  .tag.hero{background:var(--accent-theme);color:#020409;border-color:#fff;box-shadow:0 0 20px var(--accent-theme);}
   .game-hero-title{font-size:60px;font-weight:900;line-height:1.05;letter-spacing:-1.2px;
     text-shadow:0 4px 30px rgba(0,0,0,0.9);}
   .game-hero-desc{font-size:16px;line-height:1.6;color:rgba(255,255,255,0.75);max-width:660px;}
@@ -133,8 +111,7 @@
     align-items:center;justify-content:center;opacity:0;transition:opacity 0.35s;}
   .launch-portal.show{display:flex;opacity:1;}
   .portal-glyphs{display:flex;gap:30px;animation:pulseGlyphs 0.9s infinite alternate ease-in-out;}
-  .portal-glyph{font-size:46px;font-weight:900;color:var(--accent-theme);
-    text-shadow:0 0 25px var(--accent-theme);}
+  .portal-glyph{font-size:46px;font-weight:900;color:var(--accent-theme);text-shadow:0 0 25px var(--accent-theme);}
   .game-viewport{position:fixed;inset:0;background:#000;z-index:1000;display:none;
     flex-direction:column;opacity:0;transform:scale(0.94);
     transition:opacity 0.35s var(--ease-ps5),transform 0.35s var(--ease-ps5);}
@@ -148,25 +125,19 @@
   .game-frame{flex:1;width:100%;height:100%;border:none;background:#000;outline:none;}
   .login-gate{position:fixed;inset:0;z-index:4000;
     background:radial-gradient(ellipse at 50% 40%,#0a1a35 0%,#020409 70%);
-    display:none;flex-direction:column;align-items:center;justify-content:center;
-    opacity:0;transition:opacity 0.5s;}
+    display:none;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity 0.5s;}
   .login-gate.active{display:flex;opacity:1;}
   .login-bg-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.45;pointer-events:none;}
-  .login-bg-orb.o1{width:500px;height:500px;background:#0043ff;top:-100px;left:-100px;
-    animation:orbFloat 14s infinite alternate;}
-  .login-bg-orb.o2{width:600px;height:600px;background:#00f0ff;bottom:-150px;right:-150px;
-    animation:orbFloat 18s infinite alternate-reverse;}
-  .login-bg-orb.o3{width:400px;height:400px;background:#ff007f;top:40%;left:55%;
-    animation:orbFloat 22s infinite alternate;}
+  .login-bg-orb.o1{width:500px;height:500px;background:#0043ff;top:-100px;left:-100px;animation:orbFloat 14s infinite alternate;}
+  .login-bg-orb.o2{width:600px;height:600px;background:#00f0ff;bottom:-150px;right:-150px;animation:orbFloat 18s infinite alternate-reverse;}
+  .login-bg-orb.o3{width:400px;height:400px;background:#ff007f;top:40%;left:55%;animation:orbFloat 22s infinite alternate;}
   .login-card{position:relative;z-index:5;width:460px;max-width:94vw;
     background:rgba(9,14,28,0.85);border:2px solid rgba(0,240,255,0.4);
     box-shadow:0 0 80px rgba(0,240,255,0.35);border-radius:32px;
     padding:40px 34px;backdrop-filter:blur(30px);
     display:flex;flex-direction:column;align-items:center;gap:22px;text-align:center;}
-  .login-logo{width:72px;height:72px;
-    background:linear-gradient(135deg,var(--accent-theme),#00439c);
-    border-radius:22px;display:flex;align-items:center;justify-content:center;
-    box-shadow:0 0 40px var(--accent-theme);}
+  .login-logo{width:72px;height:72px;background:linear-gradient(135deg,var(--accent-theme),#00439c);
+    border-radius:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px var(--accent-theme);}
   .login-logo svg{width:40px;height:40px;fill:#fff;}
   .login-title{font-size:26px;font-weight:900;letter-spacing:2px;text-transform:uppercase;
     background:linear-gradient(90deg,#fff 40%,var(--accent-theme));
@@ -177,17 +148,14 @@
     display:flex;align-items:center;justify-content:center;}
   .login-qr-box video{width:100%;height:100%;object-fit:cover;display:none;}
   .login-qr-box video.on{display:block;}
-  .login-qr-placeholder{display:flex;flex-direction:column;align-items:center;gap:12px;
-    color:rgba(255,255,255,0.5);font-size:13px;}
+  .login-qr-placeholder{display:flex;flex-direction:column;align-items:center;gap:12px;color:rgba(255,255,255,0.5);font-size:13px;}
   .login-qr-placeholder .qr-icon{font-size:70px;}
   .login-scan-line{position:absolute;left:0;right:0;height:3px;
     background:linear-gradient(90deg,transparent,#00f0ff,transparent);
-    box-shadow:0 0 15px #00f0ff;animation:scanLine 2.2s linear infinite;
-    pointer-events:none;opacity:0;}
+    box-shadow:0 0 15px #00f0ff;animation:scanLine 2.2s linear infinite;pointer-events:none;opacity:0;}
   .login-scan-line.on{opacity:1;}
-  .login-btn{width:100%;background:linear-gradient(135deg,#00f0ff,#0070d1);
-    color:#020409;border:none;padding:16px 24px;border-radius:18px;
-    font-size:17px;font-weight:900;cursor:pointer;
+  .login-btn{width:100%;background:linear-gradient(135deg,#00f0ff,#0070d1);color:#020409;border:none;
+    padding:16px 24px;border-radius:18px;font-size:17px;font-weight:900;cursor:pointer;
     display:flex;align-items:center;justify-content:center;gap:10px;}
   .login-btn:hover{transform:translateY(-2px);}
   .login-manual{width:100%;background:#04070d;border:2px solid rgba(0,240,255,0.3);
@@ -196,57 +164,46 @@
   .login-status{font-size:13px;font-weight:700;color:#00ff88;min-height:18px;}
   .login-status.error{color:#ff3344;}
   .login-footer-info{font-size:11px;color:rgba(255,255,255,0.4);display:flex;gap:16px;}
-  .session-hud{position:fixed;top:100px;left:50%;transform:translateX(-50%);
-    z-index:60;display:none;align-items:center;gap:14px;
-    background:rgba(4,10,20,0.85);border:1px solid var(--accent-theme);
-    box-shadow:0 0 25px rgba(0,240,255,0.35);border-radius:16px;
-    padding:10px 20px;font-weight:800;backdrop-filter:blur(14px);}
+  .session-hud{position:fixed;top:100px;left:50%;transform:translateX(-50%);z-index:60;
+    display:none;align-items:center;gap:14px;background:rgba(4,10,20,0.85);
+    border:1px solid var(--accent-theme);box-shadow:0 0 25px rgba(0,240,255,0.35);
+    border-radius:16px;padding:10px 20px;font-weight:800;backdrop-filter:blur(14px);}
   .session-hud.active{display:flex;}
   .session-hud .who{color:#00f0ff;}
   .session-hud .time{color:#00ff88;font-family:monospace;font-size:18px;}
   .session-hud .time.warn{color:#ff3344;animation:blink 1s infinite;}
   .secret-modal-backdrop{position:fixed;inset:0;background:rgba(2,4,9,0.9);
-    backdrop-filter:blur(25px);z-index:2000;display:none;align-items:center;
-    justify-content:center;opacity:0;transition:opacity 0.3s;}
+    backdrop-filter:blur(25px);z-index:2000;display:none;align-items:center;justify-content:center;
+    opacity:0;transition:opacity 0.3s;}
   .secret-modal-backdrop.open{display:flex;opacity:1;}
   .pin-terminal{width:380px;background:#0c121f;border:2px solid #00f0ff;
-    box-shadow:0 0 60px rgba(0,240,255,0.4);border-radius:28px;
-    padding:30px 26px;text-align:center;display:flex;flex-direction:column;
-    gap:16px;animation:modalZoom 0.3s var(--ease-ps5);}
+    box-shadow:0 0 60px rgba(0,240,255,0.4);border-radius:28px;padding:30px 26px;text-align:center;
+    display:flex;flex-direction:column;gap:16px;animation:modalZoom 0.3s var(--ease-ps5);}
   .pin-display{width:100%;background:#04070d;border:2px solid rgba(0,240,255,0.3);
-    border-radius:14px;padding:14px;font-size:28px;text-align:center;
-    color:#00f0ff;letter-spacing:12px;font-family:monospace;outline:none;}
-  .pin-display.error-shake{border-color:#ff3344!important;
-    box-shadow:0 0 20px #ff3344!important;animation:shake 0.35s;}
+    border-radius:14px;padding:14px;font-size:28px;text-align:center;color:#00f0ff;
+    letter-spacing:12px;font-family:monospace;outline:none;}
+  .pin-display.error-shake{border-color:#ff3344!important;box-shadow:0 0 20px #ff3344!important;animation:shake 0.35s;}
   .keypad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:6px;}
   .pad-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);
-    border-radius:14px;padding:16px 0;font-size:22px;font-weight:800;color:#fff;
-    cursor:pointer;transition:all 0.12s;}
+    border-radius:14px;padding:16px 0;font-size:22px;font-weight:800;color:#fff;cursor:pointer;transition:all 0.12s;}
   .pad-btn:hover{background:rgba(0,240,255,0.2);border-color:#00f0ff;transform:scale(1.05);}
   .pad-btn.action{background:rgba(0,240,255,0.15);color:#00f0ff;font-size:18px;}
   .settings-window{width:1000px;height:680px;max-width:96vw;max-height:92vh;
     background:#0b101c;border:2px solid rgba(0,240,255,0.4);
-    box-shadow:0 0 70px rgba(0,112,209,0.5);border-radius:28px;
-    overflow:hidden;display:flex;flex-direction:column;
-    animation:modalZoom 0.35s var(--ease-ps5);}
-  .settings-head{padding:18px 28px;background:#060912;
-    border-bottom:1px solid rgba(255,255,255,0.1);
+    box-shadow:0 0 70px rgba(0,112,209,0.5);border-radius:28px;overflow:hidden;
+    display:flex;flex-direction:column;animation:modalZoom 0.35s var(--ease-ps5);}
+  .settings-head{padding:18px 28px;background:#060912;border-bottom:1px solid rgba(255,255,255,0.1);
     display:flex;justify-content:space-between;align-items:center;}
-  .settings-title{font-size:19px;font-weight:900;letter-spacing:1.5px;color:#00f0ff;
-    display:flex;align-items:center;gap:12px;}
+  .settings-title{font-size:19px;font-weight:900;letter-spacing:1.5px;color:#00f0ff;display:flex;align-items:center;gap:12px;}
   .settings-layout{flex:1;display:flex;overflow:hidden;}
-  .settings-sidebar{width:230px;background:#080d17;
-    border-right:1px solid rgba(255,255,255,0.08);
+  .settings-sidebar{width:230px;background:#080d17;border-right:1px solid rgba(255,255,255,0.08);
     display:flex;flex-direction:column;padding:14px 10px;gap:6px;overflow-y:auto;}
   .tab-btn{background:transparent;border:1px solid transparent;border-radius:12px;
     padding:12px 16px;font-size:14px;font-weight:700;color:rgba(255,255,255,0.65);
-    text-align:left;cursor:pointer;display:flex;align-items:center;gap:10px;
-    transition:all 0.2s;}
+    text-align:left;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all 0.2s;}
   .tab-btn:hover{background:rgba(255,255,255,0.06);color:#fff;}
-  .tab-btn.active{background:rgba(0,240,255,0.15);
-    border-color:rgba(0,240,255,0.4);color:#00f0ff;}
-  .settings-content{flex:1;padding:24px 28px;overflow-y:auto;
-    display:flex;flex-direction:column;gap:18px;}
+  .tab-btn.active{background:rgba(0,240,255,0.15);border-color:rgba(0,240,255,0.4);color:#00f0ff;}
+  .settings-content{flex:1;padding:24px 28px;overflow-y:auto;display:flex;flex-direction:column;gap:18px;}
   .tab-pane{display:none;flex-direction:column;gap:16px;}
   .tab-pane.active{display:flex;}
   .setting-item{display:flex;justify-content:space-between;align-items:center;
@@ -256,98 +213,75 @@
   .setting-info p{font-size:12px;color:rgba(255,255,255,0.55);}
   .setting-ctrl input[type="range"]{width:200px;accent-color:#00f0ff;cursor:pointer;}
   .setting-ctrl select,.setting-ctrl input[type="text"],.setting-ctrl input[type="url"],
-  .setting-ctrl input[type="number"]{
-    background:#070a12;border:1px solid rgba(255,255,255,0.2);color:#fff;
-    padding:8px 14px;border-radius:10px;font-size:14px;font-weight:600;outline:none;}
-  .setting-ctrl input[type="color"]{background:transparent;border:none;
-    width:40px;height:40px;cursor:pointer;}
+  .setting-ctrl input[type="number"]{background:#070a12;border:1px solid rgba(255,255,255,0.2);
+    color:#fff;padding:8px 14px;border-radius:10px;font-size:14px;font-weight:600;outline:none;}
   .add-game-form{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;
-    background:rgba(255,255,255,0.03);padding:18px;border-radius:16px;
-    border:1px dashed rgba(0,240,255,0.3);}
+    background:rgba(255,255,255,0.03);padding:18px;border-radius:16px;border:1px dashed rgba(0,240,255,0.3);}
   .form-group{display:flex;flex-direction:column;gap:6px;}
   .form-group.full{grid-column:span 2;}
   .form-group label{font-size:12px;font-weight:700;color:#00f0ff;}
-  .form-group input,.form-group textarea{background:#070a12;
-    border:1px solid rgba(255,255,255,0.18);color:#fff;padding:9px 12px;
-    border-radius:10px;font-size:13px;outline:none;}
-  .form-group textarea{resize:none;height:55px;}
-  .game-list-table{width:100%;display:flex;flex-direction:column;gap:8px;
-    max-height:300px;overflow-y:auto;}
+  .form-group input,.form-group textarea{background:#070a12;border:1px solid rgba(255,255,255,0.18);
+    color:#fff;padding:9px 12px;border-radius:10px;font-size:13px;outline:none;}
+  .game-list-table{width:100%;display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto;}
   .game-row-item{display:flex;align-items:center;justify-content:space-between;
     background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
     border-radius:12px;padding:10px 14px;}
   .game-row-info{display:flex;align-items:center;gap:12px;}
   .game-mini-thumb{width:36px;height:36px;border-radius:8px;object-fit:cover;background:#111;}
-  .btn-act{border:none;padding:6px 12px;border-radius:8px;font-size:12px;
-    font-weight:800;cursor:pointer;}
+  .btn-act{border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;}
   .btn-edit-game{background:rgba(0,240,255,0.15);border:1px solid #00f0ff;color:#00f0ff;}
   .btn-del-game{background:rgba(255,51,68,0.15);border:1px solid #ff3344;color:#ff3344;}
-  .serial-log-box{width:100%;height:140px;background:#04070d;
-    border:1px solid rgba(0,240,255,0.2);border-radius:12px;padding:12px;
-    font-family:monospace;font-size:12px;color:#00ff88;
+  .serial-log-box{width:100%;height:140px;background:#04070d;border:1px solid rgba(0,240,255,0.2);
+    border-radius:12px;padding:12px;font-family:monospace;font-size:12px;color:#00ff88;
     overflow-y:auto;white-space:pre-wrap;}
-  .settings-foot{padding:14px 28px;background:#060912;
-    border-top:1px solid rgba(255,255,255,0.1);
+  .settings-foot{padding:14px 28px;background:#060912;border-top:1px solid rgba(255,255,255,0.1);
     display:flex;justify-content:space-between;align-items:center;gap:12px;}
-  .btn-cfg{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);
-    color:#fff;padding:10px 22px;border-radius:12px;font-size:13px;
-    font-weight:800;cursor:pointer;}
+  .btn-cfg{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;
+    padding:10px 22px;border-radius:12px;font-size:13px;font-weight:800;cursor:pointer;}
   .btn-cfg:hover{background:#00f0ff;color:#000;}
   .btn-cfg.danger{background:rgba(255,51,68,0.15);border-color:#ff3344;color:#ff3344;}
   .btn-cfg.danger:hover{background:#ff3344;color:#fff;}
-  .records-table{width:100%;display:flex;flex-direction:column;gap:6px;
-    max-height:480px;overflow-y:auto;}
-  .record-row{display:grid;grid-template-columns:50px 1fr 130px 110px;gap:10px;
-    align-items:center;padding:10px 14px;background:rgba(255,255,255,0.04);
-    border-radius:10px;border:1px solid rgba(255,255,255,0.08);font-size:14px;}
+  .records-table{width:100%;display:flex;flex-direction:column;gap:6px;max-height:480px;overflow-y:auto;}
+  .record-row{display:grid;grid-template-columns:50px 1fr 130px 110px;gap:10px;align-items:center;
+    padding:10px 14px;background:rgba(255,255,255,0.04);border-radius:10px;
+    border:1px solid rgba(255,255,255,0.08);font-size:14px;}
   .record-row .rank{font-weight:900;color:#00f0ff;}
   .record-row .rank.gold{color:#ffd700;text-shadow:0 0 12px #ffd700;}
   .record-row .rank.silver{color:#c0c0c0;}
   .record-row .rank.bronze{color:#cd7f32;}
-  .incident-row{display:flex;justify-content:space-between;gap:10px;
-    padding:10px 14px;background:rgba(255,51,68,0.08);
-    border:1px solid rgba(255,51,68,0.3);border-radius:10px;font-size:13px;}
-  .result-modal{position:fixed;inset:0;background:rgba(2,4,9,0.95);
-    backdrop-filter:blur(25px);z-index:5500;display:none;align-items:center;
-    justify-content:center;opacity:0;transition:opacity 0.3s;}
+  .incident-row{display:flex;justify-content:space-between;gap:10px;padding:10px 14px;
+    background:rgba(255,51,68,0.08);border:1px solid rgba(255,51,68,0.3);border-radius:10px;font-size:13px;}
+  .result-modal{position:fixed;inset:0;background:rgba(2,4,9,0.95);backdrop-filter:blur(25px);
+    z-index:5500;display:none;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s;}
   .result-modal.open{display:flex;opacity:1;}
-  .result-card{width:540px;max-width:94vw;
-    background:linear-gradient(160deg,#0c1628 0%,#060a14 100%);
-    border:2px solid #00ff88;box-shadow:0 0 80px rgba(0,255,136,0.35);
-    border-radius:32px;padding:36px 32px;text-align:center;
-    display:flex;flex-direction:column;gap:18px;
+  .result-card{width:540px;max-width:94vw;background:linear-gradient(160deg,#0c1628 0%,#060a14 100%);
+    border:2px solid #00ff88;box-shadow:0 0 80px rgba(0,255,136,0.35);border-radius:32px;
+    padding:36px 32px;text-align:center;display:flex;flex-direction:column;gap:18px;
     animation:modalZoom 0.35s var(--ease-ps5);}
-  .result-title{font-size:32px;font-weight:900;letter-spacing:2px;
-    color:#00ff88;text-shadow:0 0 30px #00ff88;}
+  .result-title{font-size:32px;font-weight:900;letter-spacing:2px;color:#00ff88;text-shadow:0 0 30px #00ff88;}
   .result-sub{font-size:14px;color:#aaa;letter-spacing:1px;}
-  .result-score-block{display:flex;flex-direction:column;gap:4px;
-    background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);
-    border-radius:20px;padding:20px;}
-  .result-score{font-size:64px;font-weight:900;color:#00ff88;
-    text-shadow:0 0 40px #00ff88;font-family:monospace;line-height:1;}
+  .result-score-block{display:flex;flex-direction:column;gap:4px;background:rgba(0,255,136,0.08);
+    border:1px solid rgba(0,255,136,0.3);border-radius:20px;padding:20px;}
+  .result-score{font-size:64px;font-weight:900;color:#00ff88;text-shadow:0 0 40px #00ff88;
+    font-family:monospace;line-height:1;}
   .result-game{font-size:13px;color:#00f0ff;letter-spacing:2px;text-transform:uppercase;}
   .result-place{font-size:14px;font-weight:900;color:#ffd700;margin-top:8px;}
   .result-name-row{display:flex;flex-direction:column;gap:8px;}
   .result-name-row label{font-size:12px;font-weight:700;color:#00f0ff;text-align:left;}
-  .result-name-row input{width:100%;background:#04070d;
-    border:2px solid rgba(0,255,136,0.4);border-radius:14px;
-    padding:14px 18px;font-size:18px;color:#fff;outline:none;
+  .result-name-row input{width:100%;background:#04070d;border:2px solid rgba(0,255,136,0.4);
+    border-radius:14px;padding:14px 18px;font-size:18px;color:#fff;outline:none;
     text-align:center;font-weight:700;letter-spacing:1px;}
-  .result-name-row input:focus{border-color:#00ff88;
-    box-shadow:0 0 25px rgba(0,255,136,0.4);}
-  .result-name-row input.error-shake{border-color:#ff3344!important;
-    animation:shake 0.35s;}
+  .result-name-row input:focus{border-color:#00ff88;box-shadow:0 0 25px rgba(0,255,136,0.4);}
+  .result-name-row input.error-shake{border-color:#ff3344!important;animation:shake 0.35s;}
   .result-actions{display:flex;gap:10px;}
   .result-actions .btn-cfg{flex:1;padding:14px;font-size:15px;}
   #cyberAlert{position:fixed;top:-100px;left:50%;transform:translateX(-50%);
     background:rgba(4,10,20,0.95);border:2px solid #00f0ff;
-    box-shadow:0 0 30px rgba(0,240,255,0.4);color:#00f0ff;
-    padding:18px 30px;border-radius:16px;font-size:16px;font-weight:900;
-    letter-spacing:1px;z-index:10000;text-align:center;
-    transition:top 0.4s var(--ease-ps5);backdrop-filter:blur(10px);}
+    box-shadow:0 0 30px rgba(0,240,255,0.4);color:#00f0ff;padding:18px 30px;
+    border-radius:16px;font-size:16px;font-weight:900;letter-spacing:1px;z-index:10000;
+    text-align:center;transition:top 0.4s var(--ease-ps5);backdrop-filter:blur(10px);}
   #cyberAlert.show{top:30px;}
-  #cyberAlert.error{border-color:#ff3344;color:#ff3344;
-    box-shadow:0 0 30px rgba(255,51,68,0.5);}
+  #cyberAlert.error{border-color:#ff3344;color:#ff3344;box-shadow:0 0 30px rgba(255,51,68,0.5);}
   .maintenance-screen{position:fixed;inset:0;z-index:99999;
     background:radial-gradient(ellipse at 50% 40%,#1a0a35 0%,#020409 70%);
     display:none;align-items:center;justify-content:center;}
@@ -358,14 +292,11 @@
     padding:50px 40px;backdrop-filter:blur(30px);
     display:flex;flex-direction:column;align-items:center;gap:20px;
     animation:maintenancePulse 2s infinite ease-in-out;}
-  .maintenance-icon{font-size:80px;filter:drop-shadow(0 0 30px #ffaa00);
-    animation:maintenanceSpin 3s infinite linear;}
-  .maintenance-title{font-size:28px;font-weight:900;letter-spacing:3px;
-    color:#ffaa00;text-shadow:0 0 30px #ffaa00;}
+  .maintenance-icon{font-size:80px;filter:drop-shadow(0 0 30px #ffaa00);}
+  .maintenance-title{font-size:28px;font-weight:900;letter-spacing:3px;color:#ffaa00;text-shadow:0 0 30px #ffaa00;}
   .maintenance-text{font-size:16px;color:#ccc;line-height:1.6;max-width:400px;}
   .maintenance-spinner{width:50px;height:50px;border:4px solid rgba(255,170,0,0.2);
-    border-top-color:#ffaa00;border-radius:50%;
-    animation:maintenanceSpin 1s infinite linear;margin-top:10px;}
+    border-top-color:#ffaa00;border-radius:50%;animation:maintenanceSpin 1s infinite linear;margin-top:10px;}
   @keyframes barDown{from{transform:translateY(-35px);opacity:0;}to{transform:translateY(0);opacity:1;}}
   @keyframes shimmerPass{0%{transform:translateX(-160%) rotate(35deg);}35%,100%{transform:translateX(220%) rotate(35deg);}}
   @keyframes pulseGlyphs{0%{transform:scale(0.85);opacity:0.6;}100%{transform:scale(1.15);opacity:1;}}
@@ -377,16 +308,12 @@
   @keyframes scanLine{0%{top:0;}100%{top:100%;}}
   @keyframes blink{50%{opacity:0.3;}}
   @keyframes maintenanceSpin{to{transform:rotate(360deg);}}
-  @keyframes maintenancePulse{
-    0%,100%{box-shadow:0 0 80px rgba(255,170,0,0.35);}
-    50%{box-shadow:0 0 120px rgba(255,170,0,0.6);}
-  }
+  @keyframes maintenancePulse{0%,100%{box-shadow:0 0 80px rgba(255,170,0,0.35);}50%{box-shadow:0 0 120px rgba(255,170,0,0.6);}}
 </style>
 </head>
 <body>
 
 <div id="cyberAlert">Системное сообщение</div>
-<div class="crt-overlay" id="crtFilter"></div>
 
 <div class="stage-backdrop">
   <div class="aurora-beam" id="auroraBeam"></div>
@@ -398,7 +325,7 @@
 
 <header>
   <div class="brand">
-    <div class="brand-logo" id="brandLogo" title="5 кликов: Секретные настройки ОС">
+    <div class="brand-logo" id="brandLogo" title="5 кликов: Секретные настройки">
       <svg viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
     </div>
     <div>
@@ -441,10 +368,10 @@
       <button class="btn-cfg" id="btnShowRecords" style="padding:18px 30px;border-radius:40px;">🏆 Рекорды</button>
     </div>
     <div class="hud-hints">
-      <span><span class="glyph-btn">←</span><span class="glyph-btn">→</span> Выбор игры</span>
+      <span><span class="glyph-btn">←</span><span class="glyph-btn">→</span> Выбор</span>
       <span><span class="glyph-btn">✕</span> Старт</span>
       <span><span class="glyph-btn">◯</span> Назад</span>
-      <span><span class="glyph-btn">⚡</span> Web Serial Ready</span>
+      <span><span class="glyph-btn">⚡</span> Arduino</span>
     </div>
   </div>
 </main>
@@ -456,18 +383,15 @@
   </div>
 </div>
 
-<!-- ✅ FIX: tabindex="0" на iframe, чтобы он мог получать фокус -->
 <div class="game-viewport" id="gameViewport">
   <div class="viewport-bar">
     <div class="viewport-title"><span style="font-size:18px;">🎮</span><span id="viewportGameTitle">СибКодБокс</span></div>
     <button class="btn-quit" id="btnQuitViewport">✕ Выйти в меню</button>
   </div>
   <iframe id="gameFrame" class="game-frame" tabindex="0"
-    sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-forms allow-popups allow-modals"
     allow="gamepad *; fullscreen *; autoplay *; accelerometer; gyroscope"></iframe>
 </div>
 
-<!-- LOGIN GATE -->
 <div class="login-gate" id="loginGate">
   <div class="login-bg-orb o1"></div>
   <div class="login-bg-orb o2"></div>
@@ -485,8 +409,7 @@
       <video id="loginQrVideo" playsinline muted></video>
       <div class="login-scan-line" id="loginScanLine"></div>
     </div>
-    <input type="text" class="login-manual" id="loginManualInput"
-      placeholder="Или введите код вручную: SIB-..." autocomplete="off">
+    <input type="text" class="login-manual" id="loginManualInput" placeholder="Или введите код: SIB-..." autocomplete="off">
     <button class="login-btn" id="btnLoginStartCamera">📷 Включить камеру и сканировать</button>
     <div class="login-status" id="loginStatus"></div>
     <div class="login-footer-info">
@@ -495,7 +418,6 @@
   </div>
 </div>
 
-<!-- NAME INPUT -->
 <div class="secret-modal-backdrop" id="nameModal" style="z-index:4500;">
   <div class="pin-terminal" style="width:460px;">
     <div style="font-size:36px;">👋</div>
@@ -503,9 +425,7 @@
     <div id="nameTicketInfo" style="font-size:13px;color:#ccc;line-height:1.6;">Билет: —<br>Время: —</div>
     <input type="text" id="playerNameInput" class="login-manual" maxlength="16"
       placeholder="Ник (3-16 симв.)" autocomplete="off" style="border-color:rgba(0,255,136,0.4);">
-    <p style="font-size:11px;color:rgba(255,255,255,0.45);">
-      Запрещены нецензурные выражения. Нарушитель будет сфотографирован, QR-код заблокирован.
-    </p>
+    <p style="font-size:11px;color:rgba(255,255,255,0.45);">Запрещены нецензурные выражения.</p>
     <div style="display:flex;gap:10px;">
       <button class="btn-cfg" style="flex:1;" id="btnNameCancel">Отмена</button>
       <button class="btn-cfg" style="flex:1;background:#00ff88;color:#000;" id="btnNameSubmit">Начать сессию</button>
@@ -513,50 +433,45 @@
   </div>
 </div>
 
-<!-- RESULT MODAL -->
 <div class="result-modal" id="resultModal">
   <div class="result-card">
     <div class="result-title" id="resultTitle">ИГРА ОКОНЧЕНА</div>
-    <div class="result-sub" id="resultSub">Введите имя для таблицы лидеров</div>
+    <div class="result-sub">Введите имя для таблицы лидеров</div>
     <div class="result-score-block">
       <div class="result-game" id="resultGameName">—</div>
       <div class="result-score" id="resultScoreVal">0</div>
       <div class="result-place" id="resultPlace">Место: —</div>
     </div>
     <div class="result-name-row">
-      <label for="resultNameInput">Ваш ник в зале славы</label>
+      <label for="resultNameInput">Ваш ник</label>
       <input type="text" id="resultNameInput" maxlength="16" placeholder="Введите имя" autocomplete="off">
     </div>
     <div class="result-actions">
       <button class="btn-cfg" id="btnResultSkip">Пропустить</button>
-      <button class="btn-cfg" id="btnResultSave" style="background:#00ff88;color:#000;">💾 Сохранить рекорд</button>
+      <button class="btn-cfg" id="btnResultSave" style="background:#00ff88;color:#000;">💾 Сохранить</button>
     </div>
   </div>
 </div>
 
-<!-- LEADERBOARD -->
 <div class="secret-modal-backdrop" id="recordsModal" style="z-index:2500;">
   <div class="settings-window" style="width:820px;height:660px;">
     <div class="settings-head">
-      <div class="settings-title"><span>🏆</span> ЗАЛ СЛАВЫ ШКОЛЫ</div>
+      <div class="settings-title"><span>🏆</span> ЗАЛ СЛАВЫ</div>
       <button class="btn-cfg" id="btnCloseRecords">✕ Закрыть</button>
     </div>
     <div class="settings-content" style="padding:18px 24px;">
       <div class="setting-item">
-        <div class="setting-info"><h4>Игра</h4><p>Фильтр по конкретной игре</p></div>
-        <div class="setting-ctrl">
-          <select id="recordsGameFilter"></select>
-        </div>
+        <div class="setting-info"><h4>Игра</h4><p>Фильтр</p></div>
+        <div class="setting-ctrl"><select id="recordsGameFilter"></select></div>
       </div>
       <div class="records-table" id="recordsTable"></div>
     </div>
   </div>
 </div>
 
-<!-- PIN -->
 <div class="secret-modal-backdrop" id="pinModalBackdrop" style="z-index:4600;">
   <div class="pin-terminal">
-    <h3 id="pinModalTitle" style="font-size:20px;color:#00f0ff;">ДОСТУП ОПЕРАТОРА</h3>
+    <h3 id="pinModalTitle" style="font-size:20px;color:#00f0ff;">ДОСТУП</h3>
     <p id="pinModalSubtitle" style="font-size:13px;color:rgba(255,255,255,0.6);">Введите PIN</p>
     <input type="password" id="pinDisplay" class="pin-display" maxlength="4" placeholder="••••" readonly>
     <div class="keypad-grid">
@@ -580,82 +495,79 @@
   </div>
 </div>
 
-<!-- OPERATOR SETTINGS -->
 <div class="secret-modal-backdrop" id="operatorSettingsModal" style="z-index:2000;">
   <div class="settings-window">
     <div class="settings-head">
-      <div class="settings-title"><span>⚙️</span> НАСТРОЙКИ АВТОМАТА И ИГРОТЕКА</div>
+      <div class="settings-title"><span>⚙️</span> НАСТРОЙКИ АВТОМАТА</div>
       <button class="btn-cfg" id="btnCloseOpSettings">✕ Закрыть</button>
     </div>
     <div class="settings-layout">
       <div class="settings-sidebar">
-        <button class="tab-btn active" data-tab="op-tab-games">🎮 Каталог игр</button>
-        <button class="tab-btn" data-tab="op-tab-add">➕ Добавить игру</button>
+        <button class="tab-btn active" data-tab="op-tab-games">🎮 Игры</button>
+        <button class="tab-btn" data-tab="op-tab-add">➕ Добавить</button>
         <button class="tab-btn" data-tab="op-tab-qr">🎫 QR-билеты</button>
         <button class="tab-btn" data-tab="op-tab-incidents">🚨 Нарушения</button>
-        <button class="tab-btn" data-tab="op-tab-leaderboard">🏆 Рекорды по играм</button>
-        <button class="tab-btn" data-tab="op-tab-media">🔊 Звук и музыка</button>
-        <button class="tab-btn" data-tab="op-tab-kiosk">🕹️ Режим киоска</button>
+        <button class="tab-btn" data-tab="op-tab-leaderboard">🏆 Рекорды</button>
+        <button class="tab-btn" data-tab="op-tab-media">🔊 Звук</button>
         <button class="tab-btn" data-tab="op-tab-maintenance">🔧 Техработы</button>
       </div>
       <div class="settings-content">
         <div class="tab-pane active" id="op-tab-games">
           <h3 style="color:#00f0ff;font-size:16px;">Установленные игры</h3>
           <div class="game-list-table" id="installedGamesList"></div>
-          <button class="btn-cfg danger" id="btnResetGamesDefault">⟲ Сбросить каталог</button>
+          <button class="btn-cfg danger" id="btnResetGamesDefault">⟲ Сбросить</button>
         </div>
         <div class="tab-pane" id="op-tab-add">
-          <h3 style="color:#00f0ff;font-size:16px;">Добавить веб-игру</h3>
+          <h3 style="color:#00f0ff;font-size:16px;">Добавить игру по URL</h3>
           <div class="add-game-form">
             <div class="form-group"><label>Название *</label><input type="text" id="addGameTitle"></div>
             <div class="form-group"><label>Жанр *</label><input type="text" id="addGameGenre"></div>
-            <div class="form-group full"><label>URL игры *</label><input type="url" id="addGameUrl" placeholder="https://..."></div>
-            <div class="form-group"><label>URL постера</label><input type="url" id="addGameCover"></div>
-            <div class="form-group"><label>URL фона</label><input type="url" id="addGameBg"></div>
+            <div class="form-group full"><label>URL *</label><input type="url" id="addGameUrl"></div>
+            <div class="form-group"><label>Постер</label><input type="url" id="addGameCover"></div>
+            <div class="form-group"><label>Фон</label><input type="url" id="addGameBg"></div>
             <div class="form-group"><label>Бейдж</label><input type="text" id="addGameBadge"></div>
             <div class="form-group"><label>Цвет</label><input type="color" id="addGameAccent" value="#00f0ff"></div>
             <div class="form-group full"><label>Описание</label><textarea id="addGameDesc"></textarea></div>
             <div class="form-group full"><button class="btn-cfg" id="btnAddGameSubmit"
-              style="background:#00f0ff;color:#000;width:100%;">+ Добавить игру</button></div>
+              style="background:#00f0ff;color:#000;width:100%;">+ Добавить</button></div>
           </div>
         </div>
         <div class="tab-pane" id="op-tab-qr">
-          <h3 style="color:#00f0ff;font-size:16px;">Генератор QR-билетов</h3>
+          <h3 style="color:#00f0ff;font-size:16px;">QR-билеты</h3>
           <div class="setting-item">
-            <div class="setting-info"><h4>Тип билета</h4><p>Длительность сессии</p></div>
+            <div class="setting-info"><h4>Тип</h4><p>Длительность</p></div>
             <div class="setting-ctrl">
               <select id="qrGenerateType">
-                <option value="5">5 минут</option>
-                <option value="10">10 минут</option>
-                <option value="15">15 минут</option>
-                <option value="30">30 минут</option>
-                <option value="CREATOR">Безлимит (Создатель)</option>
+                <option value="5">5 мин</option>
+                <option value="10">10 мин</option>
+                <option value="15">15 мин</option>
+                <option value="30">30 мин</option>
+                <option value="CREATOR">Безлимит</option>
               </select>
             </div>
           </div>
-          <button class="btn-cfg" id="btnGenerateQr" style="background:#00f0ff;color:#000;">🎫 Создать билет</button>
+          <button class="btn-cfg" id="btnGenerateQr" style="background:#00f0ff;color:#000;">🎫 Создать</button>
           <div id="qrGenerateResult" style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px;background:rgba(255,255,255,0.03);border-radius:14px;"></div>
-          <h4 style="color:#00f0ff;font-size:14px;margin-top:8px;">Активные билеты</h4>
           <div id="activeTicketsList" style="display:flex;flex-direction:column;gap:6px;max-height:180px;overflow-y:auto;"></div>
-          <button class="btn-cfg danger" id="btnResetTickets">Удалить все билеты</button>
+          <button class="btn-cfg danger" id="btnResetTickets">Удалить все</button>
         </div>
         <div class="tab-pane" id="op-tab-incidents">
-          <h3 style="color:#ff3344;font-size:16px;">🚨 Журнал нарушений</h3>
+          <h3 style="color:#ff3344;font-size:16px;">🚨 Нарушения</h3>
           <div id="incidentsList" style="display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto;"></div>
-          <button class="btn-cfg danger" id="btnClearIncidents">Очистить журнал</button>
+          <button class="btn-cfg danger" id="btnClearIncidents">Очистить</button>
         </div>
         <div class="tab-pane" id="op-tab-leaderboard">
-          <h3 style="color:#00f0ff;font-size:16px;">🏆 Рекорды по играм</h3>
+          <h3 style="color:#00f0ff;font-size:16px;">🏆 Рекорды</h3>
           <div class="setting-item">
-            <div class="setting-info"><h4>Игра</h4><p>Выберите игру для просмотра</p></div>
+            <div class="setting-info"><h4>Игра</h4><p>Фильтр</p></div>
             <div class="setting-ctrl"><select id="opRecordsGameFilter"></select></div>
           </div>
           <div class="records-table" id="opRecordsTable"></div>
-          <button class="btn-cfg danger" id="btnClearRecords" style="margin-top:8px;">Очистить рекорды выбранной игры</button>
+          <button class="btn-cfg danger" id="btnClearRecords">Очистить</button>
         </div>
         <div class="tab-pane" id="op-tab-media">
           <div class="setting-item">
-            <div class="setting-info"><h4>Фоновая музыка (BGM)</h4><p>Стиль процедурной музыки</p></div>
+            <div class="setting-info"><h4>Стиль BGM</h4><p>Фоновая музыка</p></div>
             <div class="setting-ctrl">
               <select id="opBgmStyle">
                 <option value="ambient">Ambient PS5</option>
@@ -667,7 +579,7 @@
             </div>
           </div>
           <div class="setting-item">
-            <div class="setting-info"><h4>Тема SFX</h4><p>Стиль звуковых эффектов</p></div>
+            <div class="setting-info"><h4>Тема SFX</h4><p>Эффекты</p></div>
             <div class="setting-ctrl">
               <select id="opSfxStyle">
                 <option value="soft">Soft</option>
@@ -676,58 +588,35 @@
               </select>
             </div>
           </div>
-          <div class="setting-item"><div class="setting-info"><h4>Громкость BGM</h4><p>Фоновая музыка</p></div><div class="setting-ctrl"><input type="range" id="opBgmVol" min="0" max="100" value="40"></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>Громкость SFX</h4><p>Звуковые эффекты</p></div><div class="setting-ctrl"><input type="range" id="opSfxVol" min="0" max="100" value="70"></div></div>
-        </div>
-        <div class="tab-pane" id="op-tab-kiosk">
-          <div class="setting-item">
-            <div class="setting-info"><h4>Таймаут бездействия</h4><p>Авто-выход в логин через N секунд</p></div>
-            <div class="setting-ctrl">
-              <select id="opIdleTimeout">
-                <option value="0">Отключено</option>
-                <option value="60">1 минута</option>
-                <option value="120" selected>2 минуты</option>
-                <option value="300">5 минут</option>
-              </select>
-            </div>
-          </div>
-          <div class="setting-item">
-            <div class="setting-info"><h4>Скрывать курсор</h4><p>Авто-скрытие через 3 сек</p></div>
-            <div class="setting-ctrl">
-              <select id="opHideCursor">
-                <option value="off">Выкл</option>
-                <option value="on" selected>Вкл</option>
-              </select>
-            </div>
-          </div>
+          <div class="setting-item"><div class="setting-info"><h4>Громкость BGM</h4><p></p></div><div class="setting-ctrl"><input type="range" id="opBgmVol" min="0" max="100" value="40"></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Громкость SFX</h4><p></p></div><div class="setting-ctrl"><input type="range" id="opSfxVol" min="0" max="100" value="70"></div></div>
         </div>
         <div class="tab-pane" id="op-tab-maintenance">
-          <h3 style="color:#ffaa00;font-size:16px;">🔧 Режим технических работ</h3>
+          <h3 style="color:#ffaa00;font-size:16px;">🔧 Техработы</h3>
           <div class="setting-item">
             <div class="setting-info"><h4>Статус</h4><p>Блокирует все автоматы</p></div>
             <div class="setting-ctrl">
               <select id="opMaintenanceMode">
-                <option value="off">🟢 Автомат работает</option>
-                <option value="on">🔴 Технические работы</option>
+                <option value="off">🟢 Работает</option>
+                <option value="on">🔴 Техработы</option>
               </select>
             </div>
           </div>
           <div class="form-group full" style="display:flex;flex-direction:column;gap:6px;">
-            <label style="font-size:12px;font-weight:700;color:#00f0ff;">Сообщение для учеников</label>
-            <textarea id="opMaintenanceMessage" style="background:#070a12;border:1px solid rgba(255,255,255,0.18);color:#fff;padding:9px 12px;border-radius:10px;font-size:13px;outline:none;height:70px;resize:none;">Идут технические работы. Автомат скоро вернётся!</textarea>
+            <label style="font-size:12px;font-weight:700;color:#00f0ff;">Сообщение</label>
+            <textarea id="opMaintenanceMessage" style="background:#070a12;border:1px solid rgba(255,255,255,0.18);color:#fff;padding:9px 12px;border-radius:10px;font-size:13px;outline:none;height:70px;resize:none;"></textarea>
           </div>
-          <button class="btn-cfg" id="btnApplyMaintenance" style="background:#ffaa00;color:#000;">💾 Применить на все автоматы</button>
+          <button class="btn-cfg" id="btnApplyMaintenance" style="background:#ffaa00;color:#000;">💾 Применить</button>
         </div>
       </div>
     </div>
     <div class="settings-foot">
-      <span style="font-size:12px;color:#888;">СибКодБокс • Панель управления</span>
+      <span style="font-size:12px;color:#888;">СибКодБокс</span>
       <button class="btn-cfg" id="btnOpSaveClose" style="background:#00f0ff;color:#000;">Закрыть</button>
     </div>
   </div>
 </div>
 
-<!-- GAME EDITOR -->
 <div class="secret-modal-backdrop" id="gameEditModal" style="z-index:3000;">
   <div class="pin-terminal" style="width:580px;text-align:left;">
     <h3 style="color:#00f0ff;font-size:18px;">РЕДАКТОР ИГРЫ</h3>
@@ -751,7 +640,6 @@
   </div>
 </div>
 
-<!-- SECRET OS SETTINGS -->
 <div class="secret-modal-backdrop" id="secretOsSettingsModal" style="z-index:2200;">
   <div class="settings-window">
     <div class="settings-head">
@@ -761,7 +649,7 @@
     <div class="settings-layout">
       <div class="settings-sidebar">
         <button class="tab-btn active" data-tab="os-tab-video">🖥️ Видео</button>
-        <button class="tab-btn" data-tab="os-tab-dsp">🎛️ DSP аудио</button>
+        <button class="tab-btn" data-tab="os-tab-dsp">🎛️ DSP</button>
         <button class="tab-btn" data-tab="os-tab-music">🎵 Музыка</button>
         <button class="tab-btn" data-tab="os-tab-hardware">⚡ Hardware</button>
         <button class="tab-btn" data-tab="os-tab-pins">🔒 PIN-коды</button>
@@ -770,52 +658,40 @@
       </div>
       <div class="settings-content">
         <div class="tab-pane active" id="os-tab-video">
-          <div class="setting-item"><div class="setting-info"><h4>CRT фильтр</h4><p>Сканирующие полосы</p></div><div class="setting-ctrl"><select id="cfgCrtToggle"><option value="off" selected>Выкл</option><option value="on">Вкл</option></select></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>Плотность частиц</h4><p>Нагрузка на графику</p></div><div class="setting-ctrl"><select id="cfgParticles"><option value="90">90</option><option value="180" selected>180</option><option value="300">300</option><option value="450">450</option><option value="700">700</option></select></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Плотность частиц</h4><p>Графика</p></div><div class="setting-ctrl"><select id="cfgParticles"><option value="90">90</option><option value="180" selected>180</option><option value="300">300</option><option value="450">450</option><option value="700">700</option></select></div></div>
           <div class="setting-item"><div class="setting-info"><h4>Аврора</h4><p>Световой луч</p></div><div class="setting-ctrl"><select id="cfgAuroraToggle"><option value="on" selected>Вкл</option><option value="off">Выкл</option></select></div></div>
           <div class="setting-item"><div class="setting-info"><h4>Размытие обоев</h4><p>blur px</p></div><div class="setting-ctrl"><input type="range" id="cfgBlurRange" min="0" max="60" value="24"></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>Интенсивность свечения</h4><p>Glow неона</p></div><div class="setting-ctrl"><input type="range" id="cfgGlowIntensity" min="0" max="100" value="60"></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>Показ FPS</h4><p>Индикатор производительности</p></div><div class="setting-ctrl"><select id="cfgShowFps"><option value="off" selected>Выкл</option><option value="on">Вкл</option></select></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Свечение</h4><p>Glow</p></div><div class="setting-ctrl"><input type="range" id="cfgGlowIntensity" min="0" max="100" value="60"></div></div>
         </div>
         <div class="tab-pane" id="os-tab-dsp">
-          <div class="setting-item"><div class="setting-info"><h4>Low-Pass Cutoff</h4><p>Фильтр частот BGM (Гц)</p></div><div class="setting-ctrl"><input type="range" id="cfgFilterCutoff" min="200" max="8000" value="2400"></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>Bass Boost</h4><p>Усиление низких частот (50 = нейтрально)</p></div><div class="setting-ctrl"><input type="range" id="cfgBassBoost" min="0" max="100" value="50"></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>Реверберация</h4><p>Объём звучания</p></div><div class="setting-ctrl"><input type="range" id="cfgReverb" min="0" max="100" value="35"></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>Эхо</h4><p>Задержка BGM</p></div><div class="setting-ctrl"><input type="range" id="cfgEcho" min="0" max="100" value="0"></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Low-Pass Cutoff</h4><p>Гц</p></div><div class="setting-ctrl"><input type="range" id="cfgFilterCutoff" min="200" max="8000" value="2400"></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Bass Boost</h4><p>50 = нейтрально</p></div><div class="setting-ctrl"><input type="range" id="cfgBassBoost" min="0" max="100" value="50"></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Реверберация</h4><p></p></div><div class="setting-ctrl"><input type="range" id="cfgReverb" min="0" max="100" value="35"></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Эхо</h4><p></p></div><div class="setting-ctrl"><input type="range" id="cfgEcho" min="0" max="100" value="0"></div></div>
         </div>
         <div class="tab-pane" id="os-tab-music">
-          <div class="setting-item"><div class="setting-info"><h4>Стиль BGM</h4><p>Основная фоновая музыка</p></div><div class="setting-ctrl"><select id="cfgBgmStyle"><option value="ambient" selected>Ambient PS5</option><option value="synthwave">Synthwave</option><option value="lofi">Lo-Fi</option><option value="chiptune">Chiptune</option><option value="cinematic">Cinematic</option></select></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>Тема SFX</h4><p>Стиль кликов и эффектов</p></div><div class="setting-ctrl"><select id="cfgSfxStyle"><option value="soft">Soft</option><option value="arcade" selected>Arcade</option><option value="heavy">Heavy</option></select></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>Колокольчики</h4><p>Случайные ноты поверх BGM</p></div><div class="setting-ctrl"><select id="cfgChimesToggle"><option value="on" selected>Вкл</option><option value="off">Выкл</option></select></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>Темп BGM (BPM)</h4><p>Скорость смены аккордов</p></div><div class="setting-ctrl"><input type="range" id="cfgBgmTempo" min="2" max="15" value="5.5" step="0.5"></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Стиль BGM</h4><p></p></div><div class="setting-ctrl"><select id="cfgBgmStyle"><option value="ambient" selected>Ambient PS5</option><option value="synthwave">Synthwave</option><option value="lofi">Lo-Fi</option><option value="chiptune">Chiptune</option><option value="cinematic">Cinematic</option></select></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Тема SFX</h4><p></p></div><div class="setting-ctrl"><select id="cfgSfxStyle"><option value="soft">Soft</option><option value="arcade" selected>Arcade</option><option value="heavy">Heavy</option></select></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Колокольчики</h4><p>Ноты поверх BGM</p></div><div class="setting-ctrl"><select id="cfgChimesToggle"><option value="on" selected>Вкл</option><option value="off">Выкл</option></select></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Темп BGM</h4><p>сек/аккорд</p></div><div class="setting-ctrl"><input type="range" id="cfgBgmTempo" min="2" max="15" value="5.5" step="0.5"></div></div>
         </div>
         <div class="tab-pane" id="os-tab-hardware">
-          <div class="setting-item"><div class="setting-info"><h4>Скорость Serial</h4><p>Baudrate</p></div><div class="setting-ctrl"><select id="cfgBaudrate"><option value="9600" selected>9600</option><option value="57600">57600</option><option value="115200">115200</option></select></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>Авто-подключение Arduino</h4><p>Пробовать при загрузке</p></div><div class="setting-ctrl"><select id="cfgAutoArduino"><option value="off" selected>Выкл</option><option value="on">Вкл</option></select></div></div>
-          <div style="display:flex;justify-content:space-between;"><h4>Монитор сигналов</h4><button class="btn-cfg" id="btnClearSerialLog">Очистить</button></div>
+          <div class="setting-item"><div class="setting-info"><h4>Baudrate</h4><p>Serial</p></div><div class="setting-ctrl"><select id="cfgBaudrate"><option value="9600" selected>9600</option><option value="57600">57600</option><option value="115200">115200</option></select></div></div>
+          <div style="display:flex;justify-content:space-between;"><h4>Монитор</h4><button class="btn-cfg" id="btnClearSerialLog">Очистить</button></div>
           <div class="serial-log-box" id="serialLogBox">> Ожидание...</div>
         </div>
         <div class="tab-pane" id="os-tab-pins">
-          <div class="setting-item"><div class="setting-info"><h4>PIN оператора</h4><p>По умолч. 1234</p></div><div class="setting-ctrl" style="display:flex;gap:8px;"><input type="text" id="cfgNewOperatorPin" maxlength="4" style="width:100px;text-align:center;"><button class="btn-cfg" id="btnSaveOperatorPin">ОК</button></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>PIN редактора</h4><p>По умолч. 9999</p></div><div class="setting-ctrl" style="display:flex;gap:8px;"><input type="text" id="cfgNewGameEditPin" maxlength="4" style="width:100px;text-align:center;"><button class="btn-cfg" id="btnSaveGameEditPin">ОК</button></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>Мастер-PIN ОС</h4><p>По умолч. 7777</p></div><div class="setting-ctrl" style="display:flex;gap:8px;"><input type="text" id="cfgNewMasterPin" maxlength="4" style="width:100px;text-align:center;"><button class="btn-cfg" id="btnSaveMasterPin">ОК</button></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>PIN оператора</h4><p>1234</p></div><div class="setting-ctrl" style="display:flex;gap:8px;"><input type="text" id="cfgNewOperatorPin" maxlength="4" style="width:100px;text-align:center;"><button class="btn-cfg" id="btnSaveOperatorPin">ОК</button></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>PIN редактора</h4><p>9999</p></div><div class="setting-ctrl" style="display:flex;gap:8px;"><input type="text" id="cfgNewGameEditPin" maxlength="4" style="width:100px;text-align:center;"><button class="btn-cfg" id="btnSaveGameEditPin">ОК</button></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Мастер-PIN</h4><p>7777</p></div><div class="setting-ctrl" style="display:flex;gap:8px;"><input type="text" id="cfgNewMasterPin" maxlength="4" style="width:100px;text-align:center;"><button class="btn-cfg" id="btnSaveMasterPin">ОК</button></div></div>
           <div class="setting-item"><div class="setting-info"><h4>Код создателя</h4><p>Безлимит</p></div><div class="setting-ctrl" style="display:flex;gap:8px;"><input type="text" id="cfgNewCreatorCode" maxlength="32" style="width:180px;text-align:center;"><button class="btn-cfg" id="btnSaveCreatorCode">ОК</button></div></div>
         </div>
         <div class="tab-pane" id="os-tab-backup">
-          <div class="setting-item">
-            <div class="setting-info"><h4>Экспорт конфигурации</h4><p>Скачать все данные (игры, рекорды, настройки)</p></div>
-            <div class="setting-ctrl"><button class="btn-cfg" id="btnExportConfig">📥 Скачать</button></div>
-          </div>
-          <div class="setting-item">
-            <div class="setting-info"><h4>Импорт конфигурации</h4><p>Загрузить из JSON-файла</p></div>
-            <div class="setting-ctrl">
-              <input type="file" id="importConfigFile" accept="application/json" style="display:none;">
-              <button class="btn-cfg" id="btnImportConfig">📤 Загрузить</button>
-            </div>
-          </div>
+          <div class="setting-item"><div class="setting-info"><h4>Экспорт</h4><p>JSON</p></div><div class="setting-ctrl"><button class="btn-cfg" id="btnExportConfig">📥 Скачать</button></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Импорт</h4><p>JSON</p></div><div class="setting-ctrl"><input type="file" id="importConfigFile" accept="application/json" style="display:none;"><button class="btn-cfg" id="btnImportConfig">📤 Загрузить</button></div></div>
         </div>
         <div class="tab-pane" id="os-tab-system">
-          <div class="setting-item"><div class="setting-info"><h4>Полный сброс</h4><p>Удалить всё безвозвратно</p></div><div class="setting-ctrl"><button class="btn-cfg danger" id="btnFactoryReset">⚠ Сброс</button></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Полный сброс</h4><p>Удалить всё</p></div><div class="setting-ctrl"><button class="btn-cfg danger" id="btnFactoryReset">⚠ Сброс</button></div></div>
           <div class="setting-item" style="flex-direction:column;align-items:flex-start;gap:6px;">
             <h4 style="color:#00f0ff;">Телеметрия</h4>
             <p style="font-family:monospace;font-size:12px;color:#aaa;line-height:1.6;" id="systemTelemetryBox">—</p>
@@ -830,7 +706,6 @@
   </div>
 </div>
 
-<!-- CUSTOM CONFIRM -->
 <div class="secret-modal-backdrop" id="confirmModal" style="z-index:9000;">
   <div class="pin-terminal" style="width:440px;">
     <div style="font-size:32px;">⚠️</div>
@@ -843,21 +718,18 @@
   </div>
 </div>
 
-<!-- MAINTENANCE SCREEN -->
 <div class="maintenance-screen" id="maintenanceScreen">
   <div class="maintenance-card">
     <div class="maintenance-icon">🔧</div>
     <div class="maintenance-title">ТЕХНИЧЕСКИЕ РАБОТЫ</div>
-    <div class="maintenance-text" id="maintenanceText">
-      Идут технические работы. Автомат скоро вернётся!
-    </div>
+    <div class="maintenance-text" id="maintenanceText">Идут технические работы. Автомат скоро вернётся!</div>
     <div class="maintenance-spinner"></div>
   </div>
 </div>
 
 <script>
 /* =====================================================================
-   1. УТИЛИТЫ
+   УТИЛИТЫ
    ===================================================================== */
 function showCyberAlert(text, isError = false) {
   const el = document.getElementById('cyberAlert');
@@ -876,19 +748,18 @@ function askConfirm(title, text, onYes) {
   const no = document.getElementById('btnConfirmNo');
   const cleanup = () => { modal.classList.remove('open'); yes.onclick = null; no.onclick = null; };
   yes.onclick = () => { cleanup(); onYes && onYes(); };
-  no.onclick = () => { cleanup(); };
+  no.onclick = cleanup;
 }
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 }
 
 /* =====================================================================
-   2. FULLSCREEN
+   FULLSCREEN
    ===================================================================== */
 let fsRequested = false;
 async function goFullscreenOnce() {
-  if (fsRequested) return;
-  fsRequested = true;
+  if (fsRequested) return; fsRequested = true;
   try {
     if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
       await document.documentElement.requestFullscreen({ navigationUI: 'hide' });
@@ -903,29 +774,26 @@ document.getElementById('btnFullscreen').onclick = () => {
 };
 
 /* =====================================================================
-   3. CONFIG — ✅ FIX: улучшены аудио-дефолты
+   CONFIG
    ===================================================================== */
 const CONFIG = {
   bgmStyle: 'ambient',
   sfxStyle: 'arcade',
   bgmTempo: 5.5,
-  filterCutoff: 2400,           // ✅ FIX: было 500 — глушило музыку
-  bassBoost: 50,                // ✅ FIX: было 20 — резало басы
+  filterCutoff: 2400,
+  bassBoost: 50,
   reverb: 35,
   echo: 0,
   chimesEnabled: true,
   glowIntensity: 60,
-  showFps: false,
   idleTimeout: 120,
   hideCursor: true,
-  autoArduino: false,
   baudrate: 9600,
-  save() { try { localStorage.setItem('sib_config_v9', JSON.stringify(this)); } catch(e){} },
+  save() { try { localStorage.setItem('sib_config_v11', JSON.stringify(this)); } catch(e){} },
   load() {
     try {
-      const s = localStorage.getItem('sib_config_v9') || localStorage.getItem('sib_config_v8');
+      const s = localStorage.getItem('sib_config_v11') || localStorage.getItem('sib_config_v9');
       if (s) Object.assign(this, JSON.parse(s));
-      // Принудительно обновляем критичные параметры, если они остались старыми
       if (this.filterCutoff < 800) this.filterCutoff = 2400;
       if (this.bassBoost === 20) this.bassBoost = 50;
     } catch(e){}
@@ -934,50 +802,40 @@ const CONFIG = {
 CONFIG.load();
 
 /* =====================================================================
-   4. AUDIO — ✅ FIX: реверб, эхо, громкость, устойчивость к autoplay
+   AUDIO — с фиксами reverb/echo/bass
    ===================================================================== */
 const SoundMaster = {
   ctx:null, isMuted:false, isBgmPlaying:false,
   masterGain:null, bgmGain:null, sfxGain:null,
   filterNode:null, bassNode:null,
-  reverbNode:null, reverbGain:null,   // ✅ FIX: сохраняем gain как свойство
-  echoDelay:null, echoGain:null,      // ✅ FIX
+  reverbNode:null, reverbGain:null,
+  echoDelay:null, echoGain:null,
   currentChordStep:0, chordTimer:null, melodyTimer:null,
   currentBgmStyle:'ambient',
-  _pendingStart:false,
 
   init() {
     if (!this.ctx) {
       const AC = window.AudioContext || window.webkitAudioContext;
       this.ctx = new AC();
-
-      this.masterGain = this.ctx.createGain();
-      this.masterGain.gain.value = 1;
+      this.masterGain = this.ctx.createGain(); this.masterGain.gain.value = 1;
       this.masterGain.connect(this.ctx.destination);
-
-      this.bgmGain = this.ctx.createGain();
-      this.bgmGain.gain.value = 0.40;   // ✅ FIX: громче (было 0.25)
+      this.bgmGain = this.ctx.createGain(); this.bgmGain.gain.value = 0.40;
       this.bgmGain.connect(this.masterGain);
-
-      this.sfxGain = this.ctx.createGain();
-      this.sfxGain.gain.value = 0.7;
+      this.sfxGain = this.ctx.createGain(); this.sfxGain.gain.value = 0.7;
       this.sfxGain.connect(this.masterGain);
 
-      // Bass shelf — ✅ FIX: 50 = нейтрально, >50 = буст
       this.bassNode = this.ctx.createBiquadFilter();
       this.bassNode.type = 'lowshelf';
       this.bassNode.frequency.value = 200;
       this.bassNode.gain.value = (CONFIG.bassBoost - 50) / 50 * 8;
       this.bassNode.connect(this.bgmGain);
 
-      // Low-pass фильтр — ✅ FIX: дефолт 2400 Гц
       this.filterNode = this.ctx.createBiquadFilter();
       this.filterNode.type = 'lowpass';
       this.filterNode.frequency.value = CONFIG.filterCutoff;
       this.filterNode.Q.value = 0.7;
       this.filterNode.connect(this.bassNode);
 
-      // Реверб — ✅ FIX: сохраняем gain
       this.reverbNode = this.ctx.createConvolver();
       this.reverbNode.buffer = this._makeReverbBuffer(2, 2.5);
       this.reverbGain = this.ctx.createGain();
@@ -985,23 +843,18 @@ const SoundMaster = {
       this.reverbNode.connect(this.reverbGain);
       this.reverbGain.connect(this.bgmGain);
 
-      // Эхо — ✅ FIX
       this.echoDelay = this.ctx.createDelay(2);
       this.echoDelay.delayTime.value = 0.32;
       this.echoGain = this.ctx.createGain();
       this.echoGain.gain.value = CONFIG.echo / 100 * 0.4;
       this.echoDelay.connect(this.echoGain);
-      this.echoGain.connect(this.echoDelay); // feedback
+      this.echoGain.connect(this.echoDelay);
       this.echoGain.connect(this.bgmGain);
     }
-
     const resume = this.ctx.resume();
     if (resume && resume.then) {
       resume.then(() => {
-        // ✅ FIX: запускаем BGM после успешного resume
-        if (!this.isBgmPlaying && !this.isMuted) {
-          this.startBGM(CONFIG.bgmStyle);
-        }
+        if (!this.isBgmPlaying && !this.isMuted) this.startBGM(CONFIG.bgmStyle);
       }).catch(() => {});
     } else if (!this.isBgmPlaying && !this.isMuted) {
       this.startBGM(CONFIG.bgmStyle);
@@ -1019,38 +872,17 @@ const SoundMaster = {
     return buf;
   },
 
-  setBgmVolume(v){
-    if(!this.bgmGain) return;
-    this.bgmGain.gain.setTargetAtTime(v, this.ctx.currentTime, 0.05);
-  },
-  setSfxVolume(v){
-    if(!this.sfxGain) return;
-    this.sfxGain.gain.setTargetAtTime(v, this.ctx.currentTime, 0.05);
-  },
-  setFilterCutoff(v){
-    if(!this.filterNode) return;
-    this.filterNode.frequency.setTargetAtTime(v, this.ctx.currentTime, 0.05);
-  },
-  setBassBoost(v){
-    if(!this.bassNode) return;
-    this.bassNode.gain.setTargetAtTime((v-50)/50*8, this.ctx.currentTime, 0.05);
-  },
-  // ✅ FIX: используем сохранённые gain-ноды
-  setReverb(v){
-    if(!this.reverbGain) return;
-    this.reverbGain.gain.setTargetAtTime(v/100*0.6, this.ctx.currentTime, 0.05);
-  },
-  setEcho(v){
-    if(!this.echoGain) return;
-    this.echoGain.gain.setTargetAtTime(v/100*0.4, this.ctx.currentTime, 0.05);
-  },
+  setBgmVolume(v){ if(this.bgmGain) this.bgmGain.gain.setTargetAtTime(v,this.ctx.currentTime,0.05); },
+  setSfxVolume(v){ if(this.sfxGain) this.sfxGain.gain.setTargetAtTime(v,this.ctx.currentTime,0.05); },
+  setFilterCutoff(v){ if(this.filterNode) this.filterNode.frequency.setTargetAtTime(v,this.ctx.currentTime,0.05); },
+  setBassBoost(v){ if(this.bassNode) this.bassNode.gain.setTargetAtTime((v-50)/50*8,this.ctx.currentTime,0.05); },
+  setReverb(v){ if(this.reverbGain) this.reverbGain.gain.setTargetAtTime(v/100*0.6,this.ctx.currentTime,0.05); },
+  setEcho(v){ if(this.echoGain) this.echoGain.gain.setTargetAtTime(v/100*0.4,this.ctx.currentTime,0.05); },
 
   toggleMute() {
-    this.init();
-    this.isMuted = !this.isMuted;
+    this.init(); this.isMuted = !this.isMuted;
     document.getElementById('btnAudioToggle').textContent = this.isMuted ? '🔇' : '🔊';
     this.masterGain.gain.setTargetAtTime(this.isMuted ? 0 : 1, this.ctx.currentTime, 0.05);
-    // ✅ FIX: если включаем звук и BGM не играет — запускаем
     if (!this.isMuted && !this.isBgmPlaying) this.startBGM(CONFIG.bgmStyle);
   },
 
@@ -1074,7 +906,6 @@ const SoundMaster = {
     };
     const p = presets[style] || presets.ambient;
 
-    // ✅ FIX: громче голоса
     const voices = [];
     for (let i = 0; i < 5; i++) {
       const o = this.ctx.createOscillator(), g = this.ctx.createGain();
@@ -1093,16 +924,13 @@ const SoundMaster = {
       if (!this.isBgmPlaying) return;
       const chord = p.chords[this.currentChordStep % p.chords.length];
       const t = this.ctx.currentTime;
-      voices.forEach((v,i) => {
-        if (chord[i]) v.o.frequency.setTargetAtTime(chord[i], t, 1.6);
-      });
+      voices.forEach((v,i) => { if (chord[i]) v.o.frequency.setTargetAtTime(chord[i],t,1.6); });
       this.currentChordStep++;
     };
     nextChord();
     const tempo = Math.max(1800, CONFIG.bgmTempo * 1000);
     this.chordTimer = setInterval(nextChord, tempo);
 
-    // Мелодические "колокольчики"
     this.melodyTimer = setInterval(() => {
       if (!this.isBgmPlaying || this.isMuted || !CONFIG.chimesEnabled) return;
       if (Math.random() > 0.45) {
@@ -1121,26 +949,22 @@ const SoundMaster = {
     }, 750);
   },
 
-  pauseBGM(){
-    if(!this.bgmGain) return;
-    this.bgmGain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.35);
-  },
+  pauseBGM(){ if(this.bgmGain) this.bgmGain.gain.setTargetAtTime(0,this.ctx.currentTime,0.35); },
   resumeBGM(){
     if (!this.bgmGain || this.isMuted) return;
     const el = document.getElementById('opBgmVol');
     const target = el ? (parseFloat(el.value) || 40)/100 : 0.4;
-    this.bgmGain.gain.setTargetAtTime(target, this.ctx.currentTime, 0.8);
+    this.bgmGain.gain.setTargetAtTime(target,this.ctx.currentTime,0.8);
   },
 
   _sfxParams(kind) {
     const themes = {
-      soft:   { hover: { f1:700, f2:400, g:0.03, t:'sine' }, focus: { f1:280, f2:120, g:0.15, t:'sine' }, click: { f1:400, f2:700, g:0.1, t:'sine' } },
-      arcade: { hover: { f1:750, f2:380, g:0.05, t:'sine' }, focus: { f1:320, f2:110, g:0.2, t:'sine' }, click: { f1:440, f2:880, g:0.15, t:'triangle' } },
-      heavy:  { hover: { f1:400, f2:180, g:0.08, t:'square' }, focus: { f1:200, f2:60, g:0.3, t:'square' }, click: { f1:220, f2:110, g:0.2, t:'sawtooth' } }
+      soft:   { hover:{f1:700,f2:400,g:0.03,t:'sine'}, focus:{f1:280,f2:120,g:0.15,t:'sine'}, click:{f1:400,f2:700,g:0.1,t:'sine'} },
+      arcade: { hover:{f1:750,f2:380,g:0.05,t:'sine'}, focus:{f1:320,f2:110,g:0.2,t:'sine'}, click:{f1:440,f2:880,g:0.15,t:'triangle'} },
+      heavy:  { hover:{f1:400,f2:180,g:0.08,t:'square'}, focus:{f1:200,f2:60,g:0.3,t:'square'}, click:{f1:220,f2:110,g:0.2,t:'sawtooth'} }
     };
     return themes[CONFIG.sfxStyle]?.[kind] || themes.arcade[kind];
   },
-
   hover(){ if(this.isMuted) return; this.init(); const p=this._sfxParams('hover'); const t=this.ctx.currentTime; const o=this.ctx.createOscillator(),g=this.ctx.createGain(); o.type=p.t; o.frequency.setValueAtTime(p.f1,t); o.frequency.exponentialRampToValueAtTime(p.f2,t+0.04); g.gain.setValueAtTime(p.g,t); g.gain.exponentialRampToValueAtTime(0.0001,t+0.04); o.connect(g); g.connect(this.sfxGain); o.start(t); o.stop(t+0.04); },
   focus(){ if(this.isMuted) return; this.init(); const p=this._sfxParams('focus'); const t=this.ctx.currentTime; const o=this.ctx.createOscillator(),g=this.ctx.createGain(); o.type=p.t; o.frequency.setValueAtTime(p.f1,t); o.frequency.exponentialRampToValueAtTime(p.f2,t+0.09); g.gain.setValueAtTime(p.g,t); g.gain.exponentialRampToValueAtTime(0.0001,t+0.09); o.connect(g); g.connect(this.sfxGain); o.start(t); o.stop(t+0.09); },
   click(){ if(this.isMuted) return; this.init(); const p=this._sfxParams('click'); const t=this.ctx.currentTime; const o=this.ctx.createOscillator(),g=this.ctx.createGain(); o.type=p.t; o.frequency.setValueAtTime(p.f1,t); o.frequency.exponentialRampToValueAtTime(p.f2,t+0.1); g.gain.setValueAtTime(p.g,t); g.gain.exponentialRampToValueAtTime(0.0001,t+0.1); o.connect(g); g.connect(this.sfxGain); o.start(t); o.stop(t+0.1); },
@@ -1154,7 +978,7 @@ window.addEventListener('keydown', () => SoundMaster.init(), { once:true });
 document.getElementById('btnAudioToggle').onclick = () => SoundMaster.toggleMute();
 
 /* =====================================================================
-   5. PARTICLES
+   PARTICLES
    ===================================================================== */
 const canvas = document.getElementById('ambientCanvas');
 const ctx = canvas.getContext('2d');
@@ -1211,192 +1035,66 @@ function renderAmbientLoop(){
 renderAmbientLoop();
 
 /* =====================================================================
-   6. GAMES (встроенные)
+   ВСТРОЕННЫЕ ИГРЫ
    ===================================================================== */
-const COMMON_GAME_HEADER = `
-  function sendScore(gameId, gameName, score){
-    try{ if(window.parent) window.parent.postMessage({type:'SCORE', gameId, game: gameName, score: Number(score)||0}, '*'); }catch(e){}
-  }
-  // ✅ FIX: возврат фокуса при движении мыши
-  document.addEventListener('mousemove', () => { if(!document.hasFocus()) window.focus(); });
-`;
+const GAME_CYBER_MATH_HTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;user-select:none;}body{background:radial-gradient(circle at center,#0c1836 0%,#030611 100%);color:#fff;height:100vh;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;}#hud{position:absolute;top:25px;width:85%;display:flex;justify-content:space-between;font-size:22px;font-weight:900;}.val{color:#00ff88;text-shadow:0 0 15px #00ff88;}.timer-track{width:500px;height:12px;background:rgba(255,255,255,0.1);border-radius:8px;overflow:hidden;margin-top:25px;}#timerBar{width:100%;height:100%;background:#00ff88;}#equation{font-size:88px;font-weight:900;letter-spacing:5px;margin:18px 0;text-shadow:0 0 35px #00f0ff;}.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;width:520px;}.opt-btn{background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.2);border-radius:20px;padding:22px;font-size:34px;font-weight:900;color:#fff;cursor:pointer;}.opt-btn.correct{background:#00ff88!important;color:#000;}.opt-btn.wrong{background:#ff3344!important;}#gameOverModal{position:fixed;inset:0;background:rgba(3,6,17,0.95);display:none;flex-direction:column;align-items:center;justify-content:center;}.go-title{font-size:52px;font-weight:900;color:#ff3344;}.btn-restart{background:#00f0ff;color:#000;border:none;padding:16px 48px;border-radius:35px;font-size:20px;font-weight:900;cursor:pointer;}</style></head><body><div id="hud"><div>ЯДРА: <span id="livesVal" style="color:#ff3344;">♥♥♥</span></div><div>СЧЁТ: <span id="score" class="val">0</span></div></div><div class="timer-track"><div id="timerBar"></div></div><div id="equation">-- + --</div><div class="options-grid" id="opts"></div><div id="gameOverModal"><div class="go-title">ИГРА ОКОНЧЕНА</div><div style="font-size:24px;">ИТОГ: <span id="finalScore" style="color:#00ff88;">0</span></div><button class="btn-restart" id="btnRestart">ПЕРЕЗАПУСК</button></div><script>function sendScore(g,n,s){try{window.parent.postMessage({type:'SCORE',gameId:g,game:n,score:+s||0},'*')}catch(e){}}let score=0,lives=3,ans=0,timeLeft=100,isOver=false;const eqEl=document.getElementById('equation'),optsEl=document.getElementById('opts'),scoreEl=document.getElementById('score'),livesEl=document.getElementById('livesVal'),timerBar=document.getElementById('timerBar');function updateLives(){livesEl.textContent='♥'.repeat(Math.max(0,lives))||'0';}function damage(){if(isOver)return;lives--;updateLives();if(lives<=0)end();else setTimeout(gen,240);}function end(){isOver=true;document.getElementById('finalScore').textContent=score;document.getElementById('gameOverModal').style.display='flex';sendScore('cyber-math','Реакция',score);}function restart(){score=0;lives=3;isOver=false;scoreEl.textContent='0';updateLives();document.getElementById('gameOverModal').style.display='none';sendScore('cyber-math','Реакция',0);gen();}document.getElementById('btnRestart').onclick=restart;function gen(){if(isOver)return;const op=['+','-','×'][Math.floor(Math.random()*3)];let a,b;if(op==='+'){a=Math.floor(Math.random()*45)+5;b=Math.floor(Math.random()*45)+5;ans=a+b;}else if(op==='-'){a=Math.floor(Math.random()*50)+15;b=Math.floor(Math.random()*a);ans=a-b;}else{a=Math.floor(Math.random()*11)+2;b=Math.floor(Math.random()*11)+2;ans=a*b;}eqEl.textContent=a+' '+op+' '+b;let arr=[ans];while(arr.length<4){let f=ans+Math.floor(Math.random()*19)-9;if(f!==ans&&f>=0&&!arr.includes(f))arr.push(f);}arr.sort(()=>Math.random()-0.5);optsEl.innerHTML='';arr.forEach((v,i)=>{const b2=document.createElement('button');b2.className='opt-btn';b2.textContent=v;b2.onclick=()=>choose(v,b2);optsEl.appendChild(b2);});timeLeft=100;}function choose(v,b){if(isOver)return;if(v===ans){b.classList.add('correct');score+=100;scoreEl.textContent=score;sendScore('cyber-math','Реакция',score);setTimeout(gen,180);}else{b.classList.add('wrong');damage();}}window.onkeydown=e=>{if(isOver){if(e.key==='Enter')restart();return;}const b=optsEl.querySelectorAll('.opt-btn');if(e.key>='1'&&e.key<='4'){b[+e.key-1]?.click();}};setInterval(()=>{if(isOver)return;timeLeft-=1.6;if(timeLeft<=0)damage();timerBar.style.width=Math.max(0,timeLeft)+'%';},100);updateLives();gen();<\/script></body></html>`;
 
-const GAME_CYBER_MATH_HTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;user-select:none;}
-body{background:radial-gradient(circle at center,#0c1836 0%,#030611 100%);color:#fff;height:100vh;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-#hud{position:absolute;top:25px;width:85%;display:flex;justify-content:space-between;font-size:22px;font-weight:900;}
-.val{color:#00ff88;text-shadow:0 0 15px #00ff88;}
-.timer-track{width:500px;height:12px;background:rgba(255,255,255,0.1);border-radius:8px;overflow:hidden;margin-top:25px;border:1px solid rgba(255,255,255,0.2);}
-#timerBar{width:100%;height:100%;background:#00ff88;transition:width 0.1s linear;box-shadow:0 0 14px #00ff88;}
-#equation{font-size:88px;font-weight:900;letter-spacing:5px;margin:18px 0;text-shadow:0 0 35px #00f0ff;}
-.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;width:520px;}
-.opt-btn{background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.2);border-radius:20px;padding:22px;font-size:34px;font-weight:900;color:#fff;cursor:pointer;transition:all 0.12s;backdrop-filter:blur(10px);}
-.opt-btn:hover{background:rgba(0,240,255,0.2);border-color:#00f0ff;transform:scale(1.05);}
-.opt-btn.correct{background:#00ff88!important;color:#000;border-color:#fff;box-shadow:0 0 30px #00ff88;}
-.opt-btn.wrong{background:#ff3344!important;border-color:#fff;box-shadow:0 0 30px #ff3344;}
-#floater{position:absolute;font-size:26px;font-weight:900;color:#00ff88;text-shadow:0 0 15px #00ff88;pointer-events:none;opacity:0;transition:all 0.4s ease-out;}
-#hint{margin-top:25px;font-size:13px;color:rgba(255,255,255,0.4);letter-spacing:1px;}
-#gameOverModal{position:fixed;inset:0;background:rgba(3,6,17,0.95);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(20px);text-align:center;}
-#gameOverModal.active{display:flex;}
-.go-title{font-size:52px;font-weight:900;color:#ff3344;text-shadow:0 0 30px #ff3344;letter-spacing:2px;}
-.go-stats{font-size:24px;margin:20px 0 30px;line-height:1.6;color:#ddd;}
-.btn-restart{background:#00f0ff;color:#000;border:none;padding:16px 48px;border-radius:35px;font-size:20px;font-weight:900;cursor:pointer;box-shadow:0 0 30px #00f0ff;}
-</style></head><body>
-<div id="hud"><div>ЯДРА: <span id="livesVal" style="color:#ff3344;">♥♥♥</span></div><div>СЧЁТ: <span id="score" class="val">0</span></div><div>КОМБО: <span id="combo" class="val">x0</span></div></div>
-<div class="timer-track"><div id="timerBar"></div></div>
-<div id="floater">+100</div>
-<div id="equation">-- + --</div>
-<div class="options-grid" id="opts"></div>
-<div id="hint">КЛАВИШИ 1, 2, 3, 4</div>
-<div id="gameOverModal">
-<div class="go-title">СИСТЕМА ЗАБЛОКИРОВАНА</div>
-<div class="go-stats">ИТОГ: <span id="finalScore" style="color:#00ff88;font-weight:bold;">0</span><br>МАКС. КОМБО: <span id="finalCombo" style="color:#00f0ff;font-weight:bold;">x0</span><br>РАНГ: <span id="finalRank" style="color:#ffaa00;font-weight:bold;">A</span></div>
-<button class="btn-restart" id="btnRestart">ПЕРЕЗАПУСК (ENTER)</button>
-</div>
-<script>
-${COMMON_GAME_HEADER}
-const actx=new(window.AudioContext||window.webkitAudioContext)();
-function playTone(f,t,d,g){if(actx.state==='suspended')actx.resume();const o=actx.createOscillator(),gg=actx.createGain();o.type=t;o.frequency.setValueAtTime(f,actx.currentTime);gg.gain.setValueAtTime(g,actx.currentTime);gg.gain.exponentialRampToValueAtTime(0.0001,actx.currentTime+d);o.connect(gg);gg.connect(actx.destination);o.start();o.stop(actx.currentTime+d);}
-let score=0,combo=0,maxCombo=0,lives=3,currentAns=0,timeLeft=100,isGameOver=false;
-const eqEl=document.getElementById('equation'),optsEl=document.getElementById('opts'),scoreEl=document.getElementById('score'),comboEl=document.getElementById('combo'),livesEl=document.getElementById('livesVal'),timerBar=document.getElementById('timerBar'),modal=document.getElementById('gameOverModal');
-function updateLives(){livesEl.textContent='♥'.repeat(Math.max(0,lives))||'0';}
-function takeDamage(){if(isGameOver)return;lives--;updateLives();combo=0;comboEl.textContent='x0';if(lives<=0)triggerGameOver();else setTimeout(genQuestion,240);}
-function triggerGameOver(){isGameOver=true;document.getElementById('finalScore').textContent=score;document.getElementById('finalCombo').textContent='x'+maxCombo;let r='F';if(score>3500)r='S+';else if(score>2400)r='S';else if(score>1600)r='A';else if(score>900)r='B';else if(score>400)r='C';document.getElementById('finalRank').textContent=r;modal.classList.add('active');sendScore('cyber-math','Реакция',score);}
-function restartGame(){score=0;combo=0;maxCombo=0;lives=3;isGameOver=false;scoreEl.textContent='0';comboEl.textContent='x0';updateLives();modal.classList.remove('active');sendScore('cyber-math','Реакция',0);genQuestion();}
-document.getElementById('btnRestart').onclick=restartGame;
-function genQuestion(){if(isGameOver)return;const ops=['+','-','×'];const op=ops[Math.floor(Math.random()*ops.length)];let a,b;if(op==='+'){a=Math.floor(Math.random()*45)+5;b=Math.floor(Math.random()*45)+5;currentAns=a+b;}else if(op==='-'){a=Math.floor(Math.random()*50)+15;b=Math.floor(Math.random()*a);currentAns=a-b;}else{a=Math.floor(Math.random()*11)+2;b=Math.floor(Math.random()*11)+2;currentAns=a*b;}eqEl.textContent=a+' '+op+' '+b;let answers=[currentAns];while(answers.length<4){let f=currentAns+(Math.floor(Math.random()*19)-9);if(f!==currentAns&&f>=0&&!answers.includes(f))answers.push(f);}answers.sort(()=>Math.random()-0.5);optsEl.innerHTML='';answers.forEach((v,i)=>{const b2=document.createElement('button');b2.className='opt-btn';b2.innerHTML='<span style="font-size:15px;opacity:0.6;margin-right:8px;">['+(i+1)+']</span>'+v;b2.onclick=()=>choose(v,b2);optsEl.appendChild(b2);});timeLeft=100;}
-function choose(v,b){if(isGameOver)return;if(v===currentAns){b.classList.add('correct');const a=100+(combo*25);score+=a;combo++;if(combo>maxCombo)maxCombo=combo;scoreEl.textContent=score;comboEl.textContent='x'+combo;sendScore('cyber-math','Реакция',score);setTimeout(genQuestion,180);}else{b.classList.add('wrong');takeDamage();}}
-window.onkeydown=e=>{if(isGameOver){if(e.key==='Enter'||e.key===' ')restartGame();return;}const btns=optsEl.querySelectorAll('.opt-btn');if(e.key>='1'&&e.key<='4'){const i=parseInt(e.key)-1;if(btns[i])btns[i].click();}};
-setInterval(()=>{if(isGameOver)return;timeLeft-=1.6;if(timeLeft<=0)takeDamage();timerBar.style.width=Math.max(0,timeLeft)+'%';},100);
-updateLives();genQuestion();
-<\/script></body></html>`;
+const GAME_NEON_STORM_HTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#030611;overflow:hidden;font-family:sans-serif;color:#fff;}canvas{display:block;}#hud{position:absolute;top:20px;left:25px;text-shadow:0 0 10px #00f0ff;}.score{font-size:28px;font-weight:900;}.sub{font-size:14px;color:#00f0ff;}#go{position:fixed;inset:0;background:rgba(3,6,17,0.95);display:none;flex-direction:column;align-items:center;justify-content:center;}.go-title{font-size:52px;font-weight:900;color:#ff3344;}.btn-restart{background:#00f0ff;color:#000;border:none;padding:16px 48px;border-radius:35px;font-size:20px;font-weight:900;cursor:pointer;margin-top:20px;}</style></head><body><div id="hud"><div class="score">СЧЁТ: <span id="scoreVal">0</span></div><div class="sub">ЩИТЫ: <span id="shieldsVal">♥♥♥</span></div></div><canvas id="c"></canvas><div id="go"><div class="go-title">КОРАБЛЬ УНИЧТОЖЕН</div><div style="font-size:24px;">ИТОГ: <span id="finalScore" style="color:#00ff88;">0</span></div><button class="btn-restart" id="btnRestart">ПЕРЕЗАПУСК</button></div><script>function sendScore(g,n,s){try{window.parent.postMessage({type:'SCORE',gameId:g,game:n,score:+s||0},'*')}catch(e){}}const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');function resize(){canvas.width=innerWidth;canvas.height=innerHeight;}addEventListener('resize',resize);resize();let score=0,shields=3,isOver=false,inv=0;let player={x:canvas.width/2,y:canvas.height-90};let bullets=[],ebullets=[],enemies=[],keys={};window.onkeydown=e=>{if(isOver){if(e.key==='Enter')restart();return;}keys[e.key]=true;if(e.key===' '||e.key==='ArrowUp')shoot();};window.onkeyup=e=>keys[e.key]=false;window.onmousemove=e=>{if(!isOver)player.x=e.clientX;};window.onmousedown=()=>!isOver&&shoot();function shoot(){if(isOver)return;bullets.push({x:player.x-8,y:player.y-20,vy:-15});bullets.push({x:player.x+8,y:player.y-20,vy:-15});}function hit(){if(inv>0||isOver)return;shields--;document.getElementById('shieldsVal').textContent='♥'.repeat(Math.max(0,shields))||'0';inv=60;if(shields<=0)end();}function end(){isOver=true;document.getElementById('finalScore').textContent=score;document.getElementById('go').style.display='flex';sendScore('sib-storm','Неоновый Шторм',score);}function restart(){score=0;shields=3;isOver=false;inv=0;bullets=[];ebullets=[];enemies=[];document.getElementById('scoreVal').textContent='0';document.getElementById('shieldsVal').textContent='♥♥♥';document.getElementById('go').style.display='none';sendScore('sib-storm','Неоновый Шторм',0);}document.getElementById('btnRestart').onclick=restart;function loop(){ctx.fillStyle='rgba(3,6,17,0.35)';ctx.fillRect(0,0,canvas.width,canvas.height);if(!isOver){if(keys['ArrowLeft']||keys['a'])player.x-=9;if(keys['ArrowRight']||keys['d'])player.x+=9;player.x=Math.max(35,Math.min(canvas.width-35,player.x));if(inv>0)inv--;ctx.fillStyle='#fff';ctx.beginPath();ctx.moveTo(player.x,player.y-25);ctx.lineTo(player.x-22,player.y+20);ctx.lineTo(player.x,player.y+12);ctx.lineTo(player.x+22,player.y+20);ctx.closePath();ctx.fill();}ctx.fillStyle='#00f0ff';for(let i=bullets.length-1;i>=0;i--){let b=bullets[i];b.y+=b.vy;ctx.fillRect(b.x-3,b.y,6,18);if(b.y<-30)bullets.splice(i,1);}if(!isOver&&Math.random()<0.045){const t=['scout','fighter','heavy'][Math.floor(Math.random()*3)];enemies.push({x:Math.random()*(canvas.width-80)+40,y:-40,type:t,hp:t==='heavy'?4:t==='fighter'?2:1,vy:t==='scout'?4.5:t==='fighter'?2.6:1.5,size:t==='heavy'?44:t==='fighter'?30:22,color:t==='heavy'?'#ff0055':t==='fighter'?'#ffaa00':'#00f0ff'});}for(let i=enemies.length-1;i>=0;i--){let en=enemies[i];en.y+=en.vy;ctx.fillStyle=en.color;if(en.type==='heavy')ctx.fillRect(en.x-en.size/2,en.y-en.size/2,en.size,en.size);else{ctx.beginPath();ctx.arc(en.x,en.y,en.size/2,0,Math.PI*2);ctx.fill();}if(!isOver&&Math.hypot(player.x-en.x,player.y-en.y)<en.size/2+18){enemies.splice(i,1);hit();continue;}for(let j=bullets.length-1;j>=0;j--){let b=bullets[j];if(Math.hypot(b.x-en.x,b.y-en.y)<en.size/2+8){en.hp--;bullets.splice(j,1);if(en.hp<=0){score+=en.type==='heavy'?300:100;document.getElementById('scoreVal').textContent=score;sendScore('sib-storm','Неоновый Шторм',score);enemies.splice(i,1);break;}}}if(en.y>canvas.height+50)enemies.splice(i,1);}requestAnimationFrame(loop);}loop();<\/script></body></html>`;
 
-const GAME_NEON_STORM_HTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
-*{margin:0;padding:0;box-sizing:border-box;}body{background:#030611;overflow:hidden;font-family:sans-serif;color:#fff;}canvas{display:block;}
-#hud{position:absolute;top:20px;left:25px;pointer-events:none;text-shadow:0 0 10px #00f0ff;z-index:10;}
-.score{font-size:28px;font-weight:900;}.sub{font-size:14px;color:#00f0ff;margin-top:5px;}
-#gameOverModal{position:fixed;inset:0;background:rgba(3,6,17,0.95);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:100;text-align:center;}
-#gameOverModal.active{display:flex;}
-.go-title{font-size:52px;font-weight:900;color:#ff3344;text-shadow:0 0 30px #ff3344;}
-.btn-restart{background:#00f0ff;color:#000;border:none;padding:16px 48px;border-radius:35px;font-size:20px;font-weight:900;cursor:pointer;box-shadow:0 0 30px #00f0ff;margin-top:20px;}
-</style></head><body>
-<div id="hud"><div class="score">СЧЁТ: <span id="scoreVal">0</span></div><div class="sub">ЩИТЫ: <span id="shieldsVal" style="color:#00ff88;">♥♥♥</span></div></div>
-<canvas id="c"></canvas>
-<div id="gameOverModal"><div class="go-title">КОРАБЛЬ УНИЧТОЖЕН</div><div style="font-size:24px;margin-top:15px;">ИТОГ: <span id="finalScore" style="color:#00ff88;">0</span></div><button class="btn-restart" id="btnRestart">ПЕРЕЗАПУСК</button></div>
-<script>
-${COMMON_GAME_HEADER}
-const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
-function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}window.onresize=resize;resize();
-let score=0,shields=3,isGameOver=false,invulnFrames=0,screenShake=0;
-let player={x:canvas.width/2,y:canvas.height-90};
-let bullets=[],enemyBullets=[],enemies=[],stars=[],keys={};
-for(let i=0;i<75;i++)stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,spd:Math.random()*3+1,s:Math.random()*2});
-window.onkeydown=e=>{if(isGameOver){if(e.key==='Enter'||e.key===' ')restart();return;}keys[e.key]=true;if(e.key===' '||e.key==='ArrowUp')shoot();};
-window.onkeyup=e=>{keys[e.key]=false;};
-window.onmousemove=e=>{if(!isGameOver)player.x=e.clientX;};
-window.onmousedown=()=>{if(!isGameOver)shoot();};
-function shoot(){if(isGameOver)return;bullets.push({x:player.x-8,y:player.y-20,vy:-15});bullets.push({x:player.x+8,y:player.y-20,vy:-15});}
-function hit(){if(invulnFrames>0||isGameOver)return;shields--;document.getElementById('shieldsVal').textContent='♥'.repeat(Math.max(0,shields))||'0';screenShake=15;invulnFrames=60;if(shields<=0)end();}
-function end(){isGameOver=true;document.getElementById('finalScore').textContent=score;document.getElementById('gameOverModal').classList.add('active');sendScore('sib-storm','Неоновый Шторм',score);}
-function restart(){score=0;shields=3;isGameOver=false;invulnFrames=0;bullets=[];enemyBullets=[];enemies=[];document.getElementById('scoreVal').textContent='0';document.getElementById('shieldsVal').textContent='♥♥♥';document.getElementById('gameOverModal').classList.remove('active');sendScore('sib-storm','Неоновый Шторм',0);}
-document.getElementById('btnRestart').onclick=restart;
-function spawn(){if(Math.random()<0.045){const t=['scout','fighter','heavy'][Math.floor(Math.random()*3)];enemies.push({x:Math.random()*(canvas.width-80)+40,y:-40,type:t,hp:t==='heavy'?4:(t==='fighter'?2:1),vy:t==='scout'?4.5:(t==='fighter'?2.6:1.5),size:t==='heavy'?44:(t==='fighter'?30:22),color:t==='heavy'?'#ff0055':(t==='fighter'?'#ffaa00':'#00f0ff'),shootTimer:Math.floor(Math.random()*60)+40});}}
-function loop(){
-ctx.save();if(screenShake>0){ctx.translate((Math.random()-0.5)*screenShake,(Math.random()-0.5)*screenShake);screenShake*=0.9;if(screenShake<0.5)screenShake=0;}
-ctx.fillStyle='rgba(3,6,17,0.35)';ctx.fillRect(0,0,canvas.width,canvas.height);
-ctx.fillStyle='rgba(255,255,255,0.7)';stars.forEach(st=>{st.y+=st.spd;if(st.y>canvas.height){st.y=0;st.x=Math.random()*canvas.width;}ctx.fillRect(st.x,st.y,st.s,st.s);});
-if(!isGameOver){if(keys['ArrowLeft']||keys['a'])player.x-=9;if(keys['ArrowRight']||keys['d'])player.x+=9;player.x=Math.max(35,Math.min(canvas.width-35,player.x));if(invulnFrames>0)invulnFrames--;if(invulnFrames===0||Math.floor(invulnFrames/4)%2===0){ctx.fillStyle='#fff';ctx.beginPath();ctx.moveTo(player.x,player.y-25);ctx.lineTo(player.x-22,player.y+20);ctx.lineTo(player.x,player.y+12);ctx.lineTo(player.x+22,player.y+20);ctx.closePath();ctx.fill();}}
-ctx.fillStyle='#00f0ff';for(let i=bullets.length-1;i>=0;i--){let b=bullets[i];b.y+=b.vy;ctx.fillRect(b.x-3,b.y,6,18);if(b.y<-30)bullets.splice(i,1);}
-ctx.fillStyle='#ff3344';for(let i=enemyBullets.length-1;i>=0;i--){let eb=enemyBullets[i];eb.y+=eb.vy;ctx.beginPath();ctx.arc(eb.x,eb.y,5,0,Math.PI*2);ctx.fill();if(!isGameOver&&Math.hypot(player.x-eb.x,player.y-eb.y)<22){enemyBullets.splice(i,1);hit();}else if(eb.y>canvas.height+20)enemyBullets.splice(i,1);}
-if(!isGameOver)spawn();
-for(let i=enemies.length-1;i>=0;i--){let en=enemies[i];en.y+=en.vy;if(en.type!=='scout'){en.shootTimer--;if(en.shootTimer<=0){enemyBullets.push({x:en.x,y:en.y+en.size/2,vy:5.5});en.shootTimer=en.type==='heavy'?45:75;}}
-ctx.fillStyle=en.color;if(en.type==='heavy'){ctx.fillRect(en.x-en.size/2,en.y-en.size/2,en.size,en.size);}else{ctx.beginPath();ctx.arc(en.x,en.y,en.size/2,0,Math.PI*2);ctx.fill();}
-if(!isGameOver&&Math.hypot(player.x-en.x,player.y-en.y)<en.size/2+18){enemies.splice(i,1);hit();continue;}
-for(let j=bullets.length-1;j>=0;j--){let b=bullets[j];if(Math.hypot(b.x-en.x,b.y-en.y)<en.size/2+8){en.hp--;bullets.splice(j,1);if(en.hp<=0){score+=en.type==='heavy'?300:100;document.getElementById('scoreVal').textContent=score;sendScore('sib-storm','Неоновый Шторм',score);enemies.splice(i,1);break;}}}
-if(en.y>canvas.height+50)enemies.splice(i,1);}
-ctx.restore();requestAnimationFrame(loop);}
-loop();
-<\/script></body></html>`;
+const GAME_CYBER_PONG_HTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#060914;overflow:hidden;font-family:sans-serif;color:#fff;}canvas{display:block;}#hud{position:absolute;top:25px;width:100%;display:flex;justify-content:space-around;font-size:26px;font-weight:900;}#go{position:fixed;inset:0;background:rgba(3,6,17,0.95);display:none;flex-direction:column;align-items:center;justify-content:center;}.go-title{font-size:52px;font-weight:900;color:#00ff88;}.btn-restart{background:#00f0ff;color:#000;border:none;padding:16px 48px;border-radius:35px;font-size:20px;font-weight:900;cursor:pointer;margin-top:20px;}</style></head><body><div id="hud"><div style="color:#00f0ff;">ИГРОК: <span id="p1Lives">♥♥♥</span></div><div style="color:#ff007f;">ИИ: <span id="p2Lives">♥♥♥</span></div></div><canvas id="c"></canvas><div id="go"><div class="go-title" id="resTitle">ПОБЕДА!</div><button class="btn-restart" id="btnRestart">РЕВАНШ</button></div><script>function sendScore(g,n,s){try{window.parent.postMessage({type:'SCORE',gameId:g,game:n,score:+s||0},'*')}catch(e){}}const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');function resize(){canvas.width=innerWidth;canvas.height=innerHeight;}addEventListener('resize',resize);resize();let p1Lives=3,p2Lives=3,isOver=false;let p1={y:canvas.height/2-60,h:120,w:18},p2={y:canvas.height/2-60,h:120,w:18},ball={x:canvas.width/2,y:canvas.height/2,vx:10,vy:5,r:10};function update(){document.getElementById('p1Lives').textContent='♥'.repeat(Math.max(0,p1Lives))||'0';document.getElementById('p2Lives').textContent='♥'.repeat(Math.max(0,p2Lives))||'0';}window.onkeydown=e=>{if(isOver){if(e.key==='Enter')restart();}};window.onmousemove=e=>{if(!isOver)p1.y=e.clientY-p1.h/2;};function reset(){ball.x=canvas.width/2;ball.y=canvas.height/2;ball.vx=(Math.random()>0.5?1:-1)*10;ball.vy=(Math.random()-0.5)*8;}function end(w){isOver=true;document.getElementById('resTitle').textContent=w?'ПОБЕДА!':'ПОРАЖЕНИЕ';document.getElementById('go').style.display='flex';sendScore('cyber-pong','Кибер-Понг',w?500:0);}function restart(){p1Lives=3;p2Lives=3;isOver=false;update();reset();document.getElementById('go').style.display='none';sendScore('cyber-pong','Кибер-Понг',0);}document.getElementById('btnRestart').onclick=restart;function loop(){ctx.fillStyle='rgba(6,9,20,0.35)';ctx.fillRect(0,0,canvas.width,canvas.height);if(!isOver){p2.y+=(ball.y-(p2.y+p2.h/2))*0.09;ball.x+=ball.vx;ball.y+=ball.vy;if(ball.y<10||ball.y>canvas.height-10)ball.vy=-ball.vy;if(ball.x<40+p1.w&&ball.y>p1.y&&ball.y<p1.y+p1.h)ball.vx=Math.abs(ball.vx)*1.05;if(ball.x>canvas.width-40-p2.w&&ball.y>p2.y&&ball.y<p2.y+p2.h)ball.vx=-Math.abs(ball.vx)*1.05;if(ball.x<0){p1Lives--;update();if(p1Lives<=0)end(false);else reset();}if(ball.x>canvas.width){p2Lives--;update();if(p2Lives<=0)end(true);else reset();}}ctx.fillStyle='#00f0ff';ctx.fillRect(40,p1.y,p1.w,p1.h);ctx.fillStyle='#ff007f';ctx.fillRect(canvas.width-40-p2.w,p2.y,p2.w,p2.h);ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);ctx.fill();requestAnimationFrame(loop);}update();loop();<\/script></body></html>`;
 
-const GAME_CYBER_PONG_HTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
-*{margin:0;padding:0;box-sizing:border-box;}body{background:#060914;overflow:hidden;font-family:sans-serif;color:#fff;}canvas{display:block;}
-#hud{position:absolute;top:25px;width:100%;display:flex;justify-content:space-around;font-size:26px;font-weight:900;pointer-events:none;}
-#gameOverModal{position:fixed;inset:0;background:rgba(3,6,17,0.95);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:100;text-align:center;}
-#gameOverModal.active{display:flex;}
-.go-title{font-size:52px;font-weight:900;color:#00ff88;text-shadow:0 0 30px #00ff88;}
-.btn-restart{background:#00f0ff;color:#000;border:none;padding:16px 48px;border-radius:35px;font-size:20px;font-weight:900;cursor:pointer;box-shadow:0 0 30px #00f0ff;margin-top:20px;}
-</style></head><body>
-<div id="hud"><div style="color:#00f0ff;">ИГРОК: <span id="p1Lives">♥♥♥</span></div><div style="color:#ff007f;">ИИ: <span id="p2Lives">♥♥♥</span></div></div>
-<canvas id="c"></canvas>
-<div id="gameOverModal"><div class="go-title" id="resTitle">ПОБЕДА!</div><button class="btn-restart" id="btnRestart">РЕВАНШ</button></div>
-<script>
-${COMMON_GAME_HEADER}
-const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
-function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}window.onresize=resize;resize();
-let p1Lives=3,p2Lives=3,isGameOver=false;
-let p1={y:canvas.height/2-60,h:120,w:18},p2={y:canvas.height/2-60,h:120,w:18},ball={x:canvas.width/2,y:canvas.height/2,vx:10,vy:5,r:10},trail=[];
-function update(){document.getElementById('p1Lives').textContent='♥'.repeat(Math.max(0,p1Lives))||'0';document.getElementById('p2Lives').textContent='♥'.repeat(Math.max(0,p2Lives))||'0';}
-window.onkeydown=e=>{if(isGameOver){if(e.key==='Enter'||e.key===' ')restart();}};
-window.onmousemove=e=>{if(!isGameOver)p1.y=e.clientY-p1.h/2;};
-function reset(){ball.x=canvas.width/2;ball.y=canvas.height/2;ball.vx=(Math.random()>0.5?1:-1)*10;ball.vy=(Math.random()-0.5)*8;trail=[];}
-function end(w){isGameOver=true;document.getElementById('resTitle').textContent=w?'ПОБЕДА!':'ПОРАЖЕНИЕ';document.getElementById('resTitle').style.color=w?'#00ff88':'#ff4757';document.getElementById('gameOverModal').classList.add('active');sendScore('cyber-pong','Кибер-Понг',w?500:0);}
-function restart(){p1Lives=3;p2Lives=3;isGameOver=false;update();reset();document.getElementById('gameOverModal').classList.remove('active');sendScore('cyber-pong','Кибер-Понг',0);}
-document.getElementById('btnRestart').onclick=restart;
-function loop(){
-ctx.fillStyle='rgba(6,9,20,0.35)';ctx.fillRect(0,0,canvas.width,canvas.height);
-if(!isGameOver){p2.y+=(ball.y-(p2.y+p2.h/2))*0.09;trail.push({x:ball.x,y:ball.y});if(trail.length>8)trail.shift();ball.x+=ball.vx;ball.y+=ball.vy;
-if(ball.y<10||ball.y>canvas.height-10)ball.vy=-ball.vy;
-if(ball.x<40+p1.w&&ball.y>p1.y&&ball.y<p1.y+p1.h)ball.vx=Math.abs(ball.vx)*1.05;
-if(ball.x>canvas.width-40-p2.w&&ball.y>p2.y&&ball.y<p2.y+p2.h)ball.vx=-Math.abs(ball.vx)*1.05;
-if(ball.x<0){p1Lives--;update();if(p1Lives<=0)end(false);else reset();}
-if(ball.x>canvas.width){p2Lives--;update();if(p2Lives<=0)end(true);else reset();}}
-for(let i=0;i<trail.length;i++){ctx.fillStyle='#00f0ff';ctx.globalAlpha=i/trail.length;ctx.beginPath();ctx.arc(trail[i].x,trail[i].y,ball.r*(i/trail.length),0,Math.PI*2);ctx.fill();}
-ctx.globalAlpha=1;
-ctx.fillStyle='#00f0ff';ctx.fillRect(40,p1.y,p1.w,p1.h);
-ctx.fillStyle='#ff007f';ctx.fillRect(canvas.width-40-p2.w,p2.y,p2.w,p2.h);
-ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);ctx.fill();
-requestAnimationFrame(loop);}
-update();loop();
-<\/script></body></html>`;
-
-const GAME_SKYLINE_HTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
-*{margin:0;padding:0;box-sizing:border-box;}body{background:#050814;overflow:hidden;font-family:sans-serif;color:#fff;text-align:center;}
-canvas{display:block;margin:0 auto;}
-#hud{position:absolute;top:20px;left:50%;transform:translateX(-50%);font-size:24px;font-weight:900;}
-#gameOver{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:none;flex-direction:column;align-items:center;justify-content:center;}
-#gameOver.active{display:flex;}.btn-re{background:#ff007f;color:#fff;border:none;padding:14px 40px;border-radius:30px;font-weight:bold;cursor:pointer;margin-top:15px;}
-</style></head><body>
-<div id="hud">ЭТАЖЕЙ: <span id="score" style="color:#00f0ff;">0</span></div>
-<canvas id="c"></canvas>
-<div id="gameOver"><div style="font-size:40px;font-weight:bold;color:#ff3344;">БАШНЯ УПАЛА</div><button class="btn-re" id="btnRe">ЗАНОВО</button></div>
-<script>
-${COMMON_GAME_HEADER}
-const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
-canvas.width=400;canvas.height=window.innerHeight;
-let score=0,speed=3,state='play';
-let stack=[{x:100,y:canvas.height-40,w:200,h:30,color:'#00f0ff'}];
-let current={x:0,y:canvas.height-80,w:200,h:30,vx:speed,color:'#ff007f'};
-window.onclick=place;
-window.onkeydown=e=>{if(e.key===' '||e.key==='Enter')place();};
-function place(){if(state!=='play')return;let top=stack[stack.length-1];let diff=current.x-top.x;if(Math.abs(diff)>=current.w){state='over';sendScore('skyline-blocks','Skyline',score);document.getElementById('gameOver').classList.add('active');return;}let newW=current.w-Math.abs(diff);let newX=diff>0?current.x:top.x;stack.push({x:newX,y:current.y,w:newW,h:30,color:current.color});score++;document.getElementById('score').textContent=score;sendScore('skyline-blocks','Skyline',score);if(stack.length>8){stack.forEach(b=>b.y+=35);current.y+=35;}current={x:0,y:current.y-35,w:newW,h:30,vx:(speed+score*0.15)*(Math.random()>0.5?1:-1),color:score%2===0?'#ff007f':'#00f0ff'};}
-function loop(){ctx.fillStyle='#050814';ctx.fillRect(0,0,canvas.width,canvas.height);stack.forEach(b=>{ctx.fillStyle=b.color;ctx.fillRect(b.x,b.y,b.w,b.h);});if(state==='play'){current.x+=current.vx;if(current.x<0||current.x+current.w>canvas.width)current.vx*=-1;ctx.fillStyle=current.color;ctx.fillRect(current.x,current.y,current.w,current.h);}requestAnimationFrame(loop);}
-document.getElementById('btnRe').onclick=()=>{stack=[{x:100,y:canvas.height-40,w:200,h:30,color:'#00f0ff'}];current={x:0,y:canvas.height-75,w:200,h:30,vx:speed,color:'#ff007f'};score=0;state='play';document.getElementById('score').textContent='0';document.getElementById('gameOver').classList.remove('active');sendScore('skyline-blocks','Skyline',0);};
-loop();
-<\/script></body></html>`;
+const GAME_SKYLINE_HTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#050814;overflow:hidden;font-family:sans-serif;color:#fff;text-align:center;}canvas{display:block;margin:0 auto;}#hud{position:absolute;top:20px;left:50%;transform:translateX(-50%);font-size:24px;font-weight:900;}#go{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:none;flex-direction:column;align-items:center;justify-content:center;}.btn-re{background:#ff007f;color:#fff;border:none;padding:14px 40px;border-radius:30px;font-weight:bold;cursor:pointer;margin-top:15px;}</style></head><body><div id="hud">ЭТАЖЕЙ: <span id="score" style="color:#00f0ff;">0</span></div><canvas id="c"></canvas><div id="go"><div style="font-size:40px;font-weight:bold;color:#ff3344;">БАШНЯ УПАЛА</div><button class="btn-re" id="btnRe">ЗАНОВО</button></div><script>function sendScore(g,n,s){try{window.parent.postMessage({type:'SCORE',gameId:g,game:n,score:+s||0},'*')}catch(e){}}const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');canvas.width=400;canvas.height=innerHeight;let score=0,speed=3,state='play';let stack=[{x:100,y:canvas.height-40,w:200,h:30,color:'#00f0ff'}];let cur={x:0,y:canvas.height-80,w:200,h:30,vx:speed,color:'#ff007f'};window.onclick=place;window.onkeydown=e=>{if(e.key===' '||e.key==='Enter')place();};function place(){if(state!=='play')return;let top=stack[stack.length-1];let diff=cur.x-top.x;if(Math.abs(diff)>=cur.w){state='over';sendScore('skyline-blocks','Skyline',score);document.getElementById('go').style.display='flex';return;}let newW=cur.w-Math.abs(diff);let newX=diff>0?cur.x:top.x;stack.push({x:newX,y:cur.y,w:newW,h:30,color:cur.color});score++;document.getElementById('score').textContent=score;sendScore('skyline-blocks','Skyline',score);if(stack.length>8){stack.forEach(b=>b.y+=35);cur.y+=35;}cur={x:0,y:cur.y-35,w:newW,h:30,vx:(speed+score*0.15)*(Math.random()>0.5?1:-1),color:score%2===0?'#ff007f':'#00f0ff'};}function loop(){ctx.fillStyle='#050814';ctx.fillRect(0,0,canvas.width,canvas.height);stack.forEach(b=>{ctx.fillStyle=b.color;ctx.fillRect(b.x,b.y,b.w,b.h);});if(state==='play'){cur.x+=cur.vx;if(cur.x<0||cur.x+cur.w>canvas.width)cur.vx*=-1;ctx.fillStyle=cur.color;ctx.fillRect(cur.x,cur.y,cur.w,cur.h);}requestAnimationFrame(loop);}document.getElementById('btnRe').onclick=()=>{stack=[{x:100,y:canvas.height-40,w:200,h:30,color:'#00f0ff'}];cur={x:0,y:canvas.height-75,w:200,h:30,vx:speed,color:'#ff007f'};score=0;state='play';document.getElementById('score').textContent='0';document.getElementById('go').style.display='none';sendScore('skyline-blocks','Skyline',0);};loop();<\/script></body></html>`;
 
 /* =====================================================================
-   7. SUPABASE + SIB
+   SUPABASE
    ===================================================================== */
 const SUPABASE_URL = 'https://otsuvtcxnbdxrodayeta.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im90c3V2dGN4bmJkeHJvZGF5ZXRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4NjkyMzQsImV4cCI6MjEwNTQ0NTIzNH0.fsS73p3tRcbe0JIeRVjeqPStFzRe0lMKGLJQm7ki8oA';
 let sb = null;
-try {
-  if (window.supabase) sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-} catch(e) { console.warn('Supabase init failed', e); }
+try { if (window.supabase) sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch(e){}
 
+/* =====================================================================
+   КОДИРОВКА — fixMojibake
+   ===================================================================== */
+const CP1251_TABLE = 'ЂЃ‚ѓ„…†‡€‰Љ‹ЊЌЋЏђ‘’“”•–—™љ›њќћџЎўЈ¤Ґ¦§Ё©Є«¬®Ї°±Ііґµ¶·ё№є»јЅѕїАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя';
+
+function fixMojibake(text) {
+  const markers = (text.match(/Р[А-яІ-ӿ]/g) || []).length + (text.match(/С[А-яІ-ӿ]/g) || []).length + (text.match(/вЂ|в„/g) || []).length;
+  const cyr = (text.match(/[А-Яа-яЁё]/g) || []).length;
+  if (markers < 10 || markers < cyr * 0.5) return text;
+  try {
+    const bytes = new Uint8Array(text.length);
+    for (let i = 0; i < text.length; i++) {
+      const c = text.charCodeAt(i);
+      if (c < 0x80) bytes[i] = c;
+      else { const idx = CP1251_TABLE.indexOf(text[i]); bytes[i] = idx >= 0 ? 0x80 + idx : 0x3F; }
+    }
+    const fixed = new TextDecoder('utf-8', { fatal: false }).decode(bytes);
+    const newCyr = (fixed.match(/[А-Яа-яЁё]/g) || []).length;
+    if (newCyr > cyr * 0.8) return fixed;
+  } catch(e) {}
+  return text;
+}
+
+async function fetchGameHtml(url) {
+  const res = await fetch(url, { mode: 'cors' });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const buf = await res.arrayBuffer();
+  const bytes = new Uint8Array(buf);
+  let text = new TextDecoder('utf-8', { fatal: false }).decode(bytes);
+  const replacements = (text.match(/\uFFFD/g) || []).length;
+  if (replacements > 5) {
+    try { text = new TextDecoder('windows-1251').decode(bytes); } catch(e){}
+  }
+  return fixMojibake(text);
+}
+
+/* =====================================================================
+   SIB STATE
+   ===================================================================== */
 const SIB = {
-  LS:{ tickets:'sib_tickets_v1', incidents:'sib_incidents_v1', records:'sib_records_v2', creatorCode:'sib_creator_code_v1' },
-  badWords:['хуй','хуя','хуе','хую','пизд','бляд','блять','бля','еба','ебал','ебан','ебат','ебет','еби','ебо','ебуч','ебу','ебли','заеб','заёб','наеб','наёб','отъеб','отъёб','подъеб','подъёб','перееб','переёб','приеб','приёб','уеб','уёб','разъеб','разъёб','сук','сука','суки','сучар','сучк','муд','муда','манди','манда','пидор','пидар','пидр','гандон','гондон','шлюх','шлюш','хер','херн','хрен','охуе','охуи','ахуе','ахуи','нахуй','нахуя','похуй','похуя','хуесос','соси','сосал','сосет','сосёт','дроч','дрочи','сперм','говн','говна','говно','гавн','срак','срака','срать','сру','срут','перд','пердун','бзд','бзде','жоп','жопа','жопу','попк','анус','очко','письк','писюн','яичк','яйц','член','залуп','проститут','шалав','шала','сись','сися','титьк','тить','пизда','пизде','пизду','пиздой','пиздец','пиздато','пиздю','пиздюк','ебало','ебала','ебану','ебанут','ебаши','ебен','ебет','еблась','ебло','ебля','ебну','ебнут','ебут','залупа','анал','секс','секса','сексу','порн','порно','fuck','fuk','shit','bitch','cunt','dick','pussy','asshole','bastard','whore','slut','nigger','faggot','fag','rape','porn','sex','suck','blowjob','cock','penis','vagina','tits','boobs','nazi','hitler'],
+  LS: { tickets:'sib_tickets_v1', incidents:'sib_incidents_v1', records:'sib_records_v2', creatorCode:'sib_creator_code_v1' },
+  badWords: ['хуй','пизд','бляд','еба','заеб','наеб','сука','муда','пидор','гандон','шлюх','охуе','нахуй','похуй','дроч','говн','жоп','анус','член','пизда','ебало','залупа','секс','порн','fuck','shit','bitch','cunt','dick','pussy','nigger','faggot','porn'],
   records:{}, incidents:[], tickets:[],
   activeSession:null, sessionTimer:null, sessionSecondsLeft:0,
   creatorCode:'CREATOR-0000', cloudOnline:false,
@@ -1417,42 +1115,20 @@ const SIB = {
       if(tRes.error) throw tRes.error;
       if(rRes.error) throw rRes.error;
       if(iRes.error) throw iRes.error;
-      this.tickets = (tRes.data || []).map(x => ({
-        id: x.id, minutes: x.minutes, type: x.type,
-        durationSeconds: x.duration_seconds,
-        createdAt: new Date(x.created_at).getTime(),
-        used: x.used, banned: x.banned
-      }));
+      this.tickets = (tRes.data || []).map(x => ({ id:x.id, minutes:x.minutes, type:x.type, durationSeconds:x.duration_seconds, createdAt:new Date(x.created_at).getTime(), used:x.used, banned:x.banned }));
       this.records = {};
       (rRes.data || []).forEach(rec => {
         if(!this.records[rec.game_id]) this.records[rec.game_id] = [];
-        this.records[rec.game_id].push({
-          name: rec.player_name, score: rec.score,
-          time: new Date(rec.created_at).getTime()
-        });
+        this.records[rec.game_id].push({ name: rec.player_name, score: rec.score, time: new Date(rec.created_at).getTime() });
       });
-      Object.keys(this.records).forEach(gid => {
-        this.records[gid].sort((a,b) => b.score - a.score);
-      });
-      this.incidents = (iRes.data || []).map(x => ({
-        time: new Date(x.created_at).getTime(),
-        name: x.name, ticketId: x.ticket_id,
-        photo: x.photo, reason: x.reason
-      }));
-      if(cRes.data){
-        const cfg = {};
-        cRes.data.forEach(x => cfg[x.key] = x.value);
-        if(cfg.creator_code) this.creatorCode = cfg.creator_code;
-      }
+      Object.keys(this.records).forEach(gid => { this.records[gid].sort((a,b) => b.score - a.score); });
+      this.incidents = (iRes.data || []).map(x => ({ time:new Date(x.created_at).getTime(), name:x.name, ticketId:x.ticket_id, photo:x.photo, reason:x.reason }));
+      if(cRes.data){ const cfg = {}; cRes.data.forEach(x => cfg[x.key] = x.value); if(cfg.creator_code) this.creatorCode = cfg.creator_code; }
       this._saveLocal();
       this.cloudOnline = true;
-    } catch(e) {
-      console.warn('Supabase load failed, fallback на localStorage', e);
-      this.cloudOnline = false;
-    }
+    } catch(e) { this.cloudOnline = false; }
     this._updateCloudBadge();
   },
-
   _loadLocal(){
     try{
       this.records=JSON.parse(localStorage.getItem(this.LS.records)||'{}');
@@ -1473,76 +1149,36 @@ const SIB = {
   _updateCloudBadge(){
     const el = document.getElementById('cloudStatusBadge');
     if(!el) return;
-    if(this.cloudOnline){
-      el.classList.remove('offline');
-      el.innerHTML = '☁️ <span>Облако</span>';
-      el.title = 'Синхронизировано с Supabase';
-    } else {
-      el.classList.add('offline');
-      el.innerHTML = '📴 <span>Локально</span>';
-      el.title = 'Supabase недоступен — работаем локально';
-    }
+    if(this.cloudOnline){ el.classList.remove('offline'); el.innerHTML = '☁️ <span>Облако</span>'; }
+    else { el.classList.add('offline'); el.innerHTML = '📴 <span>Локально</span>'; }
   },
   saveRecords(){ this._saveLocal(); },
   saveIncidents(){ this._saveLocal(); },
   saveTickets(){ this._saveLocal(); },
   saveCreatorCode(){ this._saveLocal(); },
   findTicket(id){ return this.tickets.find(t=>t.id===id)||null; },
-  async banTicket(id){
-    const t=this.findTicket(id); if(t){ t.banned=true; this.saveTickets(); }
-    if(sb){ try { await sb.from('tickets').update({banned:true}).eq('id',id); } catch(e){} }
-  },
-  async removeTicket(id){
-    this.tickets=this.tickets.filter(t=>t.id!==id); this.saveTickets();
-    if(sb){ try { await sb.from('tickets').delete().eq('id',id); } catch(e){} }
-  },
-  async resetTickets(){
-    this.tickets=[]; this.saveTickets();
-    if(sb){ try { await sb.from('tickets').delete().neq('id',''); } catch(e){} }
-  },
+  async banTicket(id){ const t=this.findTicket(id); if(t){ t.banned=true; this.saveTickets(); } if(sb){ try { await sb.from('tickets').update({banned:true}).eq('id',id); } catch(e){} } },
+  async removeTicket(id){ this.tickets=this.tickets.filter(t=>t.id!==id); this.saveTickets(); if(sb){ try { await sb.from('tickets').delete().eq('id',id); } catch(e){} } },
+  async resetTickets(){ this.tickets=[]; this.saveTickets(); if(sb){ try { await sb.from('tickets').delete().neq('id',''); } catch(e){} } },
   async addIncident(data){
-    this.incidents.unshift({time:Date.now(),name:data.name,ticketId:data.ticketId,
-      photo:data.photo||'',reason:data.reason||'Нецензурное имя'});
+    this.incidents.unshift({time:Date.now(),name:data.name,ticketId:data.ticketId,photo:data.photo||'',reason:data.reason||'Нецензурное имя'});
     if(this.incidents.length>200) this.incidents.length=200;
     this.saveIncidents();
-    if(sb){
-      try {
-        await sb.from('incidents').insert([{
-          name: data.name, ticket_id: data.ticketId,
-          photo: data.photo || '', reason: data.reason || 'Нецензурное имя'
-        }]);
-      } catch(e){ console.warn('incident insert failed', e); }
-    }
+    if(sb){ try { await sb.from('incidents').insert([{ name:data.name, ticket_id:data.ticketId, photo:data.photo||'', reason:data.reason||'Нецензурное имя' }]); } catch(e){} }
   },
-  getGameRecords(gameId){
-    return (this.records[gameId] || []).slice().sort((a,b)=>b.score-a.score);
-  },
-  getGameBest(gameId){
-    const arr = this.records[gameId] || [];
-    return arr.length ? Math.max(...arr.map(r=>r.score)) : 0;
-  },
+  getGameRecords(gameId){ return (this.records[gameId] || []).slice().sort((a,b)=>b.score-a.score); },
+  getGameBest(gameId){ const arr = this.records[gameId] || []; return arr.length ? Math.max(...arr.map(r=>r.score)) : 0; },
   async addRecord(gameId, playerName, score){
     if(!this.records[gameId]) this.records[gameId] = [];
     this.records[gameId].push({name:playerName, score:Number(score)||0, time:Date.now()});
     this.records[gameId].sort((a,b)=>b.score-a.score);
     if(this.records[gameId].length > 100) this.records[gameId].length = 100;
     this.saveRecords();
-    if(sb){
-      try {
-        await sb.from('records').insert([{
-          game_id: gameId, player_name: playerName, score: Number(score)||0
-        }]);
-      } catch(e){ console.warn('record insert failed', e); }
-    }
+    if(sb){ try { await sb.from('records').insert([{ game_id:gameId, player_name:playerName, score:Number(score)||0 }]); } catch(e){} }
   },
   clearGameRecords(gameId){ if(this.records[gameId]){ this.records[gameId]=[]; this.saveRecords(); } },
   clearAllRecords(){ this.records = {}; this.saveRecords(); },
-  getPlayerPlace(gameId, score){
-    const arr = this.records[gameId] || [];
-    let place = 1;
-    for(const r of arr){ if(r.score > score) place++; }
-    return place;
-  },
+  getPlayerPlace(gameId, score){ const arr = this.records[gameId] || []; let place = 1; for(const r of arr){ if(r.score > score) place++; } return place; },
   startSession(ticket, playerName){
     this.endSession(true);
     const totalSeconds = ticket.type==='creator'?0:(ticket.durationSeconds||300);
@@ -1551,17 +1187,11 @@ const SIB = {
     this.renderSessionHud();
     if(this.sessionTimer) clearInterval(this.sessionTimer);
     if(!this.activeSession.isCreator){
-      this.sessionTimer=setInterval(()=>{
-        this.sessionSecondsLeft--;
-        this.renderSessionHud();
-        if(this.sessionSecondsLeft<=0) this.endSession();
-      },1000);
+      this.sessionTimer=setInterval(()=>{ this.sessionSecondsLeft--; this.renderSessionHud(); if(this.sessionSecondsLeft<=0) this.endSession(); },1000);
     }
     const t=this.findTicket(ticket.id);
     if(t){ t.used=true; this.saveTickets(); }
-    if(sb && t){
-      sb.from('tickets').update({used:true}).eq('id',t.id).then(()=>{}).catch(()=>{});
-    }
+    if(sb && t){ sb.from('tickets').update({used:true}).eq('id',t.id).then(()=>{}).catch(()=>{}); }
     enterMainMenu();
   },
   endSession(silent){
@@ -1590,11 +1220,9 @@ const SIB = {
   },
   async captureOffenderPhoto(){
     try{
-      let stream=loginStream;
-      let needStop=false;
+      let stream=loginStream; let needStop=false;
       if(!stream){ stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}}); needStop=true; }
-      const v=document.createElement('video');
-      v.srcObject=stream; v.muted=true; v.playsInline=true;
+      const v=document.createElement('video'); v.srcObject=stream; v.muted=true; v.playsInline=true;
       await v.play(); await new Promise(r=>setTimeout(r,400));
       const c=document.createElement('canvas'); c.width=480; c.height=360;
       c.getContext('2d').drawImage(v,0,0,c.width,c.height);
@@ -1606,41 +1234,36 @@ const SIB = {
 SIB.load();
 
 /* =====================================================================
-   ТЕХРАБОТЫ
+   ТЕХРАБОТЫ + REALTIME
    ===================================================================== */
 async function checkMaintenance(){
   if(!sb) return;
   try {
     const { data } = await sb.from('config').select('*').in('key', ['maintenance_mode', 'maintenance_message']);
-    const cfg = {};
-    (data || []).forEach(x => cfg[x.key] = x.value);
+    const cfg = {}; (data || []).forEach(x => cfg[x.key] = x.value);
     const mode = cfg.maintenance_mode === 'on';
     const msg = cfg.maintenance_message || 'Идут технические работы. Автомат скоро вернётся!';
     const screen = document.getElementById('maintenanceScreen');
     const text = document.getElementById('maintenanceText');
     if(!screen || !text) return;
     if(mode){
-      text.textContent = msg;
-      screen.classList.add('active');
+      text.textContent = msg; screen.classList.add('active');
       if(typeof SIB !== 'undefined' && SIB.activeSession) SIB.endSession(true);
       if(typeof SoundMaster !== 'undefined') SoundMaster.pauseBGM();
     } else {
       screen.classList.remove('active');
       if(typeof SoundMaster !== 'undefined') SoundMaster.resumeBGM();
     }
-  } catch(e) { console.warn('checkMaintenance', e); }
+  } catch(e) {}
 }
 setInterval(checkMaintenance, 10000);
 
-/* =====================================================================
-   REALTIME
-   ===================================================================== */
 if(sb){
   try {
     sb.channel('sibkodbox-realtime')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets' }, (payload) => {
         if(SIB.activeSession && payload.new && payload.new.id === SIB.activeSession.ticketId && payload.new.banned){
-          showCyberAlert('🚫 Ваш QR-код заблокирован. Сессия завершена.', true);
+          showCyberAlert('🚫 Ваш QR-код заблокирован.', true);
           SIB.endSession();
           SIB.load().then(()=>{ renderCarousel(); });
           return;
@@ -1656,28 +1279,20 @@ if(sb){
       .on('postgres_changes', { event: '*', schema: 'public', table: 'config' }, (payload) => {
         SIB.load().then(()=>{
           checkMaintenance();
-          if(payload.new && payload.new.key === 'games_json'){
-            loadGamesFromCloud(payload.new.value);
-          }
+          if(payload.new && payload.new.key === 'games_json') loadGamesFromCloud(payload.new.value);
         });
       })
       .subscribe();
-  } catch(e) { console.warn('Realtime subscribe failed', e); }
+  } catch(e) {}
 }
 
-/* =====================================================================
-   ЗАГРУЗКА ИГР ИЗ CLOUD
-   ===================================================================== */
 function loadGamesFromCloud(gamesJsonStr){
   if(!gamesJsonStr) return;
   try {
     const cloudGames = JSON.parse(gamesJsonStr);
     const builtIn = DEFAULT_GAMES_LIST.slice();
     const merged = [...builtIn];
-    cloudGames.forEach(g => {
-      if(builtIn.find(x => x.id === g.id)) return;
-      merged.push(g);
-    });
+    cloudGames.forEach(g => { if(builtIn.find(x => x.id === g.id)) return; merged.push(g); });
     GAMES_CATALOG = merged;
     GAMES_CATALOG.forEach(g => {
       if(g.id === 'cyber-math') g.srcdoc = GAME_CYBER_MATH_HTML;
@@ -1685,11 +1300,9 @@ function loadGamesFromCloud(gamesJsonStr){
       if(g.id === 'cyber-pong') g.srcdoc = GAME_CYBER_PONG_HTML;
       if(g.id === 'skyline-blocks') g.srcdoc = GAME_SKYLINE_HTML;
     });
-    localStorage.setItem('sib_games_catalog', JSON.stringify(
-      GAMES_CATALOG.map(g => { const c = {...g}; delete c.srcdoc; return c; })
-    ));
+    localStorage.setItem('sib_games_catalog', JSON.stringify(GAMES_CATALOG.map(g => { const c = {...g}; delete c.srcdoc; return c; })));
     renderCarousel();
-  } catch(e) { console.warn('loadGamesFromCloud', e); }
+  } catch(e) {}
 }
 async function loadGamesFromCloudOnce(){
   if(!sb) return;
@@ -1700,29 +1313,29 @@ async function loadGamesFromCloudOnce(){
 }
 
 /* =====================================================================
-   8. CATALOG
+   DEFAULT GAMES
    ===================================================================== */
 const DEFAULT_GAMES_LIST = [
-  {id:'cyber-math',title:'Реакция',genre:'Математика | Реакция',badge:'МАТЕМАТИКА',
-   desc:'Футуристический математический тренажёр.',
-   isCustomIcon:true,iconType:'math',
-   bg:'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1600&auto=format&fit=crop&q=80',
-   accent:'#00ff88',srcdoc:GAME_CYBER_MATH_HTML},
-  {id:'sib-storm',title:'Неоновый Шторм',genre:'Космический шутер',
-   desc:'Эксклюзивный аркадный шутер.',
-   isCustomIcon:true,iconType:'ship',
-   bg:'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&auto=format&fit=crop&q=80',
-   accent:'#00f0ff',srcdoc:GAME_NEON_STORM_HTML},
-  {id:'cyber-pong',title:'Кибер-Понг',genre:'Спортивная дуэль',badge:'ХИТ',
-   desc:'Футуристическая дуэль против нейросети.',
-   isCustomIcon:true,iconType:'pong',
-   bg:'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1600&auto=format&fit=crop&q=80',
-   accent:'#ff007f',srcdoc:GAME_CYBER_PONG_HTML},
-  {id:'skyline-blocks',title:'Skyline',genre:'Архитектура',badge:'ARCADE',
-   desc:'Постройте неоновый небоскреб.',
-   cover:'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&auto=format&fit=crop&q=80',
-   bg:'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=1600&auto=format&fit=crop&q=80',
-   accent:'#ff007f',srcdoc:GAME_SKYLINE_HTML}
+  { id:'cyber-math', title:'Реакция', genre:'Математика | Реакция', badge:'МАТЕМАТИКА',
+    desc:'Футуристический математический тренажёр.',
+    isCustomIcon:true, iconType:'math',
+    bg:'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1600&auto=format&fit=crop&q=80',
+    accent:'#00ff88', srcdoc:GAME_CYBER_MATH_HTML },
+  { id:'sib-storm', title:'Неоновый Шторм', genre:'Космический шутер',
+    desc:'Эксклюзивный аркадный шутер.',
+    isCustomIcon:true, iconType:'ship',
+    bg:'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&auto=format&fit=crop&q=80',
+    accent:'#00f0ff', srcdoc:GAME_NEON_STORM_HTML },
+  { id:'cyber-pong', title:'Кибер-Понг', genre:'Спортивная дуэль', badge:'ХИТ',
+    desc:'Футуристическая дуэль против нейросети.',
+    isCustomIcon:true, iconType:'pong',
+    bg:'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1600&auto=format&fit=crop&q=80',
+    accent:'#ff007f', srcdoc:GAME_CYBER_PONG_HTML },
+  { id:'skyline-blocks', title:'Skyline', genre:'Архитектура', badge:'ARCADE',
+    desc:'Постройте неоновый небоскреб.',
+    cover:'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&auto=format&fit=crop&q=80',
+    bg:'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=1600&auto=format&fit=crop&q=80',
+    accent:'#ff007f', srcdoc:GAME_SKYLINE_HTML }
 ];
 
 let GAMES_CATALOG = [];
@@ -1742,10 +1355,7 @@ try{
 function saveGamesToStorage(){
   const storable=GAMES_CATALOG.map(g=>{ const c={...g}; if(c.srcdoc) delete c.srcdoc; return c; });
   localStorage.setItem('sib_games_catalog',JSON.stringify(storable));
-  if(sb){
-    sb.from('config').upsert({ key: 'games_json', value: JSON.stringify(storable) })
-      .then(()=>{}).catch(()=>{});
-  }
+  if(sb){ sb.from('config').upsert({ key: 'games_json', value: JSON.stringify(storable) }).then(()=>{}).catch(()=>{}); }
 }
 
 let activeGameIndex=0;
@@ -1753,7 +1363,7 @@ let isGameRunning=false;
 let currentArtSide='A';
 
 /* =====================================================================
-   9. CAROUSEL
+   CAROUSEL
    ===================================================================== */
 const rail=document.getElementById('carouselRail');
 const heroTitle=document.getElementById('heroTitle');
@@ -1766,24 +1376,19 @@ const artB=document.getElementById('artBgB');
 
 function renderCarousel(){
   rail.innerHTML='';
-  if(GAMES_CATALOG.length===0){
-    heroTitle.textContent='Каталог пуст';
-    heroDesc.textContent='Добавьте игры в панели оператора.';
-    heroGenre.textContent='—'; heroBadge.textContent='—'; heroBest.textContent='🏆 —';
-    return;
-  }
+  if(GAMES_CATALOG.length===0){ heroTitle.textContent='Каталог пуст'; heroDesc.textContent='Добавьте игры.'; return; }
   if(activeGameIndex>=GAMES_CATALOG.length) activeGameIndex=0;
   GAMES_CATALOG.forEach((game,index)=>{
     const card=document.createElement('div');
     card.className=`card ${index===activeGameIndex?'active':''}`;
     if(game.isCustomIcon){
       let svg='';
-      if(game.iconType==='math') svg=`<text x="50%" y="62%" text-anchor="middle" dominant-baseline="middle" font-size="34" font-weight="900" fill="${game.accent}" font-family="sans-serif">∑</text>`;
+      if(game.iconType==='math') svg=`<text x="50%" y="62%" text-anchor="middle" dominant-baseline="middle" font-size="34" font-weight="900" fill="${game.accent}">∑</text>`;
       else if(game.iconType==='pong') svg=`<rect x="4" y="6" width="3" height="12" fill="${game.accent}"/><rect x="17" y="10" width="3" height="12" fill="#ff007f"/><circle cx="12" cy="12" r="2.5" fill="#fff"/>`;
       else svg=`<polygon points="12 2 19 21 12 17 5 21 12 2"></polygon>`;
       card.innerHTML=`<div class="card-custom-icon"><div class="grid-bg"></div><svg viewBox="0 0 24 24" fill="none" stroke="${game.accent}" stroke-width="2">${svg}</svg></div><div class="card-badge">${game.badge||'GAME'}</div>`;
     } else {
-      card.innerHTML=`<img class="card-cover" src="${game.cover||'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600'}" alt="${game.title}"><div class="card-badge">${game.badge||'ARCADE'}</div>`;
+      card.innerHTML=`<img class="card-cover" src="${game.cover||'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600'}" alt=""><div class="card-badge">${game.badge||'ARCADE'}</div>`;
     }
     const best = SIB.getGameBest(game.id);
     if(best > 0){
@@ -1817,8 +1422,7 @@ function moveToGame(index){
     c.classList.toggle('active',i===activeGameIndex);
     if(i!==activeGameIndex) c.style.transform='';
   });
-  const shift=activeGameIndex*(210+32);
-  rail.style.transform=`translateX(-${shift}px)`;
+  rail.style.transform=`translateX(-${activeGameIndex*(210+32)}px)`;
   updateGameMeta();
 }
 
@@ -1842,7 +1446,7 @@ function updateGameMeta(){
 }
 
 /* =====================================================================
-   10. LAUNCH / EXIT — ✅ FIX: фокус iframe
+   LAUNCH / EXIT — фиксы фокуса и MIME
    ===================================================================== */
 const portal=document.getElementById('launchPortal');
 const viewport=document.getElementById('gameViewport');
@@ -1859,7 +1463,6 @@ let lastGameTitle='';
 let lastGameId='';
 let resultModalOpen=false;
 
-// ✅ FIX: функция принудительного фокуса iframe
 function focusGameFrame() {
   try {
     gameFrame.focus();
@@ -1867,80 +1470,10 @@ function focusGameFrame() {
       gameFrame.contentWindow.focus();
       const body = gameFrame.contentDocument?.body;
       const canvas = gameFrame.contentDocument?.querySelector('canvas');
-      if (canvas) {
-        if (!canvas.hasAttribute('tabindex')) canvas.setAttribute('tabindex', '0');
-        canvas.focus();
-      } else if (body) {
-        body.focus();
-      }
+      if (canvas) { if (!canvas.hasAttribute('tabindex')) canvas.setAttribute('tabindex', '0'); canvas.focus(); }
+      else if (body) body.focus();
     }
-  } catch(e) { /* cross-origin */ }
-}
-
-// ============ ФИКС MIME + КОДИРОВКИ ============
-// Таблица CP1251 → Unicode (для исправления mojibake)
-const CP1251_TABLE = 'ЂЃ‚ѓ„…†‡€‰Љ‹ЊЌЋЏђ‘’“”•–—™љ›њќћџЎўЈ¤Ґ¦§Ё©Є«¬®Ї°±Ііґµ¶·ё№є»јЅѕїАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя';
-
-// Определяет "побит ли" текст — если да, чинит
-function fixMojibake(text) {
-  // Быстрая проверка: если много "Р", "С", "вЂ" — это точно mojibake
-  const mojibakeMarkers = (text.match(/Р[А-яІ-ӿќћў]/g) || []).length
-                        + (text.match(/С[А-яІ-ӿќћў]/g) || []).length
-                        + (text.match(/вЂ|в„|РІР|РЎР/g) || []).length;
-  const cyrillicCount = (text.match(/[А-Яа-яЁё]/g) || []).length;
-
-  // Если mojibake-маркеров больше, чем нормальной кириллицы — чиним
-  if (mojibakeMarkers < 10 || mojibakeMarkers < cyrillicCount * 0.5) {
-    return text; // текст в порядке
-  }
-
-  try {
-    // Конвертируем строку в байты CP1251, потом декодируем как UTF-8
-    const bytes = new Uint8Array(text.length);
-    for (let i = 0; i < text.length; i++) {
-      const c = text.charCodeAt(i);
-      if (c < 0x80) {
-        bytes[i] = c;
-      } else {
-        const idx = CP1251_TABLE.indexOf(text[i]);
-        bytes[i] = idx >= 0 ? 0x80 + idx : 0x3F; // '?' если не нашли
-      }
-    }
-    const fixed = new TextDecoder('utf-8', { fatal: false }).decode(bytes);
-    // Проверяем, стало ли лучше
-    const newCyr = (fixed.match(/[А-Яа-яЁё]/g) || []).length;
-    if (newCyr > cyrillicCount * 0.8) return fixed;
-  } catch (e) {
-    console.warn('Mojibake fix failed:', e);
-  }
-  return text;
-}
-
-// Загружает HTML с правильной кодировкой
-async function fetchGameHtml(url) {
-  const res = await fetch(url, { mode: 'cors' });
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-
-  // Читаем как байты — так мы контролируем декодирование
-  const buf = await res.arrayBuffer();
-  const bytes = new Uint8Array(buf);
-
-  // 1) Пробуем UTF-8
-  let text = new TextDecoder('utf-8', { fatal: false }).decode(bytes);
-
-  // 2) Если UTF-8 дал много «замещающих» символов — пробуем CP1251
-  const replacementCount = (text.match(/\uFFFD/g) || []).length;
-  if (replacementCount > 5) {
-    try {
-      const cp1251Text = new TextDecoder('windows-1251').decode(bytes);
-      text = cp1251Text;
-    } catch (e) { /* оставляем UTF-8 */ }
-  }
-
-  // 3) Чиним double-encoded mojibake (UTF-8 → CP1251)
-  text = fixMojibake(text);
-
-  return text;
+  } catch(e) {}
 }
 
 function launchGame(){
@@ -1958,15 +1491,10 @@ function launchGame(){
   setTimeout(async () => {
     const game = GAMES_CATALOG[activeGameIndex];
 
-    // ---- Динамический sandbox (без allow-same-origin) ----
-    if (game.srcdoc) {
-      gameFrame.removeAttribute('sandbox');
-    } else {
-      gameFrame.setAttribute('sandbox',
-        'allow-scripts allow-pointer-lock allow-forms allow-popups allow-modals');
-    }
+    // Динамический sandbox
+    if (game.srcdoc) gameFrame.removeAttribute('sandbox');
+    else gameFrame.setAttribute('sandbox', 'allow-scripts allow-pointer-lock allow-forms allow-popups allow-modals');
 
-    // ---- Фокус после загрузки ----
     gameFrame.onload = () => {
       focusGameFrame();
       setTimeout(focusGameFrame, 100);
@@ -1974,42 +1502,33 @@ function launchGame(){
       setTimeout(focusGameFrame, 1000);
     };
 
-    // ---- Загрузка ----
     if (game.srcdoc) {
-      // Встроенная игра — уже в виде HTML-строки
       gameFrame.removeAttribute('src');
       gameFrame.srcdoc = game.srcdoc;
     } else if (game.url) {
-      // ✅ ГЛАВНЫЙ ФИКС: скачиваем как текст и рендерим через srcdoc
-      try {
-        const html = await fetchGameHtml(game.url);
-
-        // Добавляем <base>, чтобы относительные пути (картинки, скрипты)
-        // продолжали работать
-        const baseUrl = new URL('.', game.url).href;
-        let patched = html;
-        if (/<head[^>]*>/i.test(html)) {
-          patched = html.replace(
-            /<head([^>]*)>/i,
-            `<head$1><base href="${baseUrl}">`
-          );
-        } else {
-          patched = `<base href="${baseUrl}">` + html;
-        }
-
-        gameFrame.removeAttribute('src');
-        gameFrame.srcdoc = patched;
-      } catch (e) {
-        console.warn('Fetch failed, fallback to src:', e);
-        // Fallback: обычная загрузка (может показать текст — если MIME плохой)
+      // ZIP-игры на GitHub/jsDelivr открываем через src (там правильные MIME)
+      if (game.storage === 'github-zip' || /\/index\.html?$/i.test(game.url)) {
         gameFrame.removeAttribute('srcdoc');
         gameFrame.src = game.url;
+      } else {
+        // Одиночный HTML — fetch + srcdoc (чтобы обойти text/plain)
+        try {
+          const html = await fetchGameHtml(game.url);
+          const baseUrl = new URL('.', game.url).href;
+          let patched = html;
+          if (/<head[^>]*>/i.test(html)) patched = html.replace(/<head([^>]*)>/i, `<head$1><base href="${baseUrl}">`);
+          else patched = `<base href="${baseUrl}">` + html;
+          gameFrame.removeAttribute('src');
+          gameFrame.srcdoc = patched;
+        } catch (e) {
+          gameFrame.removeAttribute('srcdoc');
+          gameFrame.src = game.url;
+        }
       }
     }
 
     viewport.classList.add('active');
     portal.classList.remove('show');
-
     setTimeout(focusGameFrame, 600);
     setTimeout(focusGameFrame, 1200);
   }, 500);
@@ -2023,17 +1542,11 @@ function exitGame(){
   gameFrame.onload = null;
   isGameRunning=false;
   SoundMaster.resumeBGM();
-  // ✅ FIX: возвращаем фокус в основной документ
   try { window.focus(); document.body.focus(); } catch(e) {}
-  if(SIB.activeSession && lastGameScore>0 && !resultModalOpen){
-    openResultModal(lastGameId, lastGameTitle, lastGameScore);
-  }
+  if(SIB.activeSession && lastGameScore>0 && !resultModalOpen) openResultModal(lastGameId, lastGameTitle, lastGameScore);
 }
 
-// ✅ FIX: клик по панели игры тоже возвращает фокус iframe
-viewport.addEventListener('pointerdown', () => {
-  if (isGameRunning) focusGameFrame();
-});
+viewport.addEventListener('pointerdown', () => { if (isGameRunning) focusGameFrame(); });
 
 function openResultModal(gameId, gameName, score){
   resultModalOpen = true;
@@ -2042,34 +1555,19 @@ function openResultModal(gameId, gameName, score){
   resultNameInput.value = SIB.activeSession ? SIB.activeSession.playerName : '';
   resultNameInput.classList.remove('error-shake');
   const place = SIB.getPlayerPlace(gameId, score);
-  resultPlace.textContent = '🏆 Место в этой игре: #' + place;
+  resultPlace.textContent = '🏆 Место в игре: #' + place;
   resultModal.classList.add('open');
   setTimeout(()=>resultNameInput.focus(),200);
 }
-function closeResultModal(){
-  resultModalOpen = false;
-  resultModal.classList.remove('open');
-}
+function closeResultModal(){ resultModalOpen = false; resultModal.classList.remove('open'); }
 
 document.getElementById('btnLaunch').onclick = launchGame;
 document.getElementById('btnQuitViewport').onclick = exitGame;
-
 document.getElementById('btnResultSkip').onclick = () => { closeResultModal(); };
 document.getElementById('btnResultSave').onclick = () => {
   const name = resultNameInput.value.trim();
-  if(!name || name.length<2){
-    SoundMaster.error();
-    resultNameInput.classList.add('error-shake');
-    setTimeout(()=>resultNameInput.classList.remove('error-shake'),500);
-    return;
-  }
-  if(SIB.isProfane(name)){
-    SoundMaster.error();
-    resultNameInput.classList.add('error-shake');
-    setTimeout(()=>resultNameInput.classList.remove('error-shake'),500);
-    showCyberAlert('Имя содержит нецензурную лексику!', true);
-    return;
-  }
+  if(!name || name.length<2){ SoundMaster.error(); resultNameInput.classList.add('error-shake'); setTimeout(()=>resultNameInput.classList.remove('error-shake'),500); return; }
+  if(SIB.isProfane(name)){ SoundMaster.error(); resultNameInput.classList.add('error-shake'); setTimeout(()=>resultNameInput.classList.remove('error-shake'),500); showCyberAlert('Нецензурное имя!', true); return; }
   SIB.addRecord(lastGameId, name, lastGameScore);
   SoundMaster.secretUnlock();
   closeResultModal();
@@ -2077,9 +1575,7 @@ document.getElementById('btnResultSave').onclick = () => {
   const place = SIB.getPlayerPlace(lastGameId, lastGameScore);
   showCyberAlert(`Рекорд сохранён: ${name} — ${lastGameScore} (место #${place})`, false);
 };
-resultNameInput.addEventListener('keydown', e => {
-  if(e.key==='Enter') document.getElementById('btnResultSave').click();
-});
+resultNameInput.addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('btnResultSave').click(); });
 
 window.addEventListener('message', (e) => {
   if(e.data && e.data.type==='SCORE'){
@@ -2091,7 +1587,7 @@ window.addEventListener('message', (e) => {
 });
 
 /* =====================================================================
-   11. LOGIN + QR
+   LOGIN + QR
    ===================================================================== */
 const loginGate = document.getElementById('loginGate');
 const loginVideo = document.getElementById('loginQrVideo');
@@ -2111,10 +1607,7 @@ let loginCtx = null;
 let pendingTicket = null;
 let cameraActive = false;
 
-function setLoginStatus(text, isError){
-  loginStatus.textContent = text||'';
-  loginStatus.classList.toggle('error', !!isError);
-}
+function setLoginStatus(text, isError){ loginStatus.textContent = text||''; loginStatus.classList.toggle('error', !!isError); }
 function showLoginGate(){
   if(isGameRunning) exitGame();
   SIB.activeSession = null;
@@ -2123,10 +1616,8 @@ function showLoginGate(){
   setLoginStatus('');
   loginManualInput.value = '';
 }
-function hideLoginGate(){
-  loginGate.classList.remove('active');
-  stopLoginCamera();
-}
+function hideLoginGate(){ loginGate.classList.remove('active'); stopLoginCamera(); }
+
 async function startLoginCamera(){
   if(loginStream && loginVideo.srcObject) { cameraActive = true; loginVideo.classList.add('on'); loginPlaceholder.style.display='none'; loginScanLine.classList.add('on'); scanLoginFrame(); return; }
   try{
@@ -2140,9 +1631,7 @@ async function startLoginCamera(){
     if(!loginCanvas){ loginCanvas = document.createElement('canvas'); loginCtx = loginCanvas.getContext('2d'); }
     setLoginStatus('Наведите QR-билет на камеру…');
     scanLoginFrame();
-  }catch(e){
-    setLoginStatus('Камера недоступна. Введите код вручную.', true);
-  }
+  }catch(e){ setLoginStatus('Камера недоступна. Введите код вручную.', true); }
 }
 function stopLoginCamera(){
   if(loginRaf){ cancelAnimationFrame(loginRaf); loginRaf = null; }
@@ -2153,17 +1642,12 @@ function stopLoginCamera(){
 }
 function scanLoginFrame(){
   if(!cameraActive) return;
-  if(loginVideo.readyState !== loginVideo.HAVE_ENOUGH_DATA){
-    loginRaf = requestAnimationFrame(scanLoginFrame); return;
-  }
+  if(loginVideo.readyState !== loginVideo.HAVE_ENOUGH_DATA){ loginRaf = requestAnimationFrame(scanLoginFrame); return; }
   loginCanvas.width = loginVideo.videoWidth;
   loginCanvas.height = loginVideo.videoHeight;
   loginCtx.drawImage(loginVideo, 0, 0, loginCanvas.width, loginCanvas.height);
   const imgData = loginCtx.getImageData(0,0,loginCanvas.width,loginCanvas.height);
-  if(window.jsQR){
-    const code = window.jsQR(imgData.data, imgData.width, imgData.height);
-    if(code && code.data){ handleLoginCode(code.data.trim()); return; }
-  }
+  if(window.jsQR){ const code = window.jsQR(imgData.data, imgData.width, imgData.height); if(code && code.data){ handleLoginCode(code.data.trim()); return; } }
   loginRaf = requestAnimationFrame(scanLoginFrame);
 }
 async function handleLoginCode(raw){
@@ -2180,53 +1664,38 @@ async function handleLoginCode(raw){
       const { data, error } = await sb.from('tickets').select('*').eq('id', code).maybeSingle();
       if(error) throw error;
       if(!data){ SoundMaster.error(); setLoginStatus('QR-код не найден.', true); return; }
-      if(data.banned){ SoundMaster.error(); setLoginStatus('Этот QR-код заблокирован.', true); return; }
-      if(data.used){ SoundMaster.error(); setLoginStatus('Этот QR-код уже использован.', true); return; }
-      pendingTicket = {
-        id: data.id, type: data.type,
-        durationSeconds: data.duration_seconds,
-        minutes: data.type === 'creator' ? '∞' : data.minutes
-      };
-      SoundMaster.secretUnlock();
-      openNameInput(pendingTicket);
-      return;
+      if(data.banned){ SoundMaster.error(); setLoginStatus('QR-код заблокирован.', true); return; }
+      if(data.used){ SoundMaster.error(); setLoginStatus('QR-код уже использован.', true); return; }
+      pendingTicket = { id: data.id, type: data.type, durationSeconds: data.duration_seconds, minutes: data.type === 'creator' ? '∞' : data.minutes };
+      SoundMaster.secretUnlock(); openNameInput(pendingTicket); return;
     }
-  } catch(e) {
-    console.warn('Быстрая проверка не сработала, работаем локально', e);
-  }
+  } catch(e) {}
   const ticket = SIB.findTicket(code);
   if(!ticket){ SoundMaster.error(); setLoginStatus('QR-код не найден.', true); return; }
-  if(ticket.banned){ SoundMaster.error(); setLoginStatus('Этот QR-код заблокирован.', true); return; }
-  if(ticket.used){ SoundMaster.error(); setLoginStatus('Этот QR-код уже использован.', true); return; }
+  if(ticket.banned){ SoundMaster.error(); setLoginStatus('QR-код заблокирован.', true); return; }
+  if(ticket.used){ SoundMaster.error(); setLoginStatus('QR-код уже использован.', true); return; }
   SoundMaster.secretUnlock();
   pendingTicket = ticket;
   openNameInput(ticket);
 }
 btnLoginStartCamera.onclick = () => {
   SoundMaster.click();
-  if(cameraActive){ stopLoginCamera(); btnLoginStartCamera.textContent='📷 Включить камеру и сканировать'; }
+  if(cameraActive){ stopLoginCamera(); btnLoginStartCamera.textContent='📷 Включить камеру'; }
   else { startLoginCamera(); btnLoginStartCamera.textContent='📷 Выключить камеру'; }
 };
-loginManualInput.addEventListener('keydown', e => {
-  if(e.key==='Enter'){ handleLoginCode(loginManualInput.value); loginManualInput.value=''; }
-});
+loginManualInput.addEventListener('keydown', e => { if(e.key==='Enter'){ handleLoginCode(loginManualInput.value); loginManualInput.value=''; } });
+
 function openNameInput(ticket){
   nameTicketInfo.innerHTML = `Билет: <b style="color:#00f0ff;">${ticket.id}</b><br>Время: <b style="color:#00ff88;">${ticket.type==='creator'?'Безлимит':ticket.minutes+' мин'}</b>`;
   playerNameInput.value = '';
   nameModal.classList.add('open');
   setTimeout(()=>playerNameInput.focus(),200);
 }
-function closeNameInput(){
-  SoundMaster.back(); nameModal.classList.remove('open'); pendingTicket=null; showLoginGate();
-}
+function closeNameInput(){ SoundMaster.back(); nameModal.classList.remove('open'); pendingTicket=null; showLoginGate(); }
+
 async function submitName(){
   const name = playerNameInput.value.trim();
-  if(!name || name.length<2){
-    SoundMaster.error();
-    playerNameInput.classList.add('error-shake');
-    setTimeout(()=>playerNameInput.classList.remove('error-shake'),500);
-    return;
-  }
+  if(!name || name.length<2){ SoundMaster.error(); playerNameInput.classList.add('error-shake'); setTimeout(()=>playerNameInput.classList.remove('error-shake'),500); return; }
   if(SIB.isProfane(name)){
     SoundMaster.error();
     const photo = await SIB.captureOffenderPhoto();
@@ -2248,7 +1717,7 @@ async function submitName(){
         showCyberAlert('QR-код заблокирован учителем!', true);
         return;
       }
-    } catch(e) { console.warn(e); }
+    } catch(e) {}
   }
   SoundMaster.secretUnlock();
   const t = pendingTicket;
@@ -2260,16 +1729,11 @@ async function submitName(){
 document.getElementById('btnNameSubmit').onclick = submitName;
 document.getElementById('btnNameCancel').onclick = closeNameInput;
 playerNameInput.addEventListener('keydown', e => { if(e.key==='Enter') submitName(); });
-function enterMainMenu(){
-  hideLoginGate();
-  renderCarousel();
-}
-document.getElementById('btnEndSession').onclick = () => {
-  askConfirm('Завершить сессию?', 'Вы выйдете в экран входа.', () => { SIB.endSession(); });
-};
+function enterMainMenu(){ hideLoginGate(); renderCarousel(); }
+document.getElementById('btnEndSession').onclick = () => { askConfirm('Завершить сессию?', 'Вы выйдете.', () => { SIB.endSession(); }); };
 
 /* =====================================================================
-   12. RECORDS
+   RECORDS / PIN / SETTINGS — стандартные обработчики
    ===================================================================== */
 const recordsModal = document.getElementById('recordsModal');
 const recordsTable = document.getElementById('recordsTable');
@@ -2280,13 +1744,11 @@ const opRecordsGameFilter = document.getElementById('opRecordsGameFilter');
 function buildGameFilter(selectEl){
   selectEl.innerHTML = '';
   const all = document.createElement('option');
-  all.value = '__all__';
-  all.textContent = '— Все игры —';
+  all.value = '__all__'; all.textContent = '— Все игры —';
   selectEl.appendChild(all);
   GAMES_CATALOG.forEach(g=>{
     const o = document.createElement('option');
-    o.value = g.id;
-    o.textContent = g.title;
+    o.value = g.id; o.textContent = g.title;
     selectEl.appendChild(o);
   });
 }
@@ -2305,10 +1767,7 @@ function renderRecordsTable(target, gameId){
     items = SIB.getGameRecords(gameId).map(r=>({...r, game: gname}));
   }
   items = items.slice(0, 100);
-  if(items.length===0){
-    target.innerHTML = '<div style="color:#888;text-align:center;padding:20px;">Пока нет рекордов для этой игры.</div>';
-    return;
-  }
+  if(items.length===0){ target.innerHTML = '<div style="color:#888;text-align:center;padding:20px;">Пока нет рекордов.</div>'; return; }
   target.innerHTML = items.map((r,i)=>{
     let rc=''; if(i===0) rc='gold'; else if(i===1) rc='silver'; else if(i===2) rc='bronze';
     const d = new Date(r.time);
@@ -2323,16 +1782,9 @@ document.getElementById('btnShowRecords').onclick = () => {
   renderRecordsTable(recordsTable, '__all__');
   recordsModal.classList.add('open');
 };
-recordsGameFilter.onchange = () => {
-  renderRecordsTable(recordsTable, recordsGameFilter.value);
-};
-document.getElementById('btnCloseRecords').onclick = () => {
-  SoundMaster.back(); recordsModal.classList.remove('open');
-};
+recordsGameFilter.onchange = () => renderRecordsTable(recordsTable, recordsGameFilter.value);
+document.getElementById('btnCloseRecords').onclick = () => { SoundMaster.back(); recordsModal.classList.remove('open'); };
 
-/* =====================================================================
-   13. PIN
-   ===================================================================== */
 let currentPinContext='OPERATOR', currentPinInput='', pendingGameEditIndex=-1;
 let OPERATOR_PIN = localStorage.getItem('sib_op_pin')||'1234';
 let MASTER_OS_PIN = localStorage.getItem('sib_master_pin')||'7777';
@@ -2368,10 +1820,7 @@ async function verifyPin(){
   let ok = false;
   let realPin = OPERATOR_PIN;
   if(currentPinContext==='OPERATOR' && sb){
-    try {
-      const { data } = await sb.from('config').select('value').eq('key','operator_pin').maybeSingle();
-      if(data && data.value) realPin = data.value;
-    } catch(err){}
+    try { const { data } = await sb.from('config').select('value').eq('key','operator_pin').maybeSingle(); if(data && data.value) realPin = data.value; } catch(err){}
   }
   if(currentPinContext==='OPERATOR'){ if(e===realPin||e==='1234'){ ok=true; pinModal.classList.remove('open'); openOperatorSettings(); } }
   else if(currentPinContext==='MASTER_OS'){ if(e===MASTER_OS_PIN||e==='7777'){ ok=true; pinModal.classList.remove('open'); openSecretOsSettings(); } }
@@ -2393,17 +1842,15 @@ async function openOperatorSettings(){
   renderRecordsTable(opRecordsTable, '__all__');
   document.getElementById('opBgmStyle').value = CONFIG.bgmStyle;
   document.getElementById('opSfxStyle').value = CONFIG.sfxStyle;
-  document.getElementById('opIdleTimeout').value = CONFIG.idleTimeout;
-  document.getElementById('opHideCursor').value = CONFIG.hideCursor?'on':'off';
   await loadMaintenanceToOperator();
 }
 document.getElementById('btnCloseOpSettings').onclick = () => { SoundMaster.back(); opModal.classList.remove('open'); };
 document.getElementById('btnOpSaveClose').onclick = () => { SoundMaster.back(); opModal.classList.remove('open'); };
-opRecordsGameFilter.onchange = () => { renderRecordsTable(opRecordsTable, opRecordsGameFilter.value); };
+opRecordsGameFilter.onchange = () => renderRecordsTable(opRecordsTable, opRecordsGameFilter.value);
 
 document.getElementById('btnClearRecords').onclick = () => {
   const gid = opRecordsGameFilter.value;
-  askConfirm('Очистить рекорды?', gid==='__all__'?'Удалить ВСЕ рекорды всех игр?':'Удалить рекорды выбранной игры?', ()=>{
+  askConfirm('Очистить рекорды?', gid==='__all__'?'Удалить все?':'Удалить этой игры?', ()=>{
     if(gid==='__all__') SIB.clearAllRecords(); else SIB.clearGameRecords(gid);
     renderRecordsTable(opRecordsTable, gid);
     renderCarousel();
@@ -2418,8 +1865,7 @@ async function loadMaintenanceToOperator(){
   if(!sb) return;
   try{
     const { data } = await sb.from('config').select('*').in('key',['maintenance_mode','maintenance_message']);
-    const cfg = {};
-    (data||[]).forEach(x=>cfg[x.key]=x.value);
+    const cfg = {}; (data||[]).forEach(x=>cfg[x.key]=x.value);
     document.getElementById('opMaintenanceMode').value = cfg.maintenance_mode==='on'?'on':'off';
     document.getElementById('opMaintenanceMessage').value = cfg.maintenance_message||'Идут технические работы. Автомат скоро вернётся!';
   }catch(e){}
@@ -2427,7 +1873,7 @@ async function loadMaintenanceToOperator(){
 document.getElementById('btnApplyMaintenance').onclick = async () => {
   const mode = document.getElementById('opMaintenanceMode').value;
   const msg = document.getElementById('opMaintenanceMessage').value.trim() || 'Идут технические работы. Автомат скоро вернётся!';
-  if(!sb){ showCyberAlert('Нет подключения к Supabase', true); return; }
+  if(!sb){ showCyberAlert('Нет Supabase', true); return; }
   try{
     await sb.from('config').upsert({ key:'maintenance_mode', value: mode });
     await sb.from('config').upsert({ key:'maintenance_message', value: msg });
@@ -2455,8 +1901,6 @@ function syncOsControls(){
   document.getElementById('cfgEcho').value = CONFIG.echo;
   document.getElementById('cfgChimesToggle').value = CONFIG.chimesEnabled?'on':'off';
   document.getElementById('cfgGlowIntensity').value = CONFIG.glowIntensity;
-  document.getElementById('cfgShowFps').value = CONFIG.showFps?'on':'off';
-  document.getElementById('cfgAutoArduino').value = CONFIG.autoArduino?'on':'off';
   document.getElementById('cfgBaudrate').value = CONFIG.baudrate;
 }
 document.querySelectorAll('.tab-btn').forEach(btn=>{
@@ -2475,15 +1919,13 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
   };
 });
 
-/* =====================================================================
-   14. GAME EDITOR
-   ===================================================================== */
+/* GAME EDITOR */
 function renderInstalledGamesTable(){
   installedGamesList.innerHTML = '';
   GAMES_CATALOG.forEach((game, idx)=>{
     const row = document.createElement('div');
     row.className = 'game-row-item';
-    row.innerHTML = `<div class="game-row-info"><img class="game-mini-thumb" src="${game.cover||'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=200'}" alt=""><div><div style="font-weight:bold;font-size:14px;">${game.title}</div><div style="font-size:11px;color:#888;">${game.genre} • <span style="color:${game.accent};">${game.badge||'GAME'}</span> • 🏆 ${SIB.getGameBest(game.id)}</div></div></div><div style="display:flex;gap:8px;"><button class="btn-act btn-edit-game" onclick="reqEditGame(${idx})">✎</button><button class="btn-act btn-del-game" onclick="deleteGameByIndex(${idx})">✕</button></div>`;
+    row.innerHTML = `<div class="game-row-info"><img class="game-mini-thumb" src="${game.cover||'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=200'}" alt=""><div><div style="font-weight:bold;font-size:14px;">${game.title}</div><div style="font-size:11px;color:#888;">${game.genre} • 🏆 ${SIB.getGameBest(game.id)}</div></div></div><div style="display:flex;gap:8px;"><button class="btn-act btn-edit-game" onclick="reqEditGame(${idx})">✎</button><button class="btn-act btn-del-game" onclick="deleteGameByIndex(${idx})">✕</button></div>`;
     installedGamesList.appendChild(row);
   });
 }
@@ -2521,7 +1963,7 @@ document.getElementById('btnSaveGameEdit').onclick = () => {
   }
 };
 window.deleteGameByIndex = function(idx){
-  askConfirm('Удалить игру?', `Игра "${GAMES_CATALOG[idx].title}" будет удалена.`, ()=>{
+  askConfirm('Удалить игру?', `"${GAMES_CATALOG[idx].title}"`, ()=>{
     SoundMaster.back();
     GAMES_CATALOG.splice(idx,1);
     saveGamesToStorage(); renderInstalledGamesTable(); renderCarousel();
@@ -2537,7 +1979,7 @@ document.getElementById('btnAddGameSubmit').onclick = () => {
   const badge = document.getElementById('addGameBadge').value.trim()||'WEB GAME';
   const accent = document.getElementById('addGameAccent').value;
   const desc = document.getElementById('addGameDesc').value.trim()||`Игра: ${title}`;
-  if(!title||!genre||!url){ showCyberAlert('Заполните Название, Жанр и URL!', true); return; }
+  if(!title||!genre||!url){ showCyberAlert('Заполните все поля!', true); return; }
   if(!url.startsWith('http')) url = 'https://' + url;
   GAMES_CATALOG.push({id:'custom-'+Date.now(),title,genre,badge,desc,cover,bg,accent,url});
   saveGamesToStorage(); SoundMaster.secretUnlock();
@@ -2550,13 +1992,11 @@ document.getElementById('btnResetGamesDefault').onclick = () => {
   askConfirm('Сбросить каталог?','Все добавленные игры будут удалены.',()=>{
     GAMES_CATALOG = [...DEFAULT_GAMES_LIST];
     saveGamesToStorage(); renderInstalledGamesTable(); renderCarousel();
-    SoundMaster.click(); showCyberAlert('Каталог сброшен', false);
+    showCyberAlert('Каталог сброшен', false);
   });
 };
 
-/* =====================================================================
-   15. QR GENERATOR (operator)
-   ===================================================================== */
+/* QR GENERATOR */
 function drawQrToCanvas(cv, text){
   if(!window.qrcode) return false;
   const qr = window.qrcode(0,'M');
@@ -2569,9 +2009,14 @@ function drawQrToCanvas(cv, text){
   for(let r=0;r<count;r++) for(let cc=0;cc<count;cc++) if(qr.isDark(r,cc)) c.fillRect(cc*cell,r*cell,cell,cell);
   return true;
 }
-document.getElementById('btnGenerateQr').onclick = () => {
+document.getElementById('btnGenerateQr').onclick = async () => {
   const type = document.getElementById('qrGenerateType').value;
-  const ticket = SIB.generateTicket(type);
+  const id = 'SIB-' + (type === 'CREATOR' ? 'CREATOR' : type + 'MIN') + '-' + Math.random().toString(36).slice(2,8).toUpperCase();
+  const durationSeconds = type === 'CREATOR' ? 0 : Number(type) * 60;
+  const ticket = { id, minutes: type === 'CREATOR' ? 0 : Number(type), type: type === 'CREATOR' ? 'creator' : 'timed', duration_seconds: durationSeconds, used:false, banned:false };
+  if(sb){ try { await sb.from('tickets').insert([ticket]); } catch(e){} }
+  SIB.tickets.push({ id, minutes: ticket.minutes, type: ticket.type, durationSeconds, createdAt: Date.now(), used:false, banned:false });
+  SIB.saveTickets();
   renderQrResult(ticket);
   renderActiveTickets();
   SoundMaster.secretUnlock();
@@ -2579,7 +2024,7 @@ document.getElementById('btnGenerateQr').onclick = () => {
 function renderQrResult(ticket){
   const box = document.getElementById('qrGenerateResult');
   box.innerHTML='';
-  const label = ticket.type==='creator'?'Безлимит (Создатель)':ticket.minutes+' минут';
+  const label = ticket.type==='creator'?'Безлимит':ticket.minutes+' минут';
   const info = document.createElement('div');
   info.innerHTML = `<b style="color:#00f0ff;font-size:16px;">${ticket.id}</b><br><span style="font-size:12px;color:#aaa;">${label}</span>`;
   box.appendChild(info);
@@ -2615,42 +2060,37 @@ function renderActiveTickets(){
   });
 }
 document.getElementById('btnResetTickets').onclick = () => {
-  askConfirm('Удалить все билеты?','Все билеты будут удалены.',()=>{ SIB.resetTickets(); renderActiveTickets(); });
+  askConfirm('Удалить все билеты?','',()=>{ SIB.resetTickets(); renderActiveTickets(); });
 };
+
 function renderIncidents(){
   const list = document.getElementById('incidentsList');
   if(!list) return;
   if(SIB.incidents.length===0){ list.innerHTML='<div style="color:#666;font-size:13px;">Нарушений не зафиксировано.</div>'; return; }
   list.innerHTML = SIB.incidents.map(inc=>{
     const d = new Date(inc.time);
-    return `<div class="incident-row"><div><b style="color:#ff3344;">${escapeHtml(inc.name)}</b><div style="font-size:11px;color:#aaa;">Билет: ${escapeHtml(inc.ticketId||'—')} • ${d.toLocaleString('ru-RU')}</div><div style="font-size:11px;color:#ff8888;">${escapeHtml(inc.reason)}</div></div><div>${inc.photo?`<img src="${inc.photo}" style="width:64px;height:48px;object-fit:cover;border-radius:6px;border:1px solid #ff3344;">`:'<span style="font-size:11px;color:#666;">нет фото</span>'}</div></div>`;
+    return `<div class="incident-row"><div><b style="color:#ff3344;">${escapeHtml(inc.name)}</b><div style="font-size:11px;color:#aaa;">Билет: ${escapeHtml(inc.ticketId||'—')} • ${d.toLocaleString('ru-RU')}</div></div><div>${inc.photo?`<img src="${inc.photo}" style="width:64px;height:48px;object-fit:cover;border-radius:6px;border:1px solid #ff3344;">`:''}</div></div>`;
   }).join('');
 }
 document.getElementById('btnClearIncidents').onclick = () => {
-  askConfirm('Очистить журнал?','Все записи о нарушениях будут удалены.',()=>{
+  askConfirm('Очистить журнал?','',()=>{
     SIB.incidents=[]; SIB.saveIncidents(); renderIncidents();
     if(sb){ sb.from('incidents').delete().neq('id', 0).then(()=>{}).catch(()=>{}); }
   });
 };
 
-/* =====================================================================
-   16. MUSIC — обработчики UI
-   ===================================================================== */
+/* MUSIC */
 document.getElementById('opBgmStyle').onchange = (e) => {
   CONFIG.bgmStyle = e.target.value; CONFIG.save();
   document.getElementById('cfgBgmStyle').value = e.target.value;
   SoundMaster.startBGM(e.target.value);
-  showCyberAlert('Стиль музыки: ' + e.target.value, false);
 };
 document.getElementById('opSfxStyle').onchange = (e) => {
   CONFIG.sfxStyle = e.target.value; CONFIG.save();
   document.getElementById('cfgSfxStyle').value = e.target.value;
-  SoundMaster.click();
-  showCyberAlert('Тема SFX: ' + e.target.value, false);
 };
 document.getElementById('opBgmVol').oninput = (e) => SoundMaster.setBgmVolume(parseFloat(e.target.value)/100);
 document.getElementById('opSfxVol').oninput = (e) => SoundMaster.setSfxVolume(parseFloat(e.target.value)/100);
-
 document.getElementById('cfgBgmStyle').onchange = (e) => {
   CONFIG.bgmStyle = e.target.value; CONFIG.save();
   document.getElementById('opBgmStyle').value = e.target.value;
@@ -2664,86 +2104,49 @@ document.getElementById('cfgBgmTempo').oninput = (e) => {
   CONFIG.bgmTempo = parseFloat(e.target.value); CONFIG.save();
   if (SoundMaster.isBgmPlaying) SoundMaster.startBGM(CONFIG.bgmStyle);
 };
-document.getElementById('cfgFilterCutoff').oninput = (e) => {
-  CONFIG.filterCutoff = parseFloat(e.target.value); CONFIG.save();
-  SoundMaster.setFilterCutoff(CONFIG.filterCutoff);
-};
-document.getElementById('cfgBassBoost').oninput = (e) => {
-  CONFIG.bassBoost = parseFloat(e.target.value); CONFIG.save();
-  SoundMaster.setBassBoost(CONFIG.bassBoost);
-};
-document.getElementById('cfgReverb').oninput = (e) => {
-  CONFIG.reverb = parseFloat(e.target.value); CONFIG.save();
-  SoundMaster.setReverb(CONFIG.reverb);
-};
-document.getElementById('cfgEcho').oninput = (e) => {
-  CONFIG.echo = parseFloat(e.target.value); CONFIG.save();
-  SoundMaster.setEcho(CONFIG.echo);
-};
-document.getElementById('cfgChimesToggle').onchange = (e) => {
-  CONFIG.chimesEnabled = e.target.value==='on'; CONFIG.save();
-};
+document.getElementById('cfgFilterCutoff').oninput = (e) => { CONFIG.filterCutoff = parseFloat(e.target.value); CONFIG.save(); SoundMaster.setFilterCutoff(CONFIG.filterCutoff); };
+document.getElementById('cfgBassBoost').oninput = (e) => { CONFIG.bassBoost = parseFloat(e.target.value); CONFIG.save(); SoundMaster.setBassBoost(CONFIG.bassBoost); };
+document.getElementById('cfgReverb').oninput = (e) => { CONFIG.reverb = parseFloat(e.target.value); CONFIG.save(); SoundMaster.setReverb(CONFIG.reverb); };
+document.getElementById('cfgEcho').oninput = (e) => { CONFIG.echo = parseFloat(e.target.value); CONFIG.save(); SoundMaster.setEcho(CONFIG.echo); };
+document.getElementById('cfgChimesToggle').onchange = (e) => { CONFIG.chimesEnabled = e.target.value==='on'; CONFIG.save(); };
 
-/* =====================================================================
-   17. VIDEO / SYSTEM
-   ===================================================================== */
-document.getElementById('cfgCrtToggle').onchange = (e) => document.getElementById('crtFilter').classList.toggle('enabled', e.target.value==='on');
+/* VIDEO */
 document.getElementById('cfgParticles').onchange = (e) => { targetParticleCount=parseInt(e.target.value); initParticles(targetParticleCount); };
 document.getElementById('cfgAuroraToggle').onchange = (e) => document.getElementById('auroraBeam').style.display = e.target.value==='on'?'block':'none';
 document.getElementById('cfgBlurRange').oninput = (e) => document.querySelectorAll('.art-crossfade').forEach(el=>el.style.filter=`brightness(0.38) saturate(1.4) blur(${e.target.value}px)`);
 document.getElementById('cfgGlowIntensity').oninput = (e) => { CONFIG.glowIntensity = parseFloat(e.target.value); CONFIG.save(); };
-document.getElementById('cfgShowFps').onchange = (e) => { CONFIG.showFps = e.target.value==='on'; CONFIG.save(); };
-document.getElementById('cfgAutoArduino').onchange = (e) => { CONFIG.autoArduino = e.target.value==='on'; CONFIG.save(); };
 document.getElementById('cfgBaudrate').onchange = (e) => { CONFIG.baudrate = parseInt(e.target.value)||9600; CONFIG.save(); };
 
 document.getElementById('btnSaveOperatorPin').onclick = () => {
   const p = document.getElementById('cfgNewOperatorPin').value.trim();
-  if(p.length===4 && /^\d+$/.test(p)){
-    OPERATOR_PIN=p; localStorage.setItem('sib_op_pin',p);
-    SoundMaster.secretUnlock(); showCyberAlert('PIN оператора сохранён',false);
-    if(sb){ sb.from('config').upsert({key:'operator_pin', value:p}).then(()=>{}).catch(()=>{}); }
-  }
+  if(p.length===4 && /^\d+$/.test(p)){ OPERATOR_PIN=p; localStorage.setItem('sib_op_pin',p); SoundMaster.secretUnlock(); showCyberAlert('PIN оператора сохранён',false); if(sb){ sb.from('config').upsert({key:'operator_pin', value:p}).then(()=>{}).catch(()=>{}); } }
   else showCyberAlert('PIN должен быть 4 цифры', true);
 };
 document.getElementById('btnSaveGameEditPin').onclick = () => {
   const p = document.getElementById('cfgNewGameEditPin').value.trim();
   if(p.length===4 && /^\d+$/.test(p)){ GAME_EDIT_PIN=p; localStorage.setItem('sib_edit_pin',p); SoundMaster.secretUnlock(); showCyberAlert('PIN редактора сохранён',false); }
-  else showCyberAlert('PIN должен быть 4 цифры', true);
 };
 document.getElementById('btnSaveMasterPin').onclick = () => {
   const p = document.getElementById('cfgNewMasterPin').value.trim();
   if(p.length===4 && /^\d+$/.test(p)){ MASTER_OS_PIN=p; localStorage.setItem('sib_master_pin',p); SoundMaster.secretUnlock(); showCyberAlert('Мастер-PIN сохранён',false); }
-  else showCyberAlert('PIN должен быть 4 цифры', true);
 };
 document.getElementById('btnSaveCreatorCode').onclick = () => {
   const p = document.getElementById('cfgNewCreatorCode').value.trim();
-  if(p.length>=6){
-    SIB.creatorCode=p; SIB.saveCreatorCode();
-    SoundMaster.secretUnlock(); showCyberAlert('Код создателя сохранён',false);
-    if(sb){ sb.from('config').upsert({key:'creator_code', value:p}).then(()=>{}).catch(()=>{}); }
-  }
-  else showCyberAlert('Код должен быть ≥6 символов', true);
+  if(p.length>=6){ SIB.creatorCode=p; SIB.saveCreatorCode(); SoundMaster.secretUnlock(); showCyberAlert('Код создателя сохранён',false); if(sb){ sb.from('config').upsert({key:'creator_code', value:p}).then(()=>{}).catch(()=>{}); } }
 };
 document.getElementById('btnFactoryReset').onclick = () => {
-  askConfirm('ПОЛНЫЙ СБРОС?','Все данные будут удалены безвозвратно.',()=>{ localStorage.clear(); location.reload(); });
+  askConfirm('ПОЛНЫЙ СБРОС?','Все данные будут удалены.',()=>{ localStorage.clear(); location.reload(); });
 };
 document.getElementById('btnExportConfig').onclick = () => {
-  const data = {
-    version: 9, config: CONFIG,
-    games: GAMES_CATALOG.map(g=>{ const c={...g}; delete c.srcdoc; return c; }),
-    records: SIB.records, tickets: SIB.tickets, incidents: SIB.incidents, creatorCode: SIB.creatorCode
-  };
+  const data = { version: 11, config: CONFIG, games: GAMES_CATALOG.map(g=>{ const c={...g}; delete c.srcdoc; return c; }), records: SIB.records, tickets: SIB.tickets, incidents: SIB.incidents, creatorCode: SIB.creatorCode };
   const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url; a.download = 'sibkodbox_backup_' + new Date().toISOString().slice(0,10) + '.json';
-  a.click();
-  URL.revokeObjectURL(url);
+  a.click(); URL.revokeObjectURL(url);
   showCyberAlert('Конфигурация скачана', false);
 };
-document.getElementById('btnImportConfig').onclick = () => {
-  document.getElementById('importConfigFile').click();
-};
+document.getElementById('btnImportConfig').onclick = () => document.getElementById('importConfigFile').click();
 document.getElementById('importConfigFile').onchange = (e) => {
   const file = e.target.files[0];
   if(!file) return;
@@ -2761,61 +2164,45 @@ document.getElementById('importConfigFile').onchange = (e) => {
         if(data.creatorCode) { SIB.creatorCode = data.creatorCode; SIB.saveCreatorCode(); }
         location.reload();
       });
-    } catch(err){ showCyberAlert('Ошибка чтения файла', true); }
+    } catch(err){ showCyberAlert('Ошибка чтения', true); }
   };
   reader.readAsText(file);
 };
 function updateTelemetry(){
   const totalRecords = Object.values(SIB.records).reduce((a,b)=>a+b.length,0);
   document.getElementById('systemTelemetryBox').innerHTML = `
-    ОС: СибКодБокс Arcade OS 9.0 Pro<br>
+    ОС: СибКодБокс v11<br>
     Экран: ${window.innerWidth}x${window.innerHeight} (${window.devicePixelRatio}x DPR)<br>
     Web Serial: ${'serial' in navigator ? 'Доступен' : 'Нет'}<br>
-    Камера: ${navigator.mediaDevices && navigator.mediaDevices.getUserMedia ? 'Доступна' : 'Нет'}<br>
     Supabase: ${sb ? (SIB.cloudOnline ? 'Подключён' : 'Ошибка') : 'Не загружен'}<br>
-    Игр: ${GAMES_CATALOG.length} • Билетов: ${SIB.tickets.length} • Рекордов: ${totalRecords} • Нарушений: ${SIB.incidents.length}<br>
-    Стиль BGM: ${CONFIG.bgmStyle} • SFX: ${CONFIG.sfxStyle} • Cutoff: ${CONFIG.filterCutoff} Гц`;
+    Игр: ${GAMES_CATALOG.length} • Билетов: ${SIB.tickets.length} • Рекордов: ${totalRecords}<br>
+    BGM: ${CONFIG.bgmStyle} • SFX: ${CONFIG.sfxStyle} • Cutoff: ${CONFIG.filterCutoff} Гц`;
 }
 
-/* =====================================================================
-   18. KIOSK
-   ===================================================================== */
+/* KIOSK */
 let idleTimer = null;
 function resetIdleTimer(){
   if(idleTimer) clearTimeout(idleTimer);
   if(!SIB.activeSession || CONFIG.idleTimeout <= 0) return;
   idleTimer = setTimeout(()=>{
-    if(SIB.activeSession && !isGameRunning){
-      showCyberAlert('Авто-выход: длительное бездействие', true);
-      SIB.endSession();
-    }
+    if(SIB.activeSession && !isGameRunning){ showCyberAlert('Авто-выход', true); SIB.endSession(); }
   }, CONFIG.idleTimeout * 1000);
 }
-['pointerdown','keydown','mousemove'].forEach(ev=>{
-  window.addEventListener(ev, resetIdleTimer, { passive: true });
-});
+['pointerdown','keydown','mousemove'].forEach(ev=>{ window.addEventListener(ev, resetIdleTimer, { passive: true }); });
 let cursorTimer = null;
-function hideCursor() { document.body.style.cursor = 'none'; }
-function showCursor() {
+function hideCursor(){ document.body.style.cursor = 'none'; }
+function showCursor(){
   document.body.style.cursor = '';
   if(cursorTimer) clearTimeout(cursorTimer);
   if(CONFIG.hideCursor) cursorTimer = setTimeout(hideCursor, 3000);
 }
 window.addEventListener('mousemove', showCursor, { passive: true });
 
-/* =====================================================================
-   19. KEYBOARD
-   ===================================================================== */
+/* KEYBOARD */
 window.addEventListener('keydown', (e) => {
   if(document.getElementById('maintenanceScreen').classList.contains('active')) return;
-  if(loginGate.classList.contains('active')){
-    if(document.activeElement === loginManualInput) return;
-    return;
-  }
-  if(resultModal.classList.contains('open')){
-    if(e.key==='Escape') closeResultModal();
-    return;
-  }
+  if(loginGate.classList.contains('active')) return;
+  if(resultModal.classList.contains('open')){ if(e.key==='Escape') closeResultModal(); return; }
   if(pinModal.classList.contains('open')){
     if(e.key>='0' && e.key<='9') pressKey(e.key);
     else if(e.key==='Backspace') pressKey('BACK');
@@ -2823,10 +2210,7 @@ window.addEventListener('keydown', (e) => {
     else if(e.key==='Escape') closePinDialog();
     return;
   }
-  if(nameModal.classList.contains('open')){
-    if(e.key==='Escape') closeNameInput();
-    return;
-  }
+  if(nameModal.classList.contains('open')){ if(e.key==='Escape') closeNameInput(); return; }
   if(opModal.classList.contains('open') || secretOsModal.classList.contains('open') || gameEditModal.classList.contains('open') || recordsModal.classList.contains('open')){
     if(e.key==='Escape'){
       opModal.classList.remove('open'); secretOsModal.classList.remove('open');
@@ -2834,7 +2218,7 @@ window.addEventListener('keydown', (e) => {
     }
     return;
   }
-  if(e.key==='F2' || e.key==='`' || e.key==='ё' || e.key==='Ё'){ e.preventDefault(); openPinDialog('MASTER_OS'); return; }
+  if(e.key==='F2' || e.key==='`'){ e.preventDefault(); openPinDialog('MASTER_OS'); return; }
   if(isGameRunning){ if(e.key==='Escape') exitGame(); return; }
   if(!SIB.activeSession) return;
   switch(e.key){
@@ -2845,9 +2229,7 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
-/* =====================================================================
-   20. ARDUINO
-   ===================================================================== */
+/* ARDUINO */
 let serialPort = null;
 const btnArduino = document.getElementById('btnArduinoConnect');
 const ledIndicator = document.getElementById('arduinoLed');
@@ -2875,7 +2257,7 @@ async function connectArduino(){
     statusLabel.textContent = 'Arduino: Онлайн';
     logSerial(`Подключено (${baudRate})`);
     readArduinoDataStream();
-  }catch(err){ showCyberAlert('Ошибка подключения Arduino', true); }
+  }catch(err){ showCyberAlert('Ошибка подключения', true); }
 }
 async function readArduinoDataStream(){
   const dec = new TextDecoderStream();
@@ -2904,13 +2286,10 @@ async function readArduinoDataStream(){
 }
 btnArduino.addEventListener('click', connectArduino);
 
-/* =====================================================================
-   21. CLOCK + START
-   ===================================================================== */
+/* CLOCK + START */
 function syncClock(){
   const d = new Date();
-  document.getElementById('clockText').textContent =
-    String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+  document.getElementById('clockText').textContent = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
 }
 setInterval(syncClock, 1000);
 syncClock();
