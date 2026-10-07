@@ -18,13 +18,11 @@
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
   html,body{width:100%;height:100%;overflow:hidden;background:#020409;color:#fff;}
   body{perspective:1400px;}
-
   .crt-overlay{position:fixed;inset:0;pointer-events:none;z-index:9999;
     background:linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,0.25) 50%),
                linear-gradient(90deg,rgba(255,0,0,0.03),rgba(0,255,0,0.01),rgba(0,0,255,0.03));
     background-size:100% 3px,6px 100%;opacity:0;transition:opacity 0.3s;}
   .crt-overlay.enabled{opacity:0.65;}
-
   .stage-backdrop{position:absolute;inset:0;z-index:0;overflow:hidden;background:#020409;}
   .aurora-beam{position:absolute;width:150vw;height:120vh;top:-20vh;left:-25vw;
     background:radial-gradient(ellipse at 50% 30%,rgba(0,240,255,0.14),transparent 65%),
@@ -40,7 +38,6 @@
   .vignette{position:absolute;inset:0;
     background:radial-gradient(circle at 80% 20%,transparent 10%,rgba(2,4,9,0.82) 65%,#020409 100%),
                linear-gradient(to top,#020409 15%,transparent 65%);z-index:3;}
-
   header{position:relative;z-index:20;display:flex;justify-content:space-between;align-items:center;
     padding:30px 80px 0;height:90px;animation:barDown 0.7s var(--ease-ps5);}
   .brand{display:flex;align-items:center;gap:16px;}
@@ -70,7 +67,6 @@
   #cloudStatusBadge{font-size:11px;padding:6px 12px;}
   #cloudStatusBadge.offline{background:rgba(255,71,87,0.12);border-color:#ff4757;color:#ff4757;}
   #cloudStatusBadge:not(.offline){color:#00ff88;border-color:#00ff88;background:rgba(0,255,136,0.1);}
-
   main{position:relative;z-index:10;display:flex;flex-direction:column;justify-content:space-between;
     height:calc(100vh - 90px);padding:20px 0 50px 80px;}
   .carousel-stage{position:relative;overflow:visible;padding:30px 0 25px 0;width:100vw;}
@@ -108,7 +104,6 @@
   .card-best{position:absolute;bottom:14px;left:14px;
     background:rgba(0,255,136,0.15);border:1px solid #00ff88;color:#00ff88;
     padding:4px 10px;border-radius:8px;font-size:11px;font-weight:900;z-index:5;}
-
   .meta-display{max-width:820px;display:flex;flex-direction:column;gap:16px;}
   .tags-strip{display:flex;gap:10px;align-items:center;}
   .tag{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);
@@ -134,14 +129,12 @@
     width:25px;height:25px;background:rgba(255,255,255,0.15);
     border:1px solid rgba(255,255,255,0.3);border-radius:50%;
     font-size:12px;font-weight:800;color:#fff;margin-right:8px;}
-
   .launch-portal{position:fixed;inset:0;background:#000;z-index:500;display:none;
     align-items:center;justify-content:center;opacity:0;transition:opacity 0.35s;}
   .launch-portal.show{display:flex;opacity:1;}
   .portal-glyphs{display:flex;gap:30px;animation:pulseGlyphs 0.9s infinite alternate ease-in-out;}
   .portal-glyph{font-size:46px;font-weight:900;color:var(--accent-theme);
     text-shadow:0 0 25px var(--accent-theme);}
-
   .game-viewport{position:fixed;inset:0;background:#000;z-index:1000;display:none;
     flex-direction:column;opacity:0;transform:scale(0.94);
     transition:opacity 0.35s var(--ease-ps5),transform 0.35s var(--ease-ps5);}
@@ -152,8 +145,7 @@
   .btn-quit{background:#ff3344;border:none;color:#fff;padding:9px 22px;border-radius:8px;
     font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;}
   .btn-quit:hover{background:#ff5261;}
-  .game-frame{flex:1;width:100%;height:100%;border:none;background:#000;}
-
+  .game-frame{flex:1;width:100%;height:100%;border:none;background:#000;outline:none;}
   .login-gate{position:fixed;inset:0;z-index:4000;
     background:radial-gradient(ellipse at 50% 40%,#0a1a35 0%,#020409 70%);
     display:none;flex-direction:column;align-items:center;justify-content:center;
@@ -204,7 +196,6 @@
   .login-status{font-size:13px;font-weight:700;color:#00ff88;min-height:18px;}
   .login-status.error{color:#ff3344;}
   .login-footer-info{font-size:11px;color:rgba(255,255,255,0.4);display:flex;gap:16px;}
-
   .session-hud{position:fixed;top:100px;left:50%;transform:translateX(-50%);
     z-index:60;display:none;align-items:center;gap:14px;
     background:rgba(4,10,20,0.85);border:1px solid var(--accent-theme);
@@ -214,7 +205,6 @@
   .session-hud .who{color:#00f0ff;}
   .session-hud .time{color:#00ff88;font-family:monospace;font-size:18px;}
   .session-hud .time.warn{color:#ff3344;animation:blink 1s infinite;}
-
   .secret-modal-backdrop{position:fixed;inset:0;background:rgba(2,4,9,0.9);
     backdrop-filter:blur(25px);z-index:2000;display:none;align-items:center;
     justify-content:center;opacity:0;transition:opacity 0.3s;}
@@ -234,7 +224,6 @@
     cursor:pointer;transition:all 0.12s;}
   .pad-btn:hover{background:rgba(0,240,255,0.2);border-color:#00f0ff;transform:scale(1.05);}
   .pad-btn.action{background:rgba(0,240,255,0.15);color:#00f0ff;font-size:18px;}
-
   .settings-window{width:1000px;height:680px;max-width:96vw;max-height:92vh;
     background:#0b101c;border:2px solid rgba(0,240,255,0.4);
     box-shadow:0 0 70px rgba(0,112,209,0.5);border-radius:28px;
@@ -306,7 +295,6 @@
   .btn-cfg:hover{background:#00f0ff;color:#000;}
   .btn-cfg.danger{background:rgba(255,51,68,0.15);border-color:#ff3344;color:#ff3344;}
   .btn-cfg.danger:hover{background:#ff3344;color:#fff;}
-
   .records-table{width:100%;display:flex;flex-direction:column;gap:6px;
     max-height:480px;overflow-y:auto;}
   .record-row{display:grid;grid-template-columns:50px 1fr 130px 110px;gap:10px;
@@ -319,7 +307,6 @@
   .incident-row{display:flex;justify-content:space-between;gap:10px;
     padding:10px 14px;background:rgba(255,51,68,0.08);
     border:1px solid rgba(255,51,68,0.3);border-radius:10px;font-size:13px;}
-
   .result-modal{position:fixed;inset:0;background:rgba(2,4,9,0.95);
     backdrop-filter:blur(25px);z-index:5500;display:none;align-items:center;
     justify-content:center;opacity:0;transition:opacity 0.3s;}
@@ -352,7 +339,6 @@
     animation:shake 0.35s;}
   .result-actions{display:flex;gap:10px;}
   .result-actions .btn-cfg{flex:1;padding:14px;font-size:15px;}
-
   #cyberAlert{position:fixed;top:-100px;left:50%;transform:translateX(-50%);
     background:rgba(4,10,20,0.95);border:2px solid #00f0ff;
     box-shadow:0 0 30px rgba(0,240,255,0.4);color:#00f0ff;
@@ -362,7 +348,6 @@
   #cyberAlert.show{top:30px;}
   #cyberAlert.error{border-color:#ff3344;color:#ff3344;
     box-shadow:0 0 30px rgba(255,51,68,0.5);}
-
   .maintenance-screen{position:fixed;inset:0;z-index:99999;
     background:radial-gradient(ellipse at 50% 40%,#1a0a35 0%,#020409 70%);
     display:none;align-items:center;justify-content:center;}
@@ -381,7 +366,6 @@
   .maintenance-spinner{width:50px;height:50px;border:4px solid rgba(255,170,0,0.2);
     border-top-color:#ffaa00;border-radius:50%;
     animation:maintenanceSpin 1s infinite linear;margin-top:10px;}
-
   @keyframes barDown{from{transform:translateY(-35px);opacity:0;}to{transform:translateY(0);opacity:1;}}
   @keyframes shimmerPass{0%{transform:translateX(-160%) rotate(35deg);}35%,100%{transform:translateX(220%) rotate(35deg);}}
   @keyframes pulseGlyphs{0%{transform:scale(0.85);opacity:0.6;}100%{transform:scale(1.15);opacity:1;}}
@@ -472,13 +456,14 @@
   </div>
 </div>
 
+<!-- ✅ FIX: tabindex="0" на iframe, чтобы он мог получать фокус -->
 <div class="game-viewport" id="gameViewport">
   <div class="viewport-bar">
     <div class="viewport-title"><span style="font-size:18px;">🎮</span><span id="viewportGameTitle">СибКодБокс</span></div>
     <button class="btn-quit" id="btnQuitViewport">✕ Выйти в меню</button>
   </div>
-  <iframe id="gameFrame" class="game-frame"
-    sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-forms allow-popups"
+  <iframe id="gameFrame" class="game-frame" tabindex="0"
+    sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-forms allow-popups allow-modals"
     allow="gamepad *; fullscreen *; autoplay *; accelerometer; gyroscope"></iframe>
 </div>
 
@@ -691,7 +676,7 @@
               </select>
             </div>
           </div>
-          <div class="setting-item"><div class="setting-info"><h4>Громкость BGM</h4><p>Фоновая музыка</p></div><div class="setting-ctrl"><input type="range" id="opBgmVol" min="0" max="100" value="25"></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Громкость BGM</h4><p>Фоновая музыка</p></div><div class="setting-ctrl"><input type="range" id="opBgmVol" min="0" max="100" value="40"></div></div>
           <div class="setting-item"><div class="setting-info"><h4>Громкость SFX</h4><p>Звуковые эффекты</p></div><div class="setting-ctrl"><input type="range" id="opSfxVol" min="0" max="100" value="70"></div></div>
         </div>
         <div class="tab-pane" id="op-tab-kiosk">
@@ -793,9 +778,9 @@
           <div class="setting-item"><div class="setting-info"><h4>Показ FPS</h4><p>Индикатор производительности</p></div><div class="setting-ctrl"><select id="cfgShowFps"><option value="off" selected>Выкл</option><option value="on">Вкл</option></select></div></div>
         </div>
         <div class="tab-pane" id="os-tab-dsp">
-          <div class="setting-item"><div class="setting-info"><h4>Low-Pass Cutoff</h4><p>Фильтр частот BGM</p></div><div class="setting-ctrl"><input type="range" id="cfgFilterCutoff" min="200" max="3000" value="500"></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>Bass Boost</h4><p>Усиление низких частот</p></div><div class="setting-ctrl"><input type="range" id="cfgBassBoost" min="0" max="100" value="20"></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>Реверберация</h4><p>Объём звучания</p></div><div class="setting-ctrl"><input type="range" id="cfgReverb" min="0" max="100" value="30"></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Low-Pass Cutoff</h4><p>Фильтр частот BGM (Гц)</p></div><div class="setting-ctrl"><input type="range" id="cfgFilterCutoff" min="200" max="8000" value="2400"></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Bass Boost</h4><p>Усиление низких частот (50 = нейтрально)</p></div><div class="setting-ctrl"><input type="range" id="cfgBassBoost" min="0" max="100" value="50"></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Реверберация</h4><p>Объём звучания</p></div><div class="setting-ctrl"><input type="range" id="cfgReverb" min="0" max="100" value="35"></div></div>
           <div class="setting-item"><div class="setting-info"><h4>Эхо</h4><p>Задержка BGM</p></div><div class="setting-ctrl"><input type="range" id="cfgEcho" min="0" max="100" value="0"></div></div>
         </div>
         <div class="tab-pane" id="os-tab-music">
@@ -918,15 +903,15 @@ document.getElementById('btnFullscreen').onclick = () => {
 };
 
 /* =====================================================================
-   3. CONFIG
+   3. CONFIG — ✅ FIX: улучшены аудио-дефолты
    ===================================================================== */
 const CONFIG = {
   bgmStyle: 'ambient',
   sfxStyle: 'arcade',
   bgmTempo: 5.5,
-  filterCutoff: 500,
-  bassBoost: 20,
-  reverb: 30,
+  filterCutoff: 2400,           // ✅ FIX: было 500 — глушило музыку
+  bassBoost: 50,                // ✅ FIX: было 20 — резало басы
+  reverb: 35,
   echo: 0,
   chimesEnabled: true,
   glowIntensity: 60,
@@ -935,65 +920,92 @@ const CONFIG = {
   hideCursor: true,
   autoArduino: false,
   baudrate: 9600,
-  save() { try { localStorage.setItem('sib_config_v8', JSON.stringify(this)); } catch(e){} },
+  save() { try { localStorage.setItem('sib_config_v9', JSON.stringify(this)); } catch(e){} },
   load() {
     try {
-      const s = localStorage.getItem('sib_config_v8');
+      const s = localStorage.getItem('sib_config_v9') || localStorage.getItem('sib_config_v8');
       if (s) Object.assign(this, JSON.parse(s));
+      // Принудительно обновляем критичные параметры, если они остались старыми
+      if (this.filterCutoff < 800) this.filterCutoff = 2400;
+      if (this.bassBoost === 20) this.bassBoost = 50;
     } catch(e){}
   }
 };
 CONFIG.load();
 
 /* =====================================================================
-   4. AUDIO
+   4. AUDIO — ✅ FIX: реверб, эхо, громкость, устойчивость к autoplay
    ===================================================================== */
 const SoundMaster = {
   ctx:null, isMuted:false, isBgmPlaying:false,
   masterGain:null, bgmGain:null, sfxGain:null,
-  filterNode:null, bassNode:null, reverbNode:null, echoNode:null, echoDelay:null,
+  filterNode:null, bassNode:null,
+  reverbNode:null, reverbGain:null,   // ✅ FIX: сохраняем gain как свойство
+  echoDelay:null, echoGain:null,      // ✅ FIX
   currentChordStep:0, chordTimer:null, melodyTimer:null,
   currentBgmStyle:'ambient',
+  _pendingStart:false,
 
   init() {
     if (!this.ctx) {
       const AC = window.AudioContext || window.webkitAudioContext;
       this.ctx = new AC();
-      this.masterGain = this.ctx.createGain(); this.masterGain.gain.value = 1;
+
+      this.masterGain = this.ctx.createGain();
+      this.masterGain.gain.value = 1;
       this.masterGain.connect(this.ctx.destination);
-      this.bgmGain = this.ctx.createGain(); this.bgmGain.gain.value = 0.25;
+
+      this.bgmGain = this.ctx.createGain();
+      this.bgmGain.gain.value = 0.40;   // ✅ FIX: громче (было 0.25)
       this.bgmGain.connect(this.masterGain);
-      this.sfxGain = this.ctx.createGain(); this.sfxGain.gain.value = 0.7;
+
+      this.sfxGain = this.ctx.createGain();
+      this.sfxGain.gain.value = 0.7;
       this.sfxGain.connect(this.masterGain);
 
+      // Bass shelf — ✅ FIX: 50 = нейтрально, >50 = буст
       this.bassNode = this.ctx.createBiquadFilter();
       this.bassNode.type = 'lowshelf';
-      this.bassNode.frequency.value = 250;
-      this.bassNode.gain.value = (CONFIG.bassBoost - 50) / 50 * 10;
+      this.bassNode.frequency.value = 200;
+      this.bassNode.gain.value = (CONFIG.bassBoost - 50) / 50 * 8;
       this.bassNode.connect(this.bgmGain);
 
+      // Low-pass фильтр — ✅ FIX: дефолт 2400 Гц
       this.filterNode = this.ctx.createBiquadFilter();
       this.filterNode.type = 'lowpass';
       this.filterNode.frequency.value = CONFIG.filterCutoff;
+      this.filterNode.Q.value = 0.7;
       this.filterNode.connect(this.bassNode);
 
+      // Реверб — ✅ FIX: сохраняем gain
       this.reverbNode = this.ctx.createConvolver();
       this.reverbNode.buffer = this._makeReverbBuffer(2, 2.5);
-      const reverbGain = this.ctx.createGain();
-      reverbGain.gain.value = CONFIG.reverb / 100 * 0.5;
-      this.reverbNode.connect(reverbGain);
-      reverbGain.connect(this.bgmGain);
+      this.reverbGain = this.ctx.createGain();
+      this.reverbGain.gain.value = CONFIG.reverb / 100 * 0.6;
+      this.reverbNode.connect(this.reverbGain);
+      this.reverbGain.connect(this.bgmGain);
 
+      // Эхо — ✅ FIX
       this.echoDelay = this.ctx.createDelay(2);
-      this.echoDelay.delayTime.value = 0.3;
-      const echoGain = this.ctx.createGain();
-      echoGain.gain.value = CONFIG.echo / 100 * 0.4;
-      this.echoDelay.connect(echoGain);
-      echoGain.connect(this.echoDelay);
-      echoGain.connect(this.bgmGain);
+      this.echoDelay.delayTime.value = 0.32;
+      this.echoGain = this.ctx.createGain();
+      this.echoGain.gain.value = CONFIG.echo / 100 * 0.4;
+      this.echoDelay.connect(this.echoGain);
+      this.echoGain.connect(this.echoDelay); // feedback
+      this.echoGain.connect(this.bgmGain);
     }
-    if (this.ctx.state === 'suspended') this.ctx.resume();
-    if (!this.isBgmPlaying && !this.isMuted) this.startBGM(CONFIG.bgmStyle);
+
+    const resume = this.ctx.resume();
+    if (resume && resume.then) {
+      resume.then(() => {
+        // ✅ FIX: запускаем BGM после успешного resume
+        if (!this.isBgmPlaying && !this.isMuted) {
+          this.startBGM(CONFIG.bgmStyle);
+        }
+      }).catch(() => {});
+    } else if (!this.isBgmPlaying && !this.isMuted) {
+      this.startBGM(CONFIG.bgmStyle);
+    }
   },
 
   _makeReverbBuffer(duration, decay) {
@@ -1007,17 +1019,39 @@ const SoundMaster = {
     return buf;
   },
 
-  setBgmVolume(v){ if(this.bgmGain) this.bgmGain.gain.setTargetAtTime(v,this.ctx.currentTime,0.05); },
-  setSfxVolume(v){ if(this.sfxGain) this.sfxGain.gain.setTargetAtTime(v,this.ctx.currentTime,0.05); },
-  setFilterCutoff(v){ if(this.filterNode) this.filterNode.frequency.setTargetAtTime(v,this.ctx.currentTime,0.05); },
-  setBassBoost(v){ if(this.bassNode) this.bassNode.gain.setTargetAtTime((v-50)/50*10,this.ctx.currentTime,0.05); },
-  setReverb(v){ if(this.reverbNode){ const g=this.reverbNode.outputs?.[0]?.gain; if(g) g.value = v/100*0.5; } },
-  setEcho(v){ if(this.echoDelay){ const g=this.echoDelay.outputs?.[0]?.gain; if(g) g.value = v/100*0.4; } },
+  setBgmVolume(v){
+    if(!this.bgmGain) return;
+    this.bgmGain.gain.setTargetAtTime(v, this.ctx.currentTime, 0.05);
+  },
+  setSfxVolume(v){
+    if(!this.sfxGain) return;
+    this.sfxGain.gain.setTargetAtTime(v, this.ctx.currentTime, 0.05);
+  },
+  setFilterCutoff(v){
+    if(!this.filterNode) return;
+    this.filterNode.frequency.setTargetAtTime(v, this.ctx.currentTime, 0.05);
+  },
+  setBassBoost(v){
+    if(!this.bassNode) return;
+    this.bassNode.gain.setTargetAtTime((v-50)/50*8, this.ctx.currentTime, 0.05);
+  },
+  // ✅ FIX: используем сохранённые gain-ноды
+  setReverb(v){
+    if(!this.reverbGain) return;
+    this.reverbGain.gain.setTargetAtTime(v/100*0.6, this.ctx.currentTime, 0.05);
+  },
+  setEcho(v){
+    if(!this.echoGain) return;
+    this.echoGain.gain.setTargetAtTime(v/100*0.4, this.ctx.currentTime, 0.05);
+  },
 
   toggleMute() {
-    this.init(); this.isMuted = !this.isMuted;
+    this.init();
+    this.isMuted = !this.isMuted;
     document.getElementById('btnAudioToggle').textContent = this.isMuted ? '🔇' : '🔊';
     this.masterGain.gain.setTargetAtTime(this.isMuted ? 0 : 1, this.ctx.currentTime, 0.05);
+    // ✅ FIX: если включаем звук и BGM не играет — запускаем
+    if (!this.isMuted && !this.isBgmPlaying) this.startBGM(CONFIG.bgmStyle);
   },
 
   stopBGM() {
@@ -1027,6 +1061,7 @@ const SoundMaster = {
   },
 
   startBGM(style) {
+    if (!this.ctx) return;
     this.stopBGM();
     this.currentBgmStyle = style;
     this.isBgmPlaying = true;
@@ -1039,12 +1074,13 @@ const SoundMaster = {
     };
     const p = presets[style] || presets.ambient;
 
+    // ✅ FIX: громче голоса
     const voices = [];
     for (let i = 0; i < 5; i++) {
       const o = this.ctx.createOscillator(), g = this.ctx.createGain();
       o.type = p.type;
-      o.detune.value = (Math.random()-0.5)*10;
-      g.gain.value = i === 0 ? 0.14 : 0.05;
+      o.detune.value = (Math.random()-0.5)*12;
+      g.gain.value = i === 0 ? 0.22 : 0.08;
       o.connect(g);
       g.connect(this.filterNode);
       if (this.reverbNode) g.connect(this.reverbNode);
@@ -1057,36 +1093,43 @@ const SoundMaster = {
       if (!this.isBgmPlaying) return;
       const chord = p.chords[this.currentChordStep % p.chords.length];
       const t = this.ctx.currentTime;
-      voices.forEach((v,i) => { if (chord[i]) v.o.frequency.setTargetAtTime(chord[i],t,1.8); });
+      voices.forEach((v,i) => {
+        if (chord[i]) v.o.frequency.setTargetAtTime(chord[i], t, 1.6);
+      });
       this.currentChordStep++;
     };
     nextChord();
-    const tempo = Math.max(2000, CONFIG.bgmTempo * 1000);
+    const tempo = Math.max(1800, CONFIG.bgmTempo * 1000);
     this.chordTimer = setInterval(nextChord, tempo);
 
+    // Мелодические "колокольчики"
     this.melodyTimer = setInterval(() => {
       if (!this.isBgmPlaying || this.isMuted || !CONFIG.chimesEnabled) return;
-      if (Math.random() > 0.5) {
+      if (Math.random() > 0.45) {
         const note = p.scale[Math.floor(Math.random()*p.scale.length)];
         const t = this.ctx.currentTime;
         const o = this.ctx.createOscillator(), g = this.ctx.createGain();
         o.type = p.type;
         o.frequency.value = note;
-        g.gain.setValueAtTime(0.03, t);
-        g.gain.exponentialRampToValueAtTime(0.0001, t + 1.4);
+        g.gain.setValueAtTime(0.06, t);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 1.6);
         o.connect(g);
         g.connect(this.bgmGain);
         if (this.reverbNode) g.connect(this.reverbNode);
-        o.start(t); o.stop(t + 1.4);
+        o.start(t); o.stop(t + 1.6);
       }
-    }, 900);
+    }, 750);
   },
 
-  pauseBGM(){ if(this.bgmGain) this.bgmGain.gain.setTargetAtTime(0,this.ctx.currentTime,0.35); },
+  pauseBGM(){
+    if(!this.bgmGain) return;
+    this.bgmGain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.35);
+  },
   resumeBGM(){
     if (!this.bgmGain || this.isMuted) return;
-    const target = (parseFloat(document.getElementById('opBgmVol').value) || 25)/100;
-    this.bgmGain.gain.setTargetAtTime(target,this.ctx.currentTime,0.8);
+    const el = document.getElementById('opBgmVol');
+    const target = el ? (parseFloat(el.value) || 40)/100 : 0.4;
+    this.bgmGain.gain.setTargetAtTime(target, this.ctx.currentTime, 0.8);
   },
 
   _sfxParams(kind) {
@@ -1118,11 +1161,9 @@ const ctx = canvas.getContext('2d');
 let particles = [];
 let particleGlowColor = '#00f0ff';
 let targetParticleCount = 180;
-
 function resizeCanvas(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
-
 class CosmicParticle {
   constructor(){ this.reborn(true); }
   reborn(initial = false){
@@ -1176,6 +1217,8 @@ const COMMON_GAME_HEADER = `
   function sendScore(gameId, gameName, score){
     try{ if(window.parent) window.parent.postMessage({type:'SCORE', gameId, game: gameName, score: Number(score)||0}, '*'); }catch(e){}
   }
+  // ✅ FIX: возврат фокуса при движении мыши
+  document.addEventListener('mousemove', () => { if(!document.hasFocus()) window.focus(); });
 `;
 
 const GAME_CYBER_MATH_HTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
@@ -1346,12 +1389,9 @@ loop();
    ===================================================================== */
 const SUPABASE_URL = 'https://otsuvtcxnbdxrodayeta.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im90c3V2dGN4bmJkeHJvZGF5ZXRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4NjkyMzQsImV4cCI6MjEwNTQ0NTIzNH0.fsS73p3tRcbe0JIeRVjeqPStFzRe0lMKGLJQm7ki8oA';
-
 let sb = null;
 try {
-  if (window.supabase) {
-    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-  }
+  if (window.supabase) sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 } catch(e) { console.warn('Supabase init failed', e); }
 
 const SIB = {
@@ -1359,17 +1399,14 @@ const SIB = {
   badWords:['хуй','хуя','хуе','хую','пизд','бляд','блять','бля','еба','ебал','ебан','ебат','ебет','еби','ебо','ебуч','ебу','ебли','заеб','заёб','наеб','наёб','отъеб','отъёб','подъеб','подъёб','перееб','переёб','приеб','приёб','уеб','уёб','разъеб','разъёб','сук','сука','суки','сучар','сучк','муд','муда','манди','манда','пидор','пидар','пидр','гандон','гондон','шлюх','шлюш','хер','херн','хрен','охуе','охуи','ахуе','ахуи','нахуй','нахуя','похуй','похуя','хуесос','соси','сосал','сосет','сосёт','дроч','дрочи','сперм','говн','говна','говно','гавн','срак','срака','срать','сру','срут','перд','пердун','бзд','бзде','жоп','жопа','жопу','попк','анус','очко','письк','писюн','яичк','яйц','член','залуп','проститут','шалав','шала','сись','сися','титьк','тить','пизда','пизде','пизду','пиздой','пиздец','пиздато','пиздю','пиздюк','ебало','ебала','ебану','ебанут','ебаши','ебен','ебет','еблась','ебло','ебля','ебну','ебнут','ебут','залупа','анал','секс','секса','сексу','порн','порно','fuck','fuk','shit','bitch','cunt','dick','pussy','asshole','bastard','whore','slut','nigger','faggot','fag','rape','porn','sex','suck','blowjob','cock','penis','vagina','tits','boobs','nazi','hitler'],
   records:{}, incidents:[], tickets:[],
   activeSession:null, sessionTimer:null, sessionSecondsLeft:0,
-  creatorCode:'CREATOR-0000',
-  cloudOnline:false,
+  creatorCode:'CREATOR-0000', cloudOnline:false,
 
   normalize(s){ return (s||'').toLowerCase().replace(/[^a-zа-яё0-9]/gi,'').replace(/ё/g,'е').replace(/й/g,'и'); },
   isProfane(s){ const n=this.normalize(s); if(!n) return false; for(const w of this.badWords){ const wn=this.normalize(w); if(wn&&n.includes(wn)) return true; } return false; },
 
   async load(){
     this._loadLocal();
-
     if(!sb){ this.cloudOnline=false; this._updateCloudBadge(); return; }
-
     try {
       const [tRes, rRes, iRes, cRes] = await Promise.all([
         sb.from('tickets').select('*').order('created_at',{ascending:false}).limit(500),
@@ -1377,48 +1414,36 @@ const SIB = {
         sb.from('incidents').select('*').order('created_at',{ascending:false}).limit(200),
         sb.from('config').select('*')
       ]);
-
       if(tRes.error) throw tRes.error;
       if(rRes.error) throw rRes.error;
       if(iRes.error) throw iRes.error;
-
       this.tickets = (tRes.data || []).map(x => ({
-        id: x.id,
-        minutes: x.minutes,
-        type: x.type,
+        id: x.id, minutes: x.minutes, type: x.type,
         durationSeconds: x.duration_seconds,
         createdAt: new Date(x.created_at).getTime(),
-        used: x.used,
-        banned: x.banned
+        used: x.used, banned: x.banned
       }));
-
       this.records = {};
       (rRes.data || []).forEach(rec => {
         if(!this.records[rec.game_id]) this.records[rec.game_id] = [];
         this.records[rec.game_id].push({
-          name: rec.player_name,
-          score: rec.score,
+          name: rec.player_name, score: rec.score,
           time: new Date(rec.created_at).getTime()
         });
       });
       Object.keys(this.records).forEach(gid => {
         this.records[gid].sort((a,b) => b.score - a.score);
       });
-
       this.incidents = (iRes.data || []).map(x => ({
         time: new Date(x.created_at).getTime(),
-        name: x.name,
-        ticketId: x.ticket_id,
-        photo: x.photo,
-        reason: x.reason
+        name: x.name, ticketId: x.ticket_id,
+        photo: x.photo, reason: x.reason
       }));
-
       if(cRes.data){
         const cfg = {};
         cRes.data.forEach(x => cfg[x.key] = x.value);
         if(cfg.creator_code) this.creatorCode = cfg.creator_code;
       }
-
       this._saveLocal();
       this.cloudOnline = true;
     } catch(e) {
@@ -1458,68 +1483,37 @@ const SIB = {
       el.title = 'Supabase недоступен — работаем локально';
     }
   },
-
   saveRecords(){ this._saveLocal(); },
   saveIncidents(){ this._saveLocal(); },
   saveTickets(){ this._saveLocal(); },
   saveCreatorCode(){ this._saveLocal(); },
-
-  async generateTicket(minutes){
-    const id='SIB-'+minutes+'MIN-'+Math.random().toString(36).slice(2,8).toUpperCase();
-    const durationSeconds = minutes==='CREATOR'?0:Number(minutes)*60;
-    const t={id,minutes,type:minutes==='CREATOR'?'creator':'timed',
-      durationSeconds,createdAt:Date.now(),used:false,banned:false};
-    this.tickets.push(t); this.saveTickets();
-
-    if(sb){
-      try {
-        await sb.from('tickets').insert([{
-          id, minutes: Number(minutes)||0,
-          type: t.type,
-          duration_seconds: durationSeconds
-        }]);
-      } catch(e){ console.warn('ticket insert failed', e); }
-    }
-    return t;
-  },
   findTicket(id){ return this.tickets.find(t=>t.id===id)||null; },
   async banTicket(id){
     const t=this.findTicket(id); if(t){ t.banned=true; this.saveTickets(); }
-    if(sb){
-      try { await sb.from('tickets').update({banned:true}).eq('id',id); } catch(e){}
-    }
+    if(sb){ try { await sb.from('tickets').update({banned:true}).eq('id',id); } catch(e){} }
   },
   async removeTicket(id){
     this.tickets=this.tickets.filter(t=>t.id!==id); this.saveTickets();
-    if(sb){
-      try { await sb.from('tickets').delete().eq('id',id); } catch(e){}
-    }
+    if(sb){ try { await sb.from('tickets').delete().eq('id',id); } catch(e){} }
   },
   async resetTickets(){
     this.tickets=[]; this.saveTickets();
-    if(sb){
-      try { await sb.from('tickets').delete().neq('id',''); } catch(e){}
-    }
+    if(sb){ try { await sb.from('tickets').delete().neq('id',''); } catch(e){} }
   },
-
   async addIncident(data){
     this.incidents.unshift({time:Date.now(),name:data.name,ticketId:data.ticketId,
       photo:data.photo||'',reason:data.reason||'Нецензурное имя'});
     if(this.incidents.length>200) this.incidents.length=200;
     this.saveIncidents();
-
     if(sb){
       try {
         await sb.from('incidents').insert([{
-          name: data.name,
-          ticket_id: data.ticketId,
-          photo: data.photo || '',
-          reason: data.reason || 'Нецензурное имя'
+          name: data.name, ticket_id: data.ticketId,
+          photo: data.photo || '', reason: data.reason || 'Нецензурное имя'
         }]);
       } catch(e){ console.warn('incident insert failed', e); }
     }
   },
-
   getGameRecords(gameId){
     return (this.records[gameId] || []).slice().sort((a,b)=>b.score-a.score);
   },
@@ -1533,13 +1527,10 @@ const SIB = {
     this.records[gameId].sort((a,b)=>b.score-a.score);
     if(this.records[gameId].length > 100) this.records[gameId].length = 100;
     this.saveRecords();
-
     if(sb){
       try {
         await sb.from('records').insert([{
-          game_id: gameId,
-          player_name: playerName,
-          score: Number(score)||0
+          game_id: gameId, player_name: playerName, score: Number(score)||0
         }]);
       } catch(e){ console.warn('record insert failed', e); }
     }
@@ -1552,7 +1543,6 @@ const SIB = {
     for(const r of arr){ if(r.score > score) place++; }
     return place;
   },
-
   startSession(ticket, playerName){
     this.endSession(true);
     const totalSeconds = ticket.type==='creator'?0:(ticket.durationSeconds||300);
@@ -1618,24 +1608,17 @@ SIB.load();
 /* =====================================================================
    ТЕХРАБОТЫ
    ===================================================================== */
-let maintenanceCheckInterval = null;
-
 async function checkMaintenance(){
   if(!sb) return;
   try {
-    const { data } = await sb.from('config')
-      .select('*')
-      .in('key', ['maintenance_mode', 'maintenance_message']);
+    const { data } = await sb.from('config').select('*').in('key', ['maintenance_mode', 'maintenance_message']);
     const cfg = {};
     (data || []).forEach(x => cfg[x.key] = x.value);
-
     const mode = cfg.maintenance_mode === 'on';
     const msg = cfg.maintenance_message || 'Идут технические работы. Автомат скоро вернётся!';
-
     const screen = document.getElementById('maintenanceScreen');
     const text = document.getElementById('maintenanceText');
     if(!screen || !text) return;
-
     if(mode){
       text.textContent = msg;
       screen.classList.add('active');
@@ -1647,7 +1630,7 @@ async function checkMaintenance(){
     }
   } catch(e) { console.warn('checkMaintenance', e); }
 }
-maintenanceCheckInterval = setInterval(checkMaintenance, 10000);
+setInterval(checkMaintenance, 10000);
 
 /* =====================================================================
    REALTIME
@@ -1691,12 +1674,10 @@ function loadGamesFromCloud(gamesJsonStr){
     const cloudGames = JSON.parse(gamesJsonStr);
     const builtIn = DEFAULT_GAMES_LIST.slice();
     const merged = [...builtIn];
-
     cloudGames.forEach(g => {
       if(builtIn.find(x => x.id === g.id)) return;
       merged.push(g);
     });
-
     GAMES_CATALOG = merged;
     GAMES_CATALOG.forEach(g => {
       if(g.id === 'cyber-math') g.srcdoc = GAME_CYBER_MATH_HTML;
@@ -1704,15 +1685,12 @@ function loadGamesFromCloud(gamesJsonStr){
       if(g.id === 'cyber-pong') g.srcdoc = GAME_CYBER_PONG_HTML;
       if(g.id === 'skyline-blocks') g.srcdoc = GAME_SKYLINE_HTML;
     });
-
     localStorage.setItem('sib_games_catalog', JSON.stringify(
       GAMES_CATALOG.map(g => { const c = {...g}; delete c.srcdoc; return c; })
     ));
-
     renderCarousel();
   } catch(e) { console.warn('loadGamesFromCloud', e); }
 }
-
 async function loadGamesFromCloudOnce(){
   if(!sb) return;
   try {
@@ -1764,7 +1742,6 @@ try{
 function saveGamesToStorage(){
   const storable=GAMES_CATALOG.map(g=>{ const c={...g}; if(c.srcdoc) delete c.srcdoc; return c; });
   localStorage.setItem('sib_games_catalog',JSON.stringify(storable));
-
   if(sb){
     sb.from('config').upsert({ key: 'games_json', value: JSON.stringify(storable) })
       .then(()=>{}).catch(()=>{});
@@ -1865,7 +1842,7 @@ function updateGameMeta(){
 }
 
 /* =====================================================================
-   10. LAUNCH / EXIT
+   10. LAUNCH / EXIT — ✅ FIX: фокус iframe
    ===================================================================== */
 const portal=document.getElementById('launchPortal');
 const viewport=document.getElementById('gameViewport');
@@ -1882,6 +1859,24 @@ let lastGameTitle='';
 let lastGameId='';
 let resultModalOpen=false;
 
+// ✅ FIX: функция принудительного фокуса iframe
+function focusGameFrame() {
+  try {
+    gameFrame.focus();
+    if (gameFrame.contentWindow) {
+      gameFrame.contentWindow.focus();
+      const body = gameFrame.contentDocument?.body;
+      const canvas = gameFrame.contentDocument?.querySelector('canvas');
+      if (canvas) {
+        if (!canvas.hasAttribute('tabindex')) canvas.setAttribute('tabindex', '0');
+        canvas.focus();
+      } else if (body) {
+        body.focus();
+      }
+    }
+  } catch(e) { /* cross-origin */ }
+}
+
 function launchGame(){
   if(isGameRunning||GAMES_CATALOG.length===0) return;
   if(!SIB.activeSession){ showLoginGate(); return; }
@@ -1895,10 +1890,25 @@ function launchGame(){
   portal.classList.add('show');
   setTimeout(()=>{
     const game=GAMES_CATALOG[activeGameIndex];
+
+    // ✅ FIX: сначала onload, потом присваиваем src/srcdoc
+    gameFrame.onload = () => {
+      focusGameFrame();
+      // повторно через небольшие задержки — на случай медленной инициализации
+      setTimeout(focusGameFrame, 100);
+      setTimeout(focusGameFrame, 400);
+      setTimeout(focusGameFrame, 1000);
+    };
+
     if(game.srcdoc){ gameFrame.removeAttribute('src'); gameFrame.srcdoc=game.srcdoc; }
     else { gameFrame.removeAttribute('srcdoc'); gameFrame.src=game.url; }
+
     viewport.classList.add('active');
     portal.classList.remove('show');
+
+    // ✅ FIX: страховка — повторный фокус после показа
+    setTimeout(focusGameFrame, 600);
+    setTimeout(focusGameFrame, 1200);
   },500);
 }
 
@@ -1907,13 +1917,20 @@ function exitGame(){
   SoundMaster.back();
   viewport.classList.remove('active');
   gameFrame.src=''; gameFrame.srcdoc='';
+  gameFrame.onload = null;
   isGameRunning=false;
   SoundMaster.resumeBGM();
-
+  // ✅ FIX: возвращаем фокус в основной документ
+  try { window.focus(); document.body.focus(); } catch(e) {}
   if(SIB.activeSession && lastGameScore>0 && !resultModalOpen){
     openResultModal(lastGameId, lastGameTitle, lastGameScore);
   }
 }
+
+// ✅ FIX: клик по панели игры тоже возвращает фокус iframe
+viewport.addEventListener('pointerdown', () => {
+  if (isGameRunning) focusGameFrame();
+});
 
 function openResultModal(gameId, gameName, score){
   resultModalOpen = true;
@@ -1995,7 +2012,6 @@ function setLoginStatus(text, isError){
   loginStatus.textContent = text||'';
   loginStatus.classList.toggle('error', !!isError);
 }
-
 function showLoginGate(){
   if(isGameRunning) exitGame();
   SIB.activeSession = null;
@@ -2004,12 +2020,10 @@ function showLoginGate(){
   setLoginStatus('');
   loginManualInput.value = '';
 }
-
 function hideLoginGate(){
   loginGate.classList.remove('active');
   stopLoginCamera();
 }
-
 async function startLoginCamera(){
   if(loginStream && loginVideo.srcObject) { cameraActive = true; loginVideo.classList.add('on'); loginPlaceholder.style.display='none'; loginScanLine.classList.add('on'); scanLoginFrame(); return; }
   try{
@@ -2027,7 +2041,6 @@ async function startLoginCamera(){
     setLoginStatus('Камера недоступна. Введите код вручную.', true);
   }
 }
-
 function stopLoginCamera(){
   if(loginRaf){ cancelAnimationFrame(loginRaf); loginRaf = null; }
   cameraActive = false;
@@ -2035,7 +2048,6 @@ function stopLoginCamera(){
   loginPlaceholder.style.display = 'flex';
   loginScanLine.classList.remove('on');
 }
-
 function scanLoginFrame(){
   if(!cameraActive) return;
   if(loginVideo.readyState !== loginVideo.HAVE_ENOUGH_DATA){
@@ -2051,7 +2063,6 @@ function scanLoginFrame(){
   }
   loginRaf = requestAnimationFrame(scanLoginFrame);
 }
-
 async function handleLoginCode(raw){
   const code = raw.trim();
   if(!code) return;
@@ -2061,7 +2072,6 @@ async function handleLoginCode(raw){
     openNameInput(pendingTicket);
     return;
   }
-
   try {
     if(sb){
       const { data, error } = await sb.from('tickets').select('*').eq('id', code).maybeSingle();
@@ -2070,8 +2080,7 @@ async function handleLoginCode(raw){
       if(data.banned){ SoundMaster.error(); setLoginStatus('Этот QR-код заблокирован.', true); return; }
       if(data.used){ SoundMaster.error(); setLoginStatus('Этот QR-код уже использован.', true); return; }
       pendingTicket = {
-        id: data.id,
-        type: data.type,
+        id: data.id, type: data.type,
         durationSeconds: data.duration_seconds,
         minutes: data.type === 'creator' ? '∞' : data.minutes
       };
@@ -2082,7 +2091,6 @@ async function handleLoginCode(raw){
   } catch(e) {
     console.warn('Быстрая проверка не сработала, работаем локально', e);
   }
-
   const ticket = SIB.findTicket(code);
   if(!ticket){ SoundMaster.error(); setLoginStatus('QR-код не найден.', true); return; }
   if(ticket.banned){ SoundMaster.error(); setLoginStatus('Этот QR-код заблокирован.', true); return; }
@@ -2091,17 +2099,14 @@ async function handleLoginCode(raw){
   pendingTicket = ticket;
   openNameInput(ticket);
 }
-
 btnLoginStartCamera.onclick = () => {
   SoundMaster.click();
   if(cameraActive){ stopLoginCamera(); btnLoginStartCamera.textContent='📷 Включить камеру и сканировать'; }
   else { startLoginCamera(); btnLoginStartCamera.textContent='📷 Выключить камеру'; }
 };
-
 loginManualInput.addEventListener('keydown', e => {
   if(e.key==='Enter'){ handleLoginCode(loginManualInput.value); loginManualInput.value=''; }
 });
-
 function openNameInput(ticket){
   nameTicketInfo.innerHTML = `Билет: <b style="color:#00f0ff;">${ticket.id}</b><br>Время: <b style="color:#00ff88;">${ticket.type==='creator'?'Безлимит':ticket.minutes+' мин'}</b>`;
   playerNameInput.value = '';
@@ -2129,7 +2134,6 @@ async function submitName(){
     showCyberAlert('Нецензурное имя! QR-код заблокирован.', true);
     return;
   }
-
   if(sb && pendingTicket.id !== SIB.creatorCode){
     try {
       const { data } = await sb.from('tickets').select('banned, used').eq('id', pendingTicket.id).maybeSingle();
@@ -2143,7 +2147,6 @@ async function submitName(){
       }
     } catch(e) { console.warn(e); }
   }
-
   SoundMaster.secretUnlock();
   const t = pendingTicket;
   nameModal.classList.remove('open');
@@ -2154,12 +2157,10 @@ async function submitName(){
 document.getElementById('btnNameSubmit').onclick = submitName;
 document.getElementById('btnNameCancel').onclick = closeNameInput;
 playerNameInput.addEventListener('keydown', e => { if(e.key==='Enter') submitName(); });
-
 function enterMainMenu(){
   hideLoginGate();
   renderCarousel();
 }
-
 document.getElementById('btnEndSession').onclick = () => {
   askConfirm('Завершить сессию?', 'Вы выйдете в экран входа.', () => { SIB.endSession(); });
 };
@@ -2186,7 +2187,6 @@ function buildGameFilter(selectEl){
     selectEl.appendChild(o);
   });
 }
-
 function renderRecordsTable(target, gameId){
   let items = [];
   if(gameId === '__all__'){
@@ -2213,7 +2213,6 @@ function renderRecordsTable(target, gameId){
     return `<div class="record-row"><div class="rank ${rc}">#${i+1}</div><div><b>${escapeHtml(r.name)}</b><div style="font-size:11px;color:#888;">${escapeHtml(r.game)}</div></div><div style="font-weight:900;color:#00ff88;">${r.score}</div><div style="font-size:11px;color:#888;">${dateStr}</div></div>`;
   }).join('');
 }
-
 document.getElementById('btnShowRecords').onclick = () => {
   SoundMaster.click();
   buildGameFilter(recordsGameFilter);
@@ -2297,7 +2296,6 @@ async function openOperatorSettings(){
 }
 document.getElementById('btnCloseOpSettings').onclick = () => { SoundMaster.back(); opModal.classList.remove('open'); };
 document.getElementById('btnOpSaveClose').onclick = () => { SoundMaster.back(); opModal.classList.remove('open'); };
-
 opRecordsGameFilter.onchange = () => { renderRecordsTable(opRecordsTable, opRecordsGameFilter.value); };
 
 document.getElementById('btnClearRecords').onclick = () => {
@@ -2323,7 +2321,6 @@ async function loadMaintenanceToOperator(){
     document.getElementById('opMaintenanceMessage').value = cfg.maintenance_message||'Идут технические работы. Автомат скоро вернётся!';
   }catch(e){}
 }
-
 document.getElementById('btnApplyMaintenance').onclick = async () => {
   const mode = document.getElementById('opMaintenanceMode').value;
   const msg = document.getElementById('opMaintenanceMessage').value.trim() || 'Идут технические работы. Автомат скоро вернётся!';
@@ -2359,7 +2356,6 @@ function syncOsControls(){
   document.getElementById('cfgAutoArduino').value = CONFIG.autoArduino?'on':'off';
   document.getElementById('cfgBaudrate').value = CONFIG.baudrate;
 }
-
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.onclick = () => {
     SoundMaster.click();
@@ -2518,7 +2514,6 @@ function renderActiveTickets(){
 document.getElementById('btnResetTickets').onclick = () => {
   askConfirm('Удалить все билеты?','Все билеты будут удалены.',()=>{ SIB.resetTickets(); renderActiveTickets(); });
 };
-
 function renderIncidents(){
   const list = document.getElementById('incidentsList');
   if(!list) return;
@@ -2536,7 +2531,7 @@ document.getElementById('btnClearIncidents').onclick = () => {
 };
 
 /* =====================================================================
-   16. MUSIC
+   16. MUSIC — обработчики UI
    ===================================================================== */
 document.getElementById('opBgmStyle').onchange = (e) => {
   CONFIG.bgmStyle = e.target.value; CONFIG.save();
@@ -2595,7 +2590,6 @@ document.getElementById('cfgAuroraToggle').onchange = (e) => document.getElement
 document.getElementById('cfgBlurRange').oninput = (e) => document.querySelectorAll('.art-crossfade').forEach(el=>el.style.filter=`brightness(0.38) saturate(1.4) blur(${e.target.value}px)`);
 document.getElementById('cfgGlowIntensity').oninput = (e) => { CONFIG.glowIntensity = parseFloat(e.target.value); CONFIG.save(); };
 document.getElementById('cfgShowFps').onchange = (e) => { CONFIG.showFps = e.target.value==='on'; CONFIG.save(); };
-
 document.getElementById('cfgAutoArduino').onchange = (e) => { CONFIG.autoArduino = e.target.value==='on'; CONFIG.save(); };
 document.getElementById('cfgBaudrate').onchange = (e) => { CONFIG.baudrate = parseInt(e.target.value)||9600; CONFIG.save(); };
 
@@ -2627,20 +2621,14 @@ document.getElementById('btnSaveCreatorCode').onclick = () => {
   }
   else showCyberAlert('Код должен быть ≥6 символов', true);
 };
-
 document.getElementById('btnFactoryReset').onclick = () => {
   askConfirm('ПОЛНЫЙ СБРОС?','Все данные будут удалены безвозвратно.',()=>{ localStorage.clear(); location.reload(); });
 };
-
 document.getElementById('btnExportConfig').onclick = () => {
   const data = {
-    version: 8,
-    config: CONFIG,
+    version: 9, config: CONFIG,
     games: GAMES_CATALOG.map(g=>{ const c={...g}; delete c.srcdoc; return c; }),
-    records: SIB.records,
-    tickets: SIB.tickets,
-    incidents: SIB.incidents,
-    creatorCode: SIB.creatorCode
+    records: SIB.records, tickets: SIB.tickets, incidents: SIB.incidents, creatorCode: SIB.creatorCode
   };
   const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
@@ -2674,17 +2662,16 @@ document.getElementById('importConfigFile').onchange = (e) => {
   };
   reader.readAsText(file);
 };
-
 function updateTelemetry(){
   const totalRecords = Object.values(SIB.records).reduce((a,b)=>a+b.length,0);
   document.getElementById('systemTelemetryBox').innerHTML = `
-    ОС: СибКодБокс Arcade OS 8.0 Pro<br>
+    ОС: СибКодБокс Arcade OS 9.0 Pro<br>
     Экран: ${window.innerWidth}x${window.innerHeight} (${window.devicePixelRatio}x DPR)<br>
     Web Serial: ${'serial' in navigator ? 'Доступен' : 'Нет'}<br>
     Камера: ${navigator.mediaDevices && navigator.mediaDevices.getUserMedia ? 'Доступна' : 'Нет'}<br>
     Supabase: ${sb ? (SIB.cloudOnline ? 'Подключён' : 'Ошибка') : 'Не загружен'}<br>
     Игр: ${GAMES_CATALOG.length} • Билетов: ${SIB.tickets.length} • Рекордов: ${totalRecords} • Нарушений: ${SIB.incidents.length}<br>
-    Стиль BGM: ${CONFIG.bgmStyle} • SFX: ${CONFIG.sfxStyle}`;
+    Стиль BGM: ${CONFIG.bgmStyle} • SFX: ${CONFIG.sfxStyle} • Cutoff: ${CONFIG.filterCutoff} Гц`;
 }
 
 /* =====================================================================
@@ -2704,7 +2691,6 @@ function resetIdleTimer(){
 ['pointerdown','keydown','mousemove'].forEach(ev=>{
   window.addEventListener(ev, resetIdleTimer, { passive: true });
 });
-
 let cursorTimer = null;
 function hideCursor() { document.body.style.cursor = 'none'; }
 function showCursor() {
@@ -2718,9 +2704,7 @@ window.addEventListener('mousemove', showCursor, { passive: true });
    19. KEYBOARD
    ===================================================================== */
 window.addEventListener('keydown', (e) => {
-  if(document.getElementById('maintenanceScreen').classList.contains('active')){
-    return;
-  }
+  if(document.getElementById('maintenanceScreen').classList.contains('active')) return;
   if(loginGate.classList.contains('active')){
     if(document.activeElement === loginManualInput) return;
     return;
@@ -2766,13 +2750,11 @@ const btnArduino = document.getElementById('btnArduinoConnect');
 const ledIndicator = document.getElementById('arduinoLed');
 const statusLabel = document.getElementById('arduinoStatusText');
 const serialLogBox = document.getElementById('serialLogBox');
-
 function logSerial(msg){
   if(!serialLogBox) return;
   serialLogBox.textContent = `[${new Date().toLocaleTimeString()}] ${msg}\n` + serialLogBox.textContent.slice(0,1200);
 }
 document.getElementById('btnClearSerialLog').onclick = () => { serialLogBox.textContent = '> Лог очищен.\n'; };
-
 const ArcadeControlsBridge = {
   navLeft(){ if(!isGameRunning) moveToGame(activeGameIndex-1); },
   navRight(){ if(!isGameRunning) moveToGame(activeGameIndex+1); },
