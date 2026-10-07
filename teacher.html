@@ -6,74 +6,63 @@
 <meta name="robots" content="noindex, nofollow">
 <title>СибКодБокс — Пульт</title>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
   body{background:#020409;color:#fff;min-height:100vh;overflow-x:hidden;}
   body::before{content:'';position:fixed;inset:0;z-index:-1;
     background:radial-gradient(circle at 20% 30%,rgba(0,240,255,0.12),transparent 60%),
-               radial-gradient(circle at 80% 70%,rgba(255,0,127,0.10),transparent 60%),
-               #020409;}
+               radial-gradient(circle at 80% 70%,rgba(255,0,127,0.10),transparent 60%),#020409;}
   button,input,select,textarea{font-family:inherit;}
-  header{position:sticky;top:0;z-index:100;
-    background:rgba(2,4,9,0.85);backdrop-filter:blur(20px);
-    border-bottom:1px solid rgba(0,240,255,0.2);
-    padding:16px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}
+  header{position:sticky;top:0;z-index:100;background:rgba(2,4,9,0.85);backdrop-filter:blur(20px);
+    border-bottom:1px solid rgba(0,240,255,0.2);padding:16px 24px;
+    display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}
   .brand{display:flex;align-items:center;gap:14px;}
   .brand-logo{width:44px;height:44px;background:linear-gradient(135deg,#00f0ff,#00439c);
-    border-radius:14px;display:flex;align-items:center;justify-content:center;
-    box-shadow:0 0 25px #00f0ff;font-size:22px;}
+    border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 25px #00f0ff;font-size:22px;}
   .brand-title{font-size:20px;font-weight:900;letter-spacing:1px;
     background:linear-gradient(90deg,#fff 40%,#00f0ff);
     -webkit-background-clip:text;-webkit-text-fill-color:transparent;text-transform:uppercase;}
-  .brand-subtitle{font-size:11px;color:rgba(255,255,255,0.45);
-    letter-spacing:1.5px;text-transform:uppercase;font-weight:800;}
+  .brand-subtitle{font-size:11px;color:rgba(255,255,255,0.45);letter-spacing:1.5px;text-transform:uppercase;font-weight:800;}
   .header-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
   .cloud-status{font-size:11px;padding:6px 12px;border-radius:20px;
-    background:rgba(0,255,136,0.15);color:#00ff88;
-    border:1px solid #00ff88;font-weight:800;}
+    background:rgba(0,255,136,0.15);color:#00ff88;border:1px solid #00ff88;font-weight:800;}
   .cloud-status.offline{background:rgba(255,51,68,0.15);color:#ff3344;border-color:#ff3344;}
   .header-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);
-    color:#fff;padding:8px 16px;border-radius:30px;font-size:13px;font-weight:700;
-    cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:6px;}
+    color:#fff;padding:8px 16px;border-radius:30px;font-size:13px;font-weight:700;cursor:pointer;
+    transition:all 0.2s;display:flex;align-items:center;gap:6px;}
   .header-btn:hover{background:rgba(0,240,255,0.18);border-color:#00f0ff;transform:translateY(-1px);}
   .header-btn.danger{background:rgba(255,51,68,0.15);border-color:#ff3344;color:#ff3344;}
   .header-btn.danger:hover{background:#ff3344;color:#fff;}
   .container{max-width:1280px;margin:0 auto;padding:24px;}
   .tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;
-    background:rgba(255,255,255,0.03);padding:6px;border-radius:16px;
-    border:1px solid rgba(255,255,255,0.08);}
-  .tab-btn{background:transparent;border:1px solid transparent;
-    color:rgba(255,255,255,0.65);padding:10px 20px;border-radius:12px;
-    font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;
-    display:flex;align-items:center;gap:8px;}
+    background:rgba(255,255,255,0.03);padding:6px;border-radius:16px;border:1px solid rgba(255,255,255,0.08);}
+  .tab-btn{background:transparent;border:1px solid transparent;color:rgba(255,255,255,0.65);
+    padding:10px 20px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;
+    transition:all 0.2s;display:flex;align-items:center;gap:8px;}
   .tab-btn:hover{background:rgba(255,255,255,0.06);color:#fff;}
-  .tab-btn.active{background:rgba(0,240,255,0.15);
-    border-color:rgba(0,240,255,0.4);color:#00f0ff;box-shadow:0 0 15px rgba(0,240,255,0.2);}
-  .pane{display:none;}
-  .pane.active{display:block;animation:fadeIn 0.3s ease;}
+  .tab-btn.active{background:rgba(0,240,255,0.15);border-color:rgba(0,240,255,0.4);color:#00f0ff;}
+  .pane{display:none;} .pane.active{display:block;animation:fadeIn 0.3s ease;}
   @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
   .card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
     border-radius:20px;padding:22px;margin-bottom:16px;}
-  .card-title{font-size:16px;font-weight:900;color:#00f0ff;
-    letter-spacing:0.5px;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  .card-title{font-size:16px;font-weight:900;color:#00f0ff;letter-spacing:0.5px;
+    margin-bottom:14px;display:flex;align-items:center;gap:8px;}
   .card-sub{font-size:12px;color:rgba(255,255,255,0.55);margin-bottom:12px;line-height:1.5;}
   .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
   @media (max-width:800px){.grid-2{grid-template-columns:1fr;}}
   .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
-  .form-group label{font-size:12px;font-weight:700;color:#00f0ff;
-    letter-spacing:0.5px;text-transform:uppercase;}
-  .form-input{background:#04070d;border:2px solid rgba(0,240,255,0.25);
-    border-radius:12px;padding:12px 16px;font-size:15px;color:#fff;
-    outline:none;transition:all 0.2s;width:100%;}
+  .form-group label{font-size:12px;font-weight:700;color:#00f0ff;letter-spacing:0.5px;text-transform:uppercase;}
+  .form-input{background:#04070d;border:2px solid rgba(0,240,255,0.25);border-radius:12px;
+    padding:12px 16px;font-size:15px;color:#fff;outline:none;transition:all 0.2s;width:100%;}
   .form-input:focus{border-color:#00f0ff;box-shadow:0 0 15px rgba(0,240,255,0.3);}
   .form-input.error-shake{border-color:#ff3344!important;animation:shake 0.35s;}
   @keyframes shake{0%,100%{transform:translateX(0);}20%,60%{transform:translateX(-8px);}40%,80%{transform:translateX(8px);}}
   .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-  .btn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);
-    color:#fff;padding:12px 24px;border-radius:12px;font-size:14px;
-    font-weight:800;cursor:pointer;transition:all 0.2s;
-    display:inline-flex;align-items:center;justify-content:center;gap:8px;}
+  .btn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:#fff;
+    padding:12px 24px;border-radius:12px;font-size:14px;font-weight:800;cursor:pointer;
+    transition:all 0.2s;display:inline-flex;align-items:center;justify-content:center;gap:8px;}
   .btn:hover{background:#00f0ff;color:#000;transform:translateY(-1px);}
   .btn.primary{background:linear-gradient(135deg,#00f0ff,#0070d1);color:#000;
     box-shadow:0 0 25px rgba(0,240,255,0.4);border:none;}
@@ -86,21 +75,17 @@
   .btn.warn:hover{background:#ffaa00;color:#000;}
   .btn-sm{padding:6px 12px;font-size:12px;border-radius:8px;}
   .btn:disabled{opacity:0.4;cursor:not-allowed;transform:none!important;}
-  .qr-result{display:none;flex-direction:column;align-items:center;gap:14px;
-    padding:24px;background:rgba(0,255,136,0.05);
-    border:2px solid rgba(0,255,136,0.3);border-radius:20px;margin-top:16px;}
+  .qr-result{display:none;flex-direction:column;align-items:center;gap:14px;padding:24px;
+    background:rgba(0,255,136,0.05);border:2px solid rgba(0,255,136,0.3);border-radius:20px;margin-top:16px;}
   .qr-result.show{display:flex;animation:fadeIn 0.4s ease;}
   .qr-result canvas{border-radius:14px;background:#fff;padding:10px;box-shadow:0 0 40px rgba(0,255,136,0.4);}
-  .qr-code-text{font-family:monospace;font-size:20px;font-weight:900;
-    color:#00f0ff;letter-spacing:2px;padding:10px 20px;
-    background:rgba(0,240,255,0.08);border-radius:10px;
-    border:1px solid rgba(0,240,255,0.3);}
+  .qr-code-text{font-family:monospace;font-size:20px;font-weight:900;color:#00f0ff;
+    letter-spacing:2px;padding:10px 20px;background:rgba(0,240,255,0.08);
+    border-radius:10px;border:1px solid rgba(0,240,255,0.3);}
   .qr-owner{font-size:14px;color:#fff;text-align:center;line-height:1.5;}
-  .qr-owner b{color:#00ff88;}
   .qr-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
   .list{display:flex;flex-direction:column;gap:10px;max-height:520px;overflow-y:auto;padding-right:6px;}
   .list::-webkit-scrollbar{width:8px;}
-  .list::-webkit-scrollbar-track{background:rgba(255,255,255,0.03);border-radius:10px;}
   .list::-webkit-scrollbar-thumb{background:rgba(0,240,255,0.3);border-radius:10px;}
   .row-item{display:flex;justify-content:space-between;align-items:center;gap:12px;
     background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
@@ -110,23 +95,21 @@
   .row-main{font-weight:800;font-size:14px;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .row-sub{font-size:12px;color:rgba(255,255,255,0.55);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .row-actions{display:flex;gap:6px;flex-shrink:0;}
-  .badge{display:inline-block;padding:3px 10px;border-radius:8px;
-    font-size:11px;font-weight:900;letter-spacing:0.5px;text-transform:uppercase;}
+  .badge{display:inline-block;padding:3px 10px;border-radius:8px;font-size:11px;
+    font-weight:900;letter-spacing:0.5px;text-transform:uppercase;}
   .badge.active{background:rgba(0,255,136,0.15);color:#00ff88;border:1px solid #00ff88;}
   .badge.used{background:rgba(255,255,255,0.08);color:#888;border:1px solid rgba(255,255,255,0.2);}
   .badge.banned{background:rgba(255,51,68,0.15);color:#ff3344;border:1px solid #ff3344;}
   .badge.creator{background:rgba(255,215,0,0.15);color:#ffd700;border:1px solid #ffd700;}
   .badge.developer{background:rgba(0,240,255,0.15);color:#00f0ff;border:1px solid #00f0ff;}
-  .record-row{display:grid;grid-template-columns:50px 1fr 130px 130px;gap:12px;
-    align-items:center;padding:12px 16px;background:rgba(255,255,255,0.04);
-    border-radius:12px;border:1px solid rgba(255,255,255,0.08);font-size:14px;}
+  .record-row{display:grid;grid-template-columns:50px 1fr 130px 130px;gap:12px;align-items:center;
+    padding:12px 16px;background:rgba(255,255,255,0.04);border-radius:12px;
+    border:1px solid rgba(255,255,255,0.08);font-size:14px;}
   .record-row .rank{font-weight:900;color:#00f0ff;}
-  .record-row .rank.gold{color:#ffd700;text-shadow:0 0 12px #ffd700;}
-  .record-row .rank.silver{color:#c0c0c0;}
-  .record-row .rank.bronze{color:#cd7f32;}
-  .incident{display:grid;grid-template-columns:80px 1fr auto;gap:16px;
-    align-items:center;background:rgba(255,51,68,0.06);
-    border:1px solid rgba(255,51,68,0.25);border-radius:14px;padding:14px 18px;}
+  .record-row .rank.gold{color:#ffd700;}
+  .incident{display:grid;grid-template-columns:80px 1fr auto;gap:16px;align-items:center;
+    background:rgba(255,51,68,0.06);border:1px solid rgba(255,51,68,0.25);
+    border-radius:14px;padding:14px 18px;}
   .incident-photo{width:80px;height:80px;border-radius:10px;object-fit:cover;
     border:2px solid rgba(255,51,68,0.4);background:#111;}
   .incident-name{font-weight:900;color:#ff3344;font-size:16px;margin-bottom:4px;}
@@ -136,31 +119,26 @@
   .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
   .stat{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);
     border-radius:16px;padding:18px;text-align:center;}
-  .stat-value{font-size:32px;font-weight:900;color:#00f0ff;
-    text-shadow:0 0 20px rgba(0,240,255,0.5);line-height:1;margin-bottom:6px;}
-  .stat-label{font-size:11px;color:rgba(255,255,255,0.55);
-    text-transform:uppercase;letter-spacing:1px;font-weight:700;}
-  .maintenance-banner{display:none;background:rgba(255,170,0,0.15);
-    border:2px solid #ffaa00;color:#ffaa00;border-radius:14px;
-    padding:16px 22px;margin-bottom:16px;font-weight:800;text-align:center;
-    animation:maintenanceBlink 1.5s infinite ease-in-out;}
+  .stat-value{font-size:32px;font-weight:900;color:#00f0ff;line-height:1;margin-bottom:6px;}
+  .stat-label{font-size:11px;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:1px;font-weight:700;}
+  .maintenance-banner{display:none;background:rgba(255,170,0,0.15);border:2px solid #ffaa00;
+    color:#ffaa00;border-radius:14px;padding:16px 22px;margin-bottom:16px;font-weight:800;
+    text-align:center;animation:maintenanceBlink 1.5s infinite ease-in-out;}
   .maintenance-banner.active{display:block;}
   @keyframes maintenanceBlink{50%{opacity:0.7;}}
   .gate{position:fixed;inset:0;z-index:5000;
     background:radial-gradient(ellipse at 50% 40%,#0a1a35 0%,#020409 70%);
     display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;}
   .gate.hidden{display:none;}
-  .gate-card{width:460px;max-width:100%;
-    background:rgba(9,14,28,0.9);border:2px solid rgba(0,240,255,0.4);
-    box-shadow:0 0 80px rgba(0,240,255,0.35);border-radius:28px;
-    padding:36px 30px;backdrop-filter:blur(30px);
+  .gate-card{width:460px;max-width:100%;background:rgba(9,14,28,0.9);
+    border:2px solid rgba(0,240,255,0.4);box-shadow:0 0 80px rgba(0,240,255,0.35);
+    border-radius:28px;padding:36px 30px;backdrop-filter:blur(30px);
     display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;}
   .gate-tabs{display:flex;width:100%;gap:6px;background:rgba(0,0,0,0.4);
     padding:5px;border-radius:14px;margin-bottom:6px;}
   .gate-tab{flex:1;background:transparent;border:none;color:rgba(255,255,255,0.6);
-    padding:10px 12px;border-radius:10px;font-size:13px;font-weight:800;
-    cursor:pointer;transition:all 0.2s;display:flex;align-items:center;
-    justify-content:center;gap:6px;}
+    padding:10px 12px;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;
+    transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px;}
   .gate-tab.active{background:rgba(0,240,255,0.15);color:#00f0ff;}
   .gate-icon{font-size:56px;filter:drop-shadow(0 0 20px #00f0ff);}
   .gate-title{font-size:22px;font-weight:900;letter-spacing:1px;
@@ -168,105 +146,70 @@
     -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
   .gate-sub{font-size:13px;color:rgba(255,255,255,0.55);line-height:1.5;}
   .gate-input{width:100%;background:#04070d;border:2px solid rgba(0,240,255,0.3);
-    border-radius:14px;padding:16px;font-size:22px;color:#00f0ff;
-    letter-spacing:6px;text-align:center;font-family:monospace;outline:none;}
+    border-radius:14px;padding:16px;font-size:22px;color:#00f0ff;letter-spacing:6px;
+    text-align:center;font-family:monospace;outline:none;}
   .gate-input:focus{border-color:#00f0ff;box-shadow:0 0 25px rgba(0,240,255,0.5);}
   #toast{position:fixed;top:-100px;left:50%;transform:translateX(-50%);
-    background:rgba(4,10,20,0.95);border:2px solid #00f0ff;
-    box-shadow:0 0 30px rgba(0,240,255,0.5);color:#00f0ff;
-    padding:16px 28px;border-radius:14px;font-size:15px;font-weight:900;
-    z-index:10000;transition:top 0.4s ease;backdrop-filter:blur(10px);
-    max-width:90vw;text-align:center;}
+    background:rgba(4,10,20,0.95);border:2px solid #00f0ff;box-shadow:0 0 30px rgba(0,240,255,0.5);
+    color:#00f0ff;padding:16px 28px;border-radius:14px;font-size:15px;font-weight:900;
+    z-index:10000;transition:top 0.4s ease;backdrop-filter:blur(10px);max-width:90vw;text-align:center;}
   #toast.show{top:24px;}
   #toast.error{border-color:#ff3344;color:#ff3344;box-shadow:0 0 30px rgba(255,51,68,0.5);}
   #toast.success{border-color:#00ff88;color:#00ff88;box-shadow:0 0 30px rgba(0,255,136,0.5);}
-  .confirm-modal{position:fixed;inset:0;background:rgba(2,4,9,0.92);
-    backdrop-filter:blur(20px);z-index:9000;display:none;
-    align-items:center;justify-content:center;padding:20px;}
+  .confirm-modal{position:fixed;inset:0;background:rgba(2,4,9,0.92);backdrop-filter:blur(20px);
+    z-index:9000;display:none;align-items:center;justify-content:center;padding:20px;}
   .confirm-modal.open{display:flex;}
-  .confirm-card{width:420px;max-width:100%;background:#0c121f;
-    border:2px solid #00f0ff;border-radius:24px;
-    padding:30px 26px;text-align:center;
-    display:flex;flex-direction:column;gap:16px;
-    box-shadow:0 0 60px rgba(0,240,255,0.4);}
+  .confirm-card{width:420px;max-width:100%;background:#0c121f;border:2px solid #00f0ff;
+    border-radius:24px;padding:30px 26px;text-align:center;display:flex;flex-direction:column;
+    gap:16px;box-shadow:0 0 60px rgba(0,240,255,0.4);}
   .confirm-actions{display:flex;gap:10px;}
   .confirm-actions .btn{flex:1;}
-  .platform-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
-    gap:12px;margin-bottom:16px;}
-  .platform-card{background:rgba(255,255,255,0.04);
-    border:2px solid rgba(255,255,255,0.1);border-radius:16px;
-    padding:18px 12px;text-align:center;cursor:pointer;transition:all 0.2s;}
-  .platform-card:hover{background:rgba(0,240,255,0.1);
-    border-color:rgba(0,240,255,0.4);transform:translateY(-2px);}
-  .platform-card.active{background:rgba(0,240,255,0.15);
-    border-color:#00f0ff;box-shadow:0 0 20px rgba(0,240,255,0.3);}
+  .platform-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:16px;}
+  .platform-card{background:rgba(255,255,255,0.04);border:2px solid rgba(255,255,255,0.1);
+    border-radius:16px;padding:18px 12px;text-align:center;cursor:pointer;transition:all 0.2s;}
+  .platform-card:hover{background:rgba(0,240,255,0.1);border-color:rgba(0,240,255,0.4);transform:translateY(-2px);}
+  .platform-card.active{background:rgba(0,240,255,0.15);border-color:#00f0ff;box-shadow:0 0 20px rgba(0,240,255,0.3);}
   .platform-icon{font-size:32px;margin-bottom:8px;}
   .platform-name{font-size:13px;font-weight:900;color:#fff;}
   .platform-hint{font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px;}
-  .instructions{background:rgba(0,240,255,0.05);
-    border-left:3px solid #00f0ff;border-radius:8px;
-    padding:14px 18px;margin-bottom:14px;font-size:13px;
+  .instructions{background:rgba(0,240,255,0.05);border-left:3px solid #00f0ff;
+    border-radius:8px;padding:14px 18px;margin-bottom:14px;font-size:13px;
     color:rgba(255,255,255,0.85);line-height:1.7;}
   .instructions ol{margin-left:18px;}
-  .instructions li{margin-bottom:6px;}
-  .instructions a{color:#00f0ff;text-decoration:none;font-weight:700;}
-  .instructions a:hover{text-decoration:underline;}
-  .instructions code{background:rgba(0,0,0,0.4);
-    padding:2px 6px;border-radius:5px;font-family:monospace;
-    color:#00ff88;font-size:12px;}
-  .preview-box{width:100%;height:360px;background:#000;
-    border:2px solid rgba(0,240,255,0.3);border-radius:14px;
-    overflow:hidden;margin-top:10px;}
-  .preview-box iframe{width:100%;height:100%;border:none;}
-  .game-item{display:grid;grid-template-columns:64px 1fr auto;gap:14px;
-    align-items:center;background:rgba(255,255,255,0.04);
-    border:1px solid rgba(255,255,255,0.08);border-radius:14px;
-    padding:12px 16px;transition:all 0.2s;}
+  .instructions code{background:rgba(0,0,0,0.4);padding:2px 6px;border-radius:5px;
+    font-family:monospace;color:#00ff88;font-size:12px;}
+  .game-item{display:grid;grid-template-columns:64px 1fr auto;gap:14px;align-items:center;
+    background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+    border-radius:14px;padding:12px 16px;transition:all 0.2s;}
   .game-item:hover{background:rgba(255,255,255,0.06);}
   .game-thumb{width:64px;height:64px;border-radius:10px;
-    background:linear-gradient(135deg,#152238,#060a12);
-    display:flex;align-items:center;justify-content:center;
-    font-size:26px;overflow:hidden;}
+    background:linear-gradient(135deg,#152238,#060a12);display:flex;align-items:center;
+    justify-content:center;font-size:26px;overflow:hidden;}
   .game-thumb img{width:100%;height:100%;object-fit:cover;}
   .game-title{font-weight:900;font-size:15px;margin-bottom:3px;}
   .game-meta{font-size:12px;color:rgba(255,255,255,0.55);}
   .role-pills{display:flex;gap:8px;margin-bottom:14px;}
-  .role-pill{flex:1;background:rgba(255,255,255,0.04);
-    border:2px solid rgba(255,255,255,0.1);border-radius:12px;
-    padding:10px;font-size:13px;font-weight:800;
-    cursor:pointer;text-align:center;transition:all 0.2s;
-    color:rgba(255,255,255,0.65);}
-  .role-pill:hover{border-color:rgba(0,240,255,0.3);}
-  .role-pill.active{background:rgba(0,240,255,0.15);
-    border-color:#00f0ff;color:#00f0ff;}
-
-  /* ============ SIZE INDICATOR ============ */
-  .size-indicator{padding:10px 14px;border-radius:10px;font-size:13px;
-    background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);
-    color:#00ff88;font-weight:700;margin-top:8px;}
-  .size-indicator.warn{background:rgba(255,170,0,0.08);border-color:rgba(255,170,0,0.3);color:#ffaa00;}
-  .size-indicator.danger{background:rgba(255,51,68,0.08);border-color:rgba(255,51,68,0.3);color:#ff3344;}
-
-  /* ============ DROP ZONE ============ */
-  .drop-zone{border:3px dashed rgba(0,240,255,0.35);border-radius:16px;
-    padding:32px 20px;text-align:center;cursor:pointer;transition:all 0.25s;
-    background:rgba(0,240,255,0.03);margin-bottom:12px;}
+  .role-pill{flex:1;background:rgba(255,255,255,0.04);border:2px solid rgba(255,255,255,0.1);
+    border-radius:12px;padding:10px;font-size:13px;font-weight:800;cursor:pointer;
+    text-align:center;transition:all 0.2s;color:rgba(255,255,255,0.65);}
+  .role-pill.active{background:rgba(0,240,255,0.15);border-color:#00f0ff;color:#00f0ff;}
+  .drop-zone{border:3px dashed rgba(0,240,255,0.35);border-radius:16px;padding:32px 20px;
+    text-align:center;cursor:pointer;transition:all 0.25s;background:rgba(0,240,255,0.03);margin-bottom:12px;}
   .drop-zone:hover,.drop-zone.dragover{border-color:#00f0ff;background:rgba(0,240,255,0.1);transform:scale(1.01);}
   .drop-icon{font-size:52px;margin-bottom:10px;}
   .drop-title{font-size:16px;font-weight:900;color:#00f0ff;margin-bottom:6px;}
   .drop-hint{font-size:12px;color:rgba(255,255,255,0.5);}
-
-  /* ============ UPLOAD PROGRESS ============ */
-  .upload-progress{display:none;margin-top:14px;padding:14px;
-    background:rgba(0,240,255,0.06);border-radius:12px;border:1px solid rgba(0,240,255,0.2);}
+  .upload-progress{display:none;margin-top:14px;padding:14px;background:rgba(0,240,255,0.06);
+    border-radius:12px;border:1px solid rgba(0,240,255,0.2);}
   .upload-progress.show{display:block;}
   .upload-bar{height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;margin-top:8px;}
-  .upload-fill{height:100%;background:linear-gradient(90deg,#00f0ff,#ff007f);
-    width:0%;transition:width 0.3s;box-shadow:0 0 10px #00f0ff;}
-
+  .upload-fill{height:100%;background:linear-gradient(90deg,#00f0ff,#ff007f);width:0%;transition:width 0.3s;}
+  .size-indicator{padding:10px 14px;border-radius:10px;font-size:13px;
+    background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);color:#00ff88;
+    font-weight:700;margin-top:8px;}
+  .size-indicator.warn{background:rgba(255,170,0,0.08);border-color:rgba(255,170,0,0.3);color:#ffaa00;}
   @media (max-width:600px){
-    .container{padding:16px;}
-    header{padding:12px 16px;}
+    .container{padding:16px;} header{padding:12px 16px;}
     .record-row{grid-template-columns:36px 1fr 80px;font-size:13px;}
     .record-row > *:last-child{display:none;}
     .incident{grid-template-columns:60px 1fr;}
@@ -278,7 +221,6 @@
 
 <div id="toast">Сообщение</div>
 
-<!-- LOGIN GATE -->
 <div class="gate" id="gate">
   <div class="gate-card">
     <div class="gate-tabs">
@@ -290,13 +232,10 @@
     <div class="gate-sub" id="gateSub">Введите PIN-код оператора</div>
     <input type="password" class="gate-input" id="gateInput" placeholder="••••" autocomplete="off">
     <button class="btn primary" id="gateBtn" style="width:100%;padding:14px;">Войти</button>
-    <div class="gate-sub" style="font-size:11px;" id="gateHint">
-      По умолчанию PIN: <b style="color:#00f0ff;">1234</b>
-    </div>
+    <div class="gate-sub" style="font-size:11px;" id="gateHint">По умолчанию PIN: <b style="color:#00f0ff;">1234</b></div>
   </div>
 </div>
 
-<!-- TEACHER APP -->
 <div id="teacherApp" style="display:none;">
   <header>
     <div class="brand">
@@ -315,7 +254,7 @@
   <div class="container">
     <div class="maintenance-banner" id="maintenanceBanner">🔴 АВТОМАТ В РЕЖИМЕ ТЕХРАБОТ</div>
     <div class="tabs">
-      <button class="tab-btn active" data-tab="qr">🎫 Генератор QR</button>
+      <button class="tab-btn active" data-tab="qr">🎫 Генератор</button>
       <button class="tab-btn" data-tab="tickets">📋 Билеты</button>
       <button class="tab-btn" data-tab="incidents">🚨 Нарушители</button>
       <button class="tab-btn" data-tab="records">🏆 Рекорды</button>
@@ -326,22 +265,15 @@
     <div class="pane active" id="pane-qr">
       <div class="grid-2">
         <div class="card">
-          <div class="card-title">🎫 Создать новый билет</div>
-          <div class="card-sub">Укажите ФИО, класс и длительность</div>
+          <div class="card-title">🎫 Создать билет</div>
           <div class="role-pills">
             <div class="role-pill active" data-role="student">🎓 Ученик</div>
             <div class="role-pill" data-role="developer">🛠️ Разработчик</div>
             <div class="role-pill" data-role="creator">♾️ Создатель</div>
           </div>
           <div class="form-row">
-            <div class="form-group">
-              <label>ФИО (Инициалы)</label>
-              <input type="text" class="form-input" id="ownerName" placeholder="Иванов И.И." maxlength="40">
-            </div>
-            <div class="form-group">
-              <label>Класс</label>
-              <select class="form-input" id="ownerClass"><option value="">— Класс —</option></select>
-            </div>
+            <div class="form-group"><label>ФИО</label><input type="text" class="form-input" id="ownerName" placeholder="Иванов И.И." maxlength="40"></div>
+            <div class="form-group"><label>Класс</label><select class="form-input" id="ownerClass"><option value="">— Класс —</option></select></div>
           </div>
           <div class="form-group">
             <label>Длительность</label>
@@ -370,10 +302,7 @@
               <button class="btn danger" id="btnBanThis">🚫 Забанить</button>
             </div>
           </div>
-          <div class="empty" id="qrEmpty">
-            <div class="empty-icon">🎫</div>
-            Заполните форму и нажмите «Создать билет».
-          </div>
+          <div class="empty" id="qrEmpty"><div class="empty-icon">🎫</div>Заполните форму</div>
         </div>
       </div>
       <div class="card">
@@ -415,21 +344,19 @@
 
     <div class="pane" id="pane-records">
       <div class="card">
-        <div class="card-title">🏆 Таблица рекордов</div>
+        <div class="card-title">🏆 Рекорды</div>
         <div class="form-group">
           <label>Фильтр по игре</label>
           <select class="form-input" id="recordsFilter"><option value="__all__">— Все игры —</option></select>
         </div>
-        <div style="display:flex;gap:10px;margin-bottom:14px;">
-          <button class="btn btn-sm danger" id="btnClearRecords" style="margin-left:auto;">🗑️ Очистить рекорды</button>
-        </div>
+        <button class="btn btn-sm danger" id="btnClearRecords" style="margin-bottom:14px;">🗑️ Очистить рекорды</button>
         <div class="list" id="recordsList"></div>
       </div>
     </div>
 
     <div class="pane" id="pane-maintenance">
       <div class="card">
-        <div class="card-title">🔧 Режим технических работ</div>
+        <div class="card-title">🔧 Режим техработ</div>
         <div class="form-group">
           <label>Статус</label>
           <select class="form-input" id="maintenanceMode">
@@ -438,7 +365,7 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Сообщение для учеников</label>
+          <label>Сообщение ученикам</label>
           <textarea class="form-input" id="maintenanceMessage" rows="3"></textarea>
         </div>
         <button class="btn warn" id="btnSaveMaintenance" style="width:100%;padding:16px;">💾 Применить</button>
@@ -448,67 +375,42 @@
     <div class="pane" id="pane-settingsT">
       <div class="grid-2">
         <div class="card">
-          <div class="card-title">🔒 Смена PIN учителя</div>
-          <div class="form-group">
-            <label>Новый PIN (4 цифры)</label>
-            <input type="text" class="form-input" id="newPin" maxlength="4" placeholder="1234">
-          </div>
+          <div class="card-title">🔒 PIN учителя</div>
+          <input type="text" class="form-input" id="newPin" maxlength="4" placeholder="1234" style="margin-bottom:12px;">
           <button class="btn primary" id="btnSavePin" style="width:100%;">💾 Сохранить</button>
         </div>
         <div class="card">
           <div class="card-title">♾️ Код создателя</div>
-          <div class="form-group">
-            <label>Код (мин. 6 символов)</label>
-            <input type="text" class="form-input" id="newCreatorCode" placeholder="CREATOR-0000">
-          </div>
+          <input type="text" class="form-input" id="newCreatorCode" placeholder="CREATOR-0000" style="margin-bottom:12px;">
           <button class="btn primary" id="btnSaveCreator" style="width:100%;">💾 Сохранить</button>
         </div>
       </div>
       <div class="card">
         <div class="card-title">🛠️ Мастер-код разработчика</div>
-        <div class="card-sub">Единый код для доступа в панель разработчика (без создания билета).</div>
-        <div class="form-group">
-          <label>Код разработчика</label>
-          <input type="text" class="form-input" id="newDevCode" placeholder="DEV-2025-SIB">
-        </div>
+        <div class="card-sub">Единый код для входа в панель разработчика</div>
+        <input type="text" class="form-input" id="newDevCode" placeholder="DEV-2025-SIB" style="margin-bottom:12px;">
         <button class="btn primary" id="btnSaveDevCode" style="width:100%;">💾 Сохранить</button>
       </div>
 
-      <!-- ============ GITHUB НАСТРОЙКИ ============ -->
       <div class="card">
-        <div class="card-title">📦 GitHub для больших игр (> 10 МБ)</div>
+        <div class="card-title">📦 GitHub для ZIP и больших игр</div>
         <div class="card-sub">
-          Если HTML-файл больше <b style="color:#ffaa00;">10 МБ</b>, он автоматически загрузится в GitHub-репозиторий.
-          Маленькие файлы (&le; 10 МБ) идут в Supabase Storage (быстрее).
+          ZIP-архивы и HTML &gt; 10 МБ загружаются в GitHub одним коммитом.
+          Маленькие HTML (&le; 10 МБ) идут в Supabase.
         </div>
         <div class="card-sub" style="background:rgba(255,170,0,0.1);padding:10px 14px;border-radius:8px;border-left:3px solid #ffaa00;">
-          <b>⚠️ Для GitHub нужен Personal Access Token</b> с правами <code style="color:#ffaa00;">repo</code> (или fine-grained: <code style="color:#ffaa00;">Contents: Read & Write</code>).
-          Создать: github.com → Settings → Developer settings → Personal access tokens.
+          <b>⚠️ Нужен Personal Access Token</b> с правами <code style="color:#ffaa00;">repo</code> (или Contents: Read & Write).
+          Создать: GitHub → Settings → Developer settings → Personal access tokens.
         </div>
         <div class="form-row">
-          <div class="form-group">
-            <label>GitHub владелец (username)</label>
-            <input type="text" class="form-input" id="ghOwner" placeholder="my-username">
-          </div>
-          <div class="form-group">
-            <label>Репозиторий</label>
-            <input type="text" class="form-input" id="ghRepo" placeholder="sibcodebox-games">
-          </div>
+          <div class="form-group"><label>GitHub владелец</label><input type="text" class="form-input" id="ghOwner" placeholder="username"></div>
+          <div class="form-group"><label>Репозиторий</label><input type="text" class="form-input" id="ghRepo" placeholder="sibcodebox-games"></div>
         </div>
         <div class="form-row">
-          <div class="form-group">
-            <label>Ветка</label>
-            <input type="text" class="form-input" id="ghBranch" placeholder="main" value="main">
-          </div>
-          <div class="form-group">
-            <label>Папка в репо</label>
-            <input type="text" class="form-input" id="ghFolder" placeholder="games" value="games">
-          </div>
+          <div class="form-group"><label>Ветка</label><input type="text" class="form-input" id="ghBranch" value="main"></div>
+          <div class="form-group"><label>Папка</label><input type="text" class="form-input" id="ghFolder" value="games"></div>
         </div>
-        <div class="form-group">
-          <label>GitHub Token</label>
-          <input type="password" class="form-input" id="ghToken" placeholder="ghp_...">
-        </div>
+        <div class="form-group"><label>GitHub Token</label><input type="password" class="form-input" id="ghToken" placeholder="ghp_..."></div>
         <button class="btn primary" id="btnSaveGitHub" style="width:100%;">💾 Сохранить GitHub</button>
       </div>
 
@@ -520,7 +422,6 @@
   </div>
 </div>
 
-<!-- DEVELOPER APP -->
 <div id="devApp" style="display:none;">
   <header>
     <div class="brand">
@@ -532,7 +433,7 @@
     </div>
     <div class="header-actions">
       <span class="cloud-status" id="cloudStatusD">☁️ Онлайн</span>
-      <button class="header-btn" id="btnReloadD">🔄 Обновить</button>
+      <button class="header-btn" id="btnReloadD">🔄</button>
       <button class="header-btn danger" id="btnLogoutD">Выйти</button>
     </div>
   </header>
@@ -545,7 +446,7 @@
 
     <div class="pane active" id="pane-dev-games">
       <div class="card">
-        <div class="card-title">🎮 Игры в каталоге автомата</div>
+        <div class="card-title">🎮 Игры в каталоге</div>
         <div class="list" id="devGamesList"></div>
       </div>
     </div>
@@ -556,8 +457,8 @@
         <div class="platform-grid" id="platformGrid">
           <div class="platform-card" data-plat="html">
             <div class="platform-icon">📄</div>
-            <div class="platform-name">HTML файл</div>
-            <div class="platform-hint">или код</div>
+            <div class="platform-name">HTML / ZIP</div>
+            <div class="platform-hint">файл или архив</div>
           </div>
           <div class="platform-card" data-plat="url">
             <div class="platform-icon">🔗</div>
@@ -566,79 +467,47 @@
           </div>
         </div>
         <div class="instructions" id="platformInstructions">
-          <b>Выберите источник выше.</b> Для HTML — авто-выбор хранилища по размеру (≤ 10 МБ → Supabase, > 10 МБ → GitHub).
+          <b>Выберите источник.</b> ZIP автоматически распакуется и загрузится в GitHub.
         </div>
       </div>
 
       <div class="card" id="addGameCard" style="display:none;">
         <div class="card-title">2. Загрузка</div>
 
-        <!-- HTML INPUT -->
         <div id="htmlBlock">
           <div class="drop-zone" id="dropZone">
-            <div class="drop-icon">📁</div>
-            <div class="drop-title">Перетащите .html файл сюда</div>
-            <div class="drop-hint">или нажмите для выбора</div>
-            <input type="file" id="devGameFile" accept=".html,.htm,text/html" style="display:none;">
+            <div class="drop-icon">📦</div>
+            <div class="drop-title">Перетащите .html или .zip сюда</div>
+            <div class="drop-hint">Для ZIP — внутри должен быть index.html (в корне или подпапке)</div>
+            <input type="file" id="devGameFile" accept=".html,.htm,.zip,text/html,application/zip" style="display:none;">
           </div>
+          <div class="size-indicator" id="sizeIndicator">Файл не загружен</div>
 
-          <div style="text-align:center;color:rgba(255,255,255,0.4);margin:12px 0;font-size:12px;">— или вставьте код —</div>
-
-          <div class="form-group">
-            <label>HTML-код игры</label>
-            <textarea class="form-input" id="devGameHtml" rows="8" placeholder="<!DOCTYPE html>..."></textarea>
-          </div>
-
-          <div class="size-indicator" id="sizeIndicator">
-            Размер: <b id="sizeValue">0 KB</b> • Хранилище: <b id="storageTarget">Supabase Storage</b>
+          <div class="form-group" style="margin-top:14px;">
+            <label>Или вставьте HTML-код вручную</label>
+            <textarea class="form-input" id="devGameHtml" rows="6" placeholder="<!DOCTYPE html>..."></textarea>
           </div>
         </div>
 
-        <!-- URL INPUT -->
         <div id="urlBlock" style="display:none;">
           <div class="form-group">
             <label>URL игры (HTTPS)</label>
             <input type="text" class="form-input" id="devGameUrl" placeholder="https://example.com/game.html">
           </div>
-          <div class="instructions">
-            Подойдёт: GitHub Pages, itch.io, Vercel, любой статический хостинг.
-          </div>
         </div>
 
-        <!-- Метаданные -->
         <div style="margin-top:18px;">
           <div class="form-row">
-            <div class="form-group">
-              <label>Название *</label>
-              <input type="text" class="form-input" id="devGameTitle" placeholder="Моя игра">
-            </div>
-            <div class="form-group">
-              <label>Жанр *</label>
-              <input type="text" class="form-input" id="devGameGenre" placeholder="Аркада">
-            </div>
+            <div class="form-group"><label>Название *</label><input type="text" class="form-input" id="devGameTitle" placeholder="Моя игра"></div>
+            <div class="form-group"><label>Жанр *</label><input type="text" class="form-input" id="devGameGenre" placeholder="Аркада"></div>
           </div>
           <div class="form-row">
-            <div class="form-group">
-              <label>Бейдж</label>
-              <input type="text" class="form-input" id="devGameBadge" placeholder="NEW">
-            </div>
-            <div class="form-group">
-              <label>Акцентный цвет</label>
-              <input type="color" class="form-input" id="devGameAccent" value="#00f0ff" style="height:48px;padding:6px;">
-            </div>
+            <div class="form-group"><label>Бейдж</label><input type="text" class="form-input" id="devGameBadge" placeholder="NEW"></div>
+            <div class="form-group"><label>Цвет</label><input type="color" class="form-input" id="devGameAccent" value="#00f0ff" style="height:48px;padding:6px;"></div>
           </div>
-          <div class="form-group">
-            <label>URL обложки (постер)</label>
-            <input type="text" class="form-input" id="devGameCover" placeholder="https://...">
-          </div>
-          <div class="form-group">
-            <label>URL фона</label>
-            <input type="text" class="form-input" id="devGameBg" placeholder="https://...">
-          </div>
-          <div class="form-group">
-            <label>Описание</label>
-            <textarea class="form-input" id="devGameDesc" rows="2"></textarea>
-          </div>
+          <div class="form-group"><label>Обложка (URL)</label><input type="text" class="form-input" id="devGameCover" placeholder="https://..."></div>
+          <div class="form-group"><label>Фон (URL)</label><input type="text" class="form-input" id="devGameBg" placeholder="https://..."></div>
+          <div class="form-group"><label>Описание</label><textarea class="form-input" id="devGameDesc" rows="2"></textarea></div>
         </div>
 
         <div class="upload-progress" id="uploadProgress">
@@ -648,11 +517,11 @@
 
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">
           <button class="btn" id="btnPreviewGame">👁️ Предпросмотр</button>
-          <button class="btn primary" id="btnSaveGame" style="flex:1;">📤 Опубликовать в каталог</button>
+          <button class="btn primary" id="btnSaveGame" style="flex:1;">📤 Опубликовать</button>
         </div>
 
-        <div class="preview-box" id="previewBox" style="display:none;">
-          <iframe id="previewFrame" sandbox="allow-scripts allow-same-origin allow-pointer-lock"></iframe>
+        <div id="previewBox" style="display:none;width:100%;height:360px;background:#000;border:2px solid rgba(0,240,255,0.3);border-radius:14px;overflow:hidden;margin-top:10px;">
+          <iframe id="previewFrame" sandbox="allow-scripts allow-same-origin allow-pointer-lock" style="width:100%;height:100%;border:none;"></iframe>
         </div>
       </div>
     </div>
@@ -661,32 +530,28 @@
       <div class="card">
         <div class="card-title">📖 Как опубликовать игру</div>
         <div class="instructions">
-          <b style="color:#00ff88;">Способ 1. Готовый HTML (≤ 10 МБ)</b>
+          <b style="color:#00ff88;">HTML ≤ 10 МБ</b>
           <ol>
-            <li>Экспортируйте игру в HTML (Scratch → TurboWarp, Processing → p5.js).</li>
-            <li>Перетащите .html в зону загрузки в панели разработчика.</li>
-            <li>Заполните метаданные и нажмите «Опубликовать».</li>
-            <li>Игра сохранится в <b>Supabase Storage</b>, ссылка появится в каталоге автомата.</li>
+            <li>Загрузите .html → уйдёт в Supabase Storage.</li>
+            <li>Ссылка появится в каталоге автомата.</li>
           </ol>
-          <b style="color:#ffaa00;">Способ 2. Большой HTML (> 10 МБ)</b>
+          <b style="color:#ffaa00;">ZIP любой размер</b>
           <ol>
-            <li>В настройках учителя заполните GitHub owner/repo/token.</li>
-            <li>Файл автоматически загрузится через GitHub API.</li>
-            <li>Ссылка будет через jsDelivr CDN — быстрая и бесплатная.</li>
+            <li>Внутри архива должен быть <code>index.html</code> (в корне или в подпапке).</li>
+            <li>Файл распакуется в браузере, все файлы уйдут в GitHub одним коммитом.</li>
+            <li>Игра откроется через jsDelivr CDN с правильными MIME.</li>
+            <li>Относительные пути (assets/, wasm/, pck/) работают.</li>
           </ol>
-          <b style="color:#00f0ff;">Способ 3. Готовая ссылка</b>
-          <ol>
-            <li>Залейте игру на GitHub Pages / itch.io / Vercel.</li>
-            <li>Выберите «Ссылка» и вставьте URL.</li>
-          </ol>
+          <b style="color:#00f0ff;">Готовая ссылка</b>
+          <ol><li>Залейте на GitHub Pages / itch.io / Vercel, вставьте URL.</li></ol>
         </div>
         <div class="instructions" style="border-left-color:#ffaa00;background:rgba(255,170,0,0.05);">
-          <b style="color:#ffaa00;">Готовые сборщики:</b>
+          <b style="color:#ffaa00;">Сборщики:</b>
           <ul style="margin-left:18px;margin-top:6px;">
-            <li><b>Scratch → HTML:</b> <a href="https://packager.turbowarp.org/" target="_blank">packager.turbowarp.org</a></li>
-            <li><b>Processing → p5.js:</b> <a href="https://editor.p5js.org/" target="_blank">editor.p5js.org</a></li>
-            <li><b>Godot → Web:</b> Project → Export → Web</li>
-            <li><b>Unity → WebGL:</b> File → Build Settings → WebGL</li>
+            <li><b>Scratch:</b> <a href="https://packager.turbowarp.org/" target="_blank" style="color:#00f0ff;">packager.turbowarp.org</a> → HTML или ZIP</li>
+            <li><b>Processing:</b> <a href="https://editor.p5js.org/" target="_blank" style="color:#00f0ff;">editor.p5js.org</a> → HTML/ZIP</li>
+            <li><b>Godot:</b> Export → Web → ZIP</li>
+            <li><b>Unity:</b> Build Settings → WebGL → ZIP</li>
           </ul>
         </div>
       </div>
@@ -694,11 +559,10 @@
   </div>
 </div>
 
-<!-- CONFIRM -->
 <div class="confirm-modal" id="confirmModal">
   <div class="confirm-card">
     <div style="font-size:38px;">⚠️</div>
-    <div style="font-size:17px;font-weight:900;color:#ffaa00;letter-spacing:1px;" id="confirmTitle">ПОДТВЕРЖДЕНИЕ</div>
+    <div style="font-size:17px;font-weight:900;color:#ffaa00;" id="confirmTitle">ПОДТВЕРЖДЕНИЕ</div>
     <div style="font-size:13px;color:#ccc;line-height:1.6;" id="confirmText">Вы уверены?</div>
     <div class="confirm-actions">
       <button class="btn" id="confirmNo">Отмена</button>
@@ -714,7 +578,8 @@
 const SUPABASE_URL = 'https://otsuvtcxnbdxrodayeta.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im90c3V2dGN4bmJkeHJvZGF5ZXRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4NjkyMzQsImV4cCI6MjEwNTQ0NTIzNH0.fsS73p3tRcbe0JIeRVjeqPStFzRe0lMKGLJQm7ki8oA';
 const TEACHER_TOKEN = 'SibTeacher_2025_x7k9_Arcade';
-const SUPABASE_LIMIT_BYTES = 10 * 1024 * 1024; // 10 MB → Supabase, больше → GitHub
+const SUPABASE_LIMIT_BYTES = 10 * 1024 * 1024;
+const GITHUB_PARALLEL = 5;
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
   global: { headers: { 'x-teacher-token': TEACHER_TOKEN } }
@@ -726,10 +591,12 @@ const State = {
   ticketFilter: 'all',
   role: 'student',
   loginMode: 'teacher',
-  platform: null
+  platform: null,
+  loadedZip: null,
+  loadedZipName: ''
 };
 
-/* ---------- utils ---------- */
+/* ===== UTILS ===== */
 function toast(text, type) {
   const el = document.getElementById('toast');
   el.textContent = text;
@@ -740,13 +607,11 @@ function toast(text, type) {
   el._t = setTimeout(() => el.classList.remove('show'), 3500);
 }
 function esc(s) {
-  return String(s ?? '').replace(/[&<>"']/g,
-    c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 function fmtDate(iso) {
   if (!iso) return '—';
-  const d = new Date(iso);
-  return d.toLocaleString('ru-RU', {day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
+  return new Date(iso).toLocaleString('ru-RU', {day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
 }
 function askConfirm(title, text, onYes) {
   const modal = document.getElementById('confirmModal');
@@ -764,9 +629,8 @@ function humanSize(bytes) {
   if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
   return (bytes/1024/1024).toFixed(2) + ' MB';
 }
-// UTF-8 → Base64 (для GitHub API)
-function utf8ToBase64(str) {
-  const bytes = new TextEncoder().encode(str);
+function arrayBufferToBase64(buf) {
+  const bytes = new Uint8Array(buf);
   let binary = '';
   const chunk = 0x8000;
   for (let i = 0; i < bytes.length; i += chunk) {
@@ -774,8 +638,48 @@ function utf8ToBase64(str) {
   }
   return btoa(binary);
 }
+function utf8ToBase64(str) {
+  return arrayBufferToBase64(new TextEncoder().encode(str).buffer);
+}
+// Общий префикс (напр. "my-game/") в путях ZIP
+function findCommonPrefix(files) {
+  if (files.length === 0) return '';
+  const first = files[0];
+  const lastSlash = first.lastIndexOf('/');
+  if (lastSlash === -1) return '';
+  const candidate = first.slice(0, lastSlash + 1);
+  for (const f of files) if (!f.startsWith(candidate)) return '';
+  return candidate;
+}
+// Поиск index.html
+function findIndexHtml(files) {
+  const root = files.find(f => /^index\.html?$/i.test(f));
+  if (root) return root;
+  const tops = new Set();
+  files.forEach(f => { const p = f.split('/'); if (p.length > 1) tops.add(p[0]); });
+  if (tops.size === 1) {
+    const folder = [...tops][0];
+    const nested = files.find(f => new RegExp(`^${folder}/index\\.html?$`, 'i').test(f));
+    if (nested) return nested;
+  }
+  const cands = files.filter(f => /index\.html?$/i.test(f)).sort((a,b) => a.length - b.length);
+  return cands[0] || null;
+}
+// Параллельный запуск с лимитом
+async function parallelLimit(items, limit, fn) {
+  let i = 0;
+  const results = new Array(items.length);
+  async function worker() {
+    while (i < items.length) {
+      const idx = i++;
+      results[idx] = await fn(items[idx], idx);
+    }
+  }
+  await Promise.all(Array(Math.min(limit, items.length)).fill().map(() => worker()));
+  return results;
+}
 
-/* ---------- Заполнение классов ---------- */
+/* ===== КЛАССЫ ===== */
 (function fillClasses(){
   const sel = document.getElementById('ownerClass');
   const letters = ['А','Б','В','Г','Д','Е','Ж'];
@@ -795,10 +699,6 @@ function utf8ToBase64(str) {
 const gate = document.getElementById('gate');
 const gateInput = document.getElementById('gateInput');
 const gateBtn = document.getElementById('gateBtn');
-const gateIcon = document.getElementById('gateIcon');
-const gateTitle = document.getElementById('gateTitle');
-const gateSub = document.getElementById('gateSub');
-const gateHint = document.getElementById('gateHint');
 
 document.querySelectorAll('.gate-tab').forEach(tab => {
   tab.onclick = () => {
@@ -807,34 +707,31 @@ document.querySelectorAll('.gate-tab').forEach(tab => {
     State.loginMode = tab.getAttribute('data-mode');
     gateInput.value = '';
     if (State.loginMode === 'teacher') {
-      gateIcon.textContent = '🔐';
-      gateTitle.textContent = 'ПУЛЬТ УЧИТЕЛЯ';
-      gateSub.textContent = 'Введите PIN-код оператора';
-      gateHint.innerHTML = 'По умолчанию PIN: <b style="color:#00f0ff;">1234</b>';
+      document.getElementById('gateIcon').textContent = '🔐';
+      document.getElementById('gateTitle').textContent = 'ПУЛЬТ УЧИТЕЛЯ';
+      document.getElementById('gateSub').textContent = 'Введите PIN-код оператора';
+      document.getElementById('gateHint').innerHTML = 'По умолчанию: <b style="color:#00f0ff;">1234</b>';
       gateInput.setAttribute('maxlength','4');
       gateInput.setAttribute('placeholder','••••');
     } else {
-      gateIcon.textContent = '🛠️';
-      gateTitle.textContent = 'ПАНЕЛЬ РАЗРАБОТЧИКА';
-      gateSub.textContent = 'Введите код разработчика';
-      gateHint.innerHTML = 'Мастер-код или билет разработчика';
+      document.getElementById('gateIcon').textContent = '🛠️';
+      document.getElementById('gateTitle').textContent = 'ПАНЕЛЬ РАЗРАБОТЧИКА';
+      document.getElementById('gateSub').textContent = 'Введите код разработчика';
+      document.getElementById('gateHint').innerHTML = 'Мастер-код или билет разработчика';
       gateInput.setAttribute('maxlength','32');
       gateInput.setAttribute('placeholder','DEV-XXXX');
     }
   };
 });
-
 gateInput.addEventListener('keydown', e => { if (e.key === 'Enter') gateBtn.click(); });
 gateBtn.onclick = doLogin;
 
 async function doLogin() {
   const val = gateInput.value.trim();
   if (!val) return;
-
   try {
     const { data: cfgRows } = await sb.from('config').select('*');
-    const cfg = {};
-    (cfgRows || []).forEach(x => cfg[x.key] = x.value);
+    const cfg = {}; (cfgRows || []).forEach(x => cfg[x.key] = x.value);
     State.config = cfg;
 
     if (State.loginMode === 'teacher') {
@@ -842,18 +739,15 @@ async function doLogin() {
       if (val === realPin || val === '1234') {
         gate.classList.add('hidden');
         document.getElementById('teacherApp').style.display = 'block';
-        await loadAll();
-        subscribeRealtime();
+        await loadAll(); subscribeRealtime();
         toast('Добро пожаловать, учитель', 'success');
         return;
       }
-      const devCheck = await sb.from('tickets').select('*')
-        .eq('id', val).eq('role', 'developer').maybeSingle();
+      const devCheck = await sb.from('tickets').select('*').eq('id', val).eq('role', 'developer').maybeSingle();
       if (devCheck.data) {
         gate.classList.add('hidden');
         document.getElementById('devApp').style.display = 'block';
-        await loadAll();
-        subscribeRealtime();
+        await loadAll(); subscribeRealtime();
         toast('Доступ разработчика: ' + (devCheck.data.owner_name || val), 'success');
         return;
       }
@@ -861,50 +755,33 @@ async function doLogin() {
       return;
     }
 
-    // Developer tab
     if (val === (cfg.developer_code || 'DEV-2025-SIB') || val === 'DEV-2025-SIB') {
       gate.classList.add('hidden');
       document.getElementById('devApp').style.display = 'block';
-      await loadAll();
-      subscribeRealtime();
+      await loadAll(); subscribeRealtime();
       toast('Мастер-доступ разработчика', 'success');
       return;
     }
-    const { data } = await sb.from('tickets').select('*')
-      .eq('id', val).eq('role', 'developer').maybeSingle();
+    const { data } = await sb.from('tickets').select('*').eq('id', val).eq('role', 'developer').maybeSingle();
     if (data) {
       if (data.banned) { failLogin('Код заблокирован'); return; }
       gate.classList.add('hidden');
       document.getElementById('devApp').style.display = 'block';
-      await loadAll();
-      subscribeRealtime();
+      await loadAll(); subscribeRealtime();
       toast('Добро пожаловать, ' + (data.owner_name || 'разработчик'), 'success');
       return;
     }
-    failLogin('Неверный код разработчика');
-  } catch(e) {
-    console.error(e);
-    failLogin('Ошибка подключения');
-  }
+    failLogin('Неверный код');
+  } catch(e) { failLogin('Ошибка подключения'); }
 }
-
 function failLogin(msg) {
   gateInput.value = '';
   gateInput.classList.add('error-shake');
   setTimeout(() => gateInput.classList.remove('error-shake'), 500);
   toast(msg, 'error');
 }
-
-document.getElementById('btnLogoutT').onclick = () => {
-  gate.classList.remove('hidden');
-  document.getElementById('teacherApp').style.display = 'none';
-  gateInput.value = '';
-};
-document.getElementById('btnLogoutD').onclick = () => {
-  gate.classList.remove('hidden');
-  document.getElementById('devApp').style.display = 'none';
-  gateInput.value = '';
-};
+document.getElementById('btnLogoutT').onclick = () => { gate.classList.remove('hidden'); document.getElementById('teacherApp').style.display = 'none'; gateInput.value = ''; };
+document.getElementById('btnLogoutD').onclick = () => { gate.classList.remove('hidden'); document.getElementById('devApp').style.display = 'none'; gateInput.value = ''; };
 
 /* =====================================================================
    LOAD DATA
@@ -917,35 +794,23 @@ async function loadAll() {
       sb.from('records').select('*').order('score', { ascending: false }).limit(2000),
       sb.from('config').select('*')
     ]);
-
     State.tickets = tRes.data || [];
     State.incidents = iRes.data || [];
-
     State.records = {};
     (rRes.data || []).forEach(rec => {
       if (!State.records[rec.game_id]) State.records[rec.game_id] = [];
       State.records[rec.game_id].push(rec);
     });
-
     State.config = {};
     (cRes.data || []).forEach(x => State.config[x.key] = x.value);
+    try { State.games = State.config.games_json ? JSON.parse(State.config.games_json) : []; } catch(e) { State.games = []; }
 
-    try {
-      State.games = State.config.games_json ? JSON.parse(State.config.games_json) : [];
-    } catch(e) { State.games = []; }
-
-    // Фильтр рекордов
     const sel = document.getElementById('recordsFilter');
     const cur = sel.value;
     sel.innerHTML = '<option value="__all__">— Все игры —</option>';
-    State.games.forEach(g => {
-      const o = document.createElement('option');
-      o.value = g.id; o.textContent = g.title;
-      sel.appendChild(o);
-    });
+    State.games.forEach(g => { const o = document.createElement('option'); o.value = g.id; o.textContent = g.title; sel.appendChild(o); });
     sel.value = cur || '__all__';
 
-    // Настройки
     document.getElementById('newPin').value = '';
     document.getElementById('newCreatorCode').value = State.config.creator_code || 'CREATOR-0000';
     document.getElementById('newDevCode').value = State.config.developer_code || 'DEV-2025-SIB';
@@ -955,20 +820,13 @@ async function loadAll() {
     document.getElementById('ghFolder').value = State.config.github_folder || 'games';
     document.getElementById('ghToken').value = State.config.github_token || '';
 
-    renderStats();
-    renderTickets();
-    renderIncidents();
-    renderRecords();
-    renderDevGamesList();
-    loadMaintenanceState();
-    updateCloudStatus(true);
+    renderStats(); renderTickets(); renderIncidents(); renderRecords();
+    renderDevGamesList(); loadMaintenanceState(); updateCloudStatus(true);
   } catch(e) {
-    console.error(e);
     updateCloudStatus(false);
     toast('Ошибка загрузки', 'error');
   }
 }
-
 function updateCloudStatus(online) {
   ['cloudStatusT','cloudStatusD'].forEach(id => {
     const el = document.getElementById(id);
@@ -977,24 +835,22 @@ function updateCloudStatus(online) {
     el.textContent = online ? '☁️ Онлайн' : '📴 Офлайн';
   });
 }
-
 let realtimeCh = null;
 function subscribeRealtime() {
   if (realtimeCh) return;
   try {
     realtimeCh = sb.channel('sibkodbox-pult')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets' }, () => loadAll())
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'incidents' }, () => {
-        loadAll();
-        toast('🚨 Новый нарушитель', 'error');
-      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'incidents' }, () => { loadAll(); toast('🚨 Новый нарушитель', 'error'); })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'records' }, () => loadAll())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'config' }, () => loadAll())
       .subscribe();
-  } catch(e) { console.warn(e); }
+  } catch(e) {}
 }
 
-/* ---------- STATS ---------- */
+/* =====================================================================
+   STATS / MAINTENANCE / ROLE / CREATE TICKET
+   ===================================================================== */
 function renderStats() {
   document.getElementById('statTotal').textContent = State.tickets.length;
   document.getElementById('statActive').textContent = State.tickets.filter(t => !t.used && !t.banned).length;
@@ -1003,8 +859,6 @@ function renderStats() {
   document.getElementById('statRecords').textContent = Object.values(State.records).reduce((a,b) => a + b.length, 0);
   document.getElementById('statIncidents').textContent = State.incidents.length;
 }
-
-/* ---------- MAINTENANCE ---------- */
 function loadMaintenanceState() {
   const mode = State.config.maintenance_mode === 'on';
   document.getElementById('maintenanceMode').value = mode ? 'on' : 'off';
@@ -1017,12 +871,10 @@ document.getElementById('btnSaveMaintenance').onclick = async () => {
   try {
     await sb.from('config').upsert({ key:'maintenance_mode', value: mode });
     await sb.from('config').upsert({ key:'maintenance_message', value: msg });
-    toast(mode === 'on' ? '🔴 Техработы включены' : '🟢 Автомат запущен', 'success');
+    toast(mode === 'on' ? '🔴 Техработы' : '🟢 Работает', 'success');
     loadMaintenanceState();
   } catch(e) { toast('Ошибка: ' + e.message, 'error'); }
 };
-
-/* ---------- ROLE PILLS ---------- */
 document.querySelectorAll('.role-pill').forEach(p => {
   p.onclick = () => {
     document.querySelectorAll('.role-pill').forEach(x => x.classList.remove('active'));
@@ -1030,59 +882,36 @@ document.querySelectorAll('.role-pill').forEach(p => {
     State.role = p.getAttribute('data-role');
     const sel = document.getElementById('ticketType');
     if (State.role === 'creator') { sel.value = 'CREATOR'; sel.disabled = true; }
-    else { sel.disabled = false; }
+    else sel.disabled = false;
   };
 });
-
-/* ---------- CREATE TICKET ---------- */
 document.getElementById('btnCreate').onclick = async () => {
   const owner = document.getElementById('ownerName').value.trim();
   const klass = document.getElementById('ownerClass').value;
   const typeVal = document.getElementById('ticketType').value;
   const role = State.role;
-
-  if (!owner || owner.length < 3) {
-    toast('Укажите ФИО (минимум 3 символа)', 'error');
-    document.getElementById('ownerName').classList.add('error-shake');
-    setTimeout(() => document.getElementById('ownerName').classList.remove('error-shake'), 500);
-    return;
-  }
-  if (!klass) {
-    toast('Выберите класс', 'error');
-    document.getElementById('ownerClass').classList.add('error-shake');
-    setTimeout(() => document.getElementById('ownerClass').classList.remove('error-shake'), 500);
-    return;
-  }
-
+  if (!owner || owner.length < 3) { toast('Укажите ФИО', 'error'); return; }
+  if (!klass) { toast('Выберите класс', 'error'); return; }
   const isCreator = role === 'creator' || typeVal === 'CREATOR';
   const minutes = isCreator ? 0 : Number(typeVal);
-  const ticketType = isCreator ? 'creator' : 'timed';
   const prefix = role === 'developer' ? 'DEV' : (isCreator ? 'CREATOR' : minutes + 'MIN');
-  const rand = Math.random().toString(36).slice(2, 7).toUpperCase();
-  const id = `SIB-${prefix}-${rand}`;
-
+  const id = `SIB-${prefix}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
   const ticket = {
-    id, minutes, type: ticketType,
+    id, minutes, type: isCreator ? 'creator' : 'timed',
     duration_seconds: isCreator ? 0 : minutes * 60,
     used: false, banned: false,
     owner_name: owner, owner_class: klass, role
   };
-
   try {
     const { error } = await sb.from('tickets').insert([ticket]);
     if (error) throw error;
     State.currentTicket = ticket;
     State.tickets.unshift(ticket);
     renderQr(ticket);
-    renderStats();
-    renderTickets();
+    renderStats(); renderTickets();
     toast(`Билет создан: ${id}`, 'success');
-  } catch(e) {
-    console.error(e);
-    toast('Ошибка: ' + e.message, 'error');
-  }
+  } catch(e) { toast('Ошибка: ' + e.message, 'error'); }
 };
-
 function renderQr(ticket) {
   const cv = document.getElementById('qrCanvas');
   const qr = window.qrcode(0, 'M');
@@ -1094,44 +923,27 @@ function renderQr(ticket) {
   const cell = size / count;
   c.fillStyle = '#fff'; c.fillRect(0, 0, size, size);
   c.fillStyle = '#000';
-  for (let r = 0; r < count; r++)
-    for (let cc = 0; cc < count; cc++)
-      if (qr.isDark(r, cc)) c.fillRect(cc*cell, r*cell, cell, cell);
-
-  const roleLabel = ticket.role === 'creator' ? '♾️ Безлимит'
-                  : ticket.role === 'developer' ? '🛠️ Разработчик'
-                  : (ticket.minutes + ' мин');
-  document.getElementById('qrOwner').innerHTML =
-    `<div style="font-size:16px;font-weight:900;">${esc(ticket.owner_name || '')} • <span style="color:#00f0ff;">${esc(ticket.owner_class || '')}</span></div>
-     <div style="font-size:12px;color:#00ff88;margin-top:4px;">${roleLabel}</div>`;
+  for (let r = 0; r < count; r++) for (let cc = 0; cc < count; cc++) if (qr.isDark(r, cc)) c.fillRect(cc*cell, r*cell, cell, cell);
+  const roleLabel = ticket.role === 'creator' ? '♾️ Безлимит' : ticket.role === 'developer' ? '🛠️ Разработчик' : (ticket.minutes + ' мин');
+  document.getElementById('qrOwner').innerHTML = `<div style="font-size:16px;font-weight:900;">${esc(ticket.owner_name || '')} • <span style="color:#00f0ff;">${esc(ticket.owner_class || '')}</span></div><div style="font-size:12px;color:#00ff88;margin-top:4px;">${roleLabel}</div>`;
   document.getElementById('qrCodeText').textContent = ticket.id;
   document.getElementById('qrResult').classList.add('show');
   document.getElementById('qrEmpty').style.display = 'none';
 }
-
-/* ---------- PRINT/COPY/BAN ---------- */
 document.getElementById('btnPrint').onclick = () => {
   const cv = document.getElementById('qrCanvas');
   const id = document.getElementById('qrCodeText').textContent;
   const t = State.currentTicket;
   const owner = t ? `${t.owner_name} • ${t.owner_class}` : '';
-  const roleLabel = !t ? '' : (t.role === 'creator' ? 'Безлимит' :
-                    t.role === 'developer' ? 'Разработчик' : t.minutes + ' мин');
+  const roleLabel = !t ? '' : (t.role === 'creator' ? 'Безлимит' : t.role === 'developer' ? 'Разработчик' : t.minutes + ' мин');
   const w = window.open('', '_blank');
-  w.document.write(`<!DOCTYPE html><html><head><title>Билет ${id}</title></head>
-    <body style="text-align:center;font-family:sans-serif;padding:40px;">
-    <h2>СИБКОДБОКС</h2>
-    <p style="font-size:16px;">${owner}</p>
-    <p style="font-size:18px;color:#0077cc;">${roleLabel}</p>
-    <img src="${cv.toDataURL()}" style="width:300px;">
-    <p style="font-family:monospace;font-size:16px;">${id}</p>
-    </body></html>`);
+  w.document.write(`<!DOCTYPE html><html><head><title>Билет ${id}</title></head><body style="text-align:center;font-family:sans-serif;padding:40px;"><h2>СИБКОДБОКС</h2><p style="font-size:16px;">${owner}</p><p style="font-size:18px;color:#0077cc;">${roleLabel}</p><img src="${cv.toDataURL()}" style="width:300px;"><p style="font-family:monospace;font-size:16px;">${id}</p></body></html>`);
   w.document.close();
   setTimeout(() => w.print(), 300);
 };
 document.getElementById('btnCopy').onclick = () => {
   const id = document.getElementById('qrCodeText').textContent;
-  navigator.clipboard.writeText(id).then(() => toast('Код скопирован', 'success'));
+  navigator.clipboard.writeText(id).then(() => toast('Скопировано', 'success'));
 };
 document.getElementById('btnBanThis').onclick = () => {
   const id = document.getElementById('qrCodeText').textContent;
@@ -1139,7 +951,6 @@ document.getElementById('btnBanThis').onclick = () => {
   window.banTicket(id);
 };
 
-/* ---------- TICKETS LIST ---------- */
 document.querySelectorAll('[data-tfilter]').forEach(b => {
   b.onclick = () => { State.ticketFilter = b.getAttribute('data-tfilter'); renderTickets(); };
 });
@@ -1149,30 +960,17 @@ function renderTickets() {
   if (State.ticketFilter === 'active') items = items.filter(t => !t.used && !t.banned);
   if (State.ticketFilter === 'used') items = items.filter(t => t.used && !t.banned);
   if (State.ticketFilter === 'banned') items = items.filter(t => t.banned);
-  if (items.length === 0) {
-    list.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>Нет билетов</div>';
-    return;
-  }
+  if (items.length === 0) { list.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>Нет билетов</div>'; return; }
   list.innerHTML = items.map(t => {
-    let statusBadge = '';
-    if (t.banned) statusBadge = '<span class="badge banned">Забанен</span>';
-    else if (t.used) statusBadge = '<span class="badge used">Использован</span>';
-    else if (t.role === 'creator') statusBadge = '<span class="badge creator">Создатель</span>';
-    else if (t.role === 'developer') statusBadge = '<span class="badge developer">Разработчик</span>';
-    else statusBadge = '<span class="badge active">Активен</span>';
-    const minutesText = t.role === 'creator' ? 'Безлимит' : (t.minutes + ' мин');
-    const ownerText = (t.owner_name || '—') + (t.owner_class ? ' • ' + t.owner_class : '');
-    return `<div class="row-item">
-      <div class="row-info">
-        <div class="row-main">${esc(t.id)} ${statusBadge}</div>
-        <div class="row-sub"><b style="color:#00ff88;">${esc(ownerText)}</b> • ${minutesText} • ${fmtDate(t.created_at)}</div>
-      </div>
-      <div class="row-actions">
-        <button class="btn btn-sm" onclick="viewTicket('${t.id}')">📱</button>
-        ${!t.banned ? `<button class="btn btn-sm danger" onclick="banTicket('${t.id}')">🚫</button>` : ''}
-        <button class="btn btn-sm danger" onclick="deleteTicket('${t.id}')">✕</button>
-      </div>
-    </div>`;
+    let b = '';
+    if (t.banned) b = '<span class="badge banned">Забанен</span>';
+    else if (t.used) b = '<span class="badge used">Использован</span>';
+    else if (t.role === 'creator') b = '<span class="badge creator">Создатель</span>';
+    else if (t.role === 'developer') b = '<span class="badge developer">Разработчик</span>';
+    else b = '<span class="badge active">Активен</span>';
+    const m = t.role === 'creator' ? 'Безлимит' : (t.minutes + ' мин');
+    const owner = (t.owner_name || '—') + (t.owner_class ? ' • ' + t.owner_class : '');
+    return `<div class="row-item"><div class="row-info"><div class="row-main">${esc(t.id)} ${b}</div><div class="row-sub"><b style="color:#00ff88;">${esc(owner)}</b> • ${m} • ${fmtDate(t.created_at)}</div></div><div class="row-actions"><button class="btn btn-sm" onclick="viewTicket('${t.id}')">📱</button>${!t.banned ? `<button class="btn btn-sm danger" onclick="banTicket('${t.id}')">🚫</button>` : ''}<button class="btn btn-sm danger" onclick="deleteTicket('${t.id}')">✕</button></div></div>`;
   }).join('');
 }
 window.viewTicket = (id) => {
@@ -1201,77 +999,39 @@ document.getElementById('btnClearTickets').onclick = () => {
   });
 };
 
-/* ---------- INCIDENTS ---------- */
 function renderIncidents() {
   const list = document.getElementById('incidentsList');
-  if (State.incidents.length === 0) {
-    list.innerHTML = '<div class="empty"><div class="empty-icon">✅</div>Нарушений нет</div>';
-    return;
-  }
-  list.innerHTML = State.incidents.map(i => `
-    <div class="incident">
-      <div>${i.photo ? `<img class="incident-photo" src="${i.photo}">`
-        : '<div class="incident-photo" style="display:flex;align-items:center;justify-content:center;font-size:30px;">👤</div>'}</div>
-      <div class="incident-info">
-        <div class="incident-name">${esc(i.name)}</div>
-        <div class="incident-meta">
-          Билет: <b style="color:#00f0ff;">${esc(i.ticket_id || '—')}</b><br>
-          ${fmtDate(i.created_at)}<br>
-          <span style="color:#ff8888;">${esc(i.reason || 'Нецензурное имя')}</span>
-        </div>
-      </div>
-      <div><button class="btn btn-sm danger" onclick="deleteIncident(${i.id})">✕</button></div>
-    </div>
-  `).join('');
+  if (State.incidents.length === 0) { list.innerHTML = '<div class="empty"><div class="empty-icon">✅</div>Нарушений нет</div>'; return; }
+  list.innerHTML = State.incidents.map(i => `<div class="incident"><div>${i.photo ? `<img class="incident-photo" src="${i.photo}">` : '<div class="incident-photo" style="display:flex;align-items:center;justify-content:center;font-size:30px;">👤</div>'}</div><div class="incident-info"><div class="incident-name">${esc(i.name)}</div><div class="incident-meta">Билет: <b style="color:#00f0ff;">${esc(i.ticket_id || '—')}</b><br>${fmtDate(i.created_at)}<br><span style="color:#ff8888;">${esc(i.reason || 'Нецензурное имя')}</span></div></div><div><button class="btn btn-sm danger" onclick="deleteIncident(${i.id})">✕</button></div></div>`).join('');
 }
 window.deleteIncident = (id) => {
-  askConfirm('Удалить запись?', '', async () => {
-    await sb.from('incidents').delete().eq('id', id);
-    loadAll();
-  });
+  askConfirm('Удалить запись?', '', async () => { await sb.from('incidents').delete().eq('id', id); loadAll(); });
 };
 document.getElementById('btnClearIncidents').onclick = () => {
-  askConfirm('Очистить журнал?', '', async () => {
-    await sb.from('incidents').delete().neq('id', 0);
-    toast('Очищено', 'success'); loadAll();
-  });
+  askConfirm('Очистить журнал?', '', async () => { await sb.from('incidents').delete().neq('id', 0); toast('Очищено', 'success'); loadAll(); });
 };
 
-/* ---------- RECORDS ---------- */
 document.getElementById('recordsFilter').onchange = renderRecords;
 function renderRecords() {
   const filter = document.getElementById('recordsFilter').value;
   const list = document.getElementById('recordsList');
   let items = [];
   if (filter === '__all__') {
-    Object.keys(State.records).forEach(gid => {
-      State.records[gid].forEach(r => items.push({ ...r, _gameId: gid }));
-    });
+    Object.keys(State.records).forEach(gid => { State.records[gid].forEach(r => items.push({ ...r, _gid: gid })); });
     items.sort((a,b) => b.score - a.score);
   } else {
     items = (State.records[filter] || []).slice().sort((a,b) => b.score - a.score);
   }
   items = items.slice(0, 100);
-  if (items.length === 0) {
-    list.innerHTML = '<div class="empty"><div class="empty-icon">🏆</div>Пока нет рекордов</div>';
-    return;
-  }
+  if (items.length === 0) { list.innerHTML = '<div class="empty"><div class="empty-icon">🏆</div>Пока нет рекордов</div>'; return; }
   list.innerHTML = items.map((r, i) => {
-    let rc = '';
-    if (i === 0) rc = 'gold';
-    else if (i === 1) rc = 'silver';
-    else if (i === 2) rc = 'bronze';
-    return `<div class="record-row">
-      <div class="rank ${rc}">#${i+1}</div>
-      <div><b>${esc(r.player_name)}</b><div style="font-size:11px;color:#888;">${esc(r._gameId || r.game_id || '')}</div></div>
-      <div style="font-weight:900;color:#00ff88;">${r.score}</div>
-      <div style="font-size:11px;color:#888;">${fmtDate(r.created_at)}</div>
-    </div>`;
+    let rc = ''; if (i === 0) rc = 'gold'; else if (i === 1) rc = 'silver'; else if (i === 2) rc = 'bronze';
+    return `<div class="record-row"><div class="rank ${rc}">#${i+1}</div><div><b>${esc(r.player_name)}</b><div style="font-size:11px;color:#888;">${esc(r._gid || r.game_id || '')}</div></div><div style="font-weight:900;color:#00ff88;">${r.score}</div><div style="font-size:11px;color:#888;">${fmtDate(r.created_at)}</div></div>`;
   }).join('');
 }
 document.getElementById('btnClearRecords').onclick = () => {
   const filter = document.getElementById('recordsFilter').value;
-  askConfirm('Очистить?', filter === '__all__' ? 'Все рекорды?' : 'Рекорды этой игры?', async () => {
+  askConfirm('Очистить рекорды?', filter === '__all__' ? 'Все?' : 'Этой игры?', async () => {
     let q = sb.from('records').delete();
     q = (filter === '__all__') ? q.neq('id', 0) : q.eq('game_id', filter);
     await q;
@@ -1279,35 +1039,34 @@ document.getElementById('btnClearRecords').onclick = () => {
   });
 };
 
-/* ---------- SETTINGS ---------- */
+/* =====================================================================
+   SETTINGS
+   ===================================================================== */
 document.getElementById('btnSavePin').onclick = async () => {
   const pin = document.getElementById('newPin').value.trim();
-  if (pin.length !== 4 || !/^\d+$/.test(pin)) { toast('PIN должен быть 4 цифры', 'error'); return; }
+  if (pin.length !== 4 || !/^\d+$/.test(pin)) { toast('4 цифры', 'error'); return; }
   await sb.from('config').upsert({ key:'operator_pin', value: pin });
   toast('PIN сохранён', 'success');
   document.getElementById('newPin').value = '';
 };
 document.getElementById('btnSaveCreator').onclick = async () => {
   const code = document.getElementById('newCreatorCode').value.trim();
-  if (code.length < 6) { toast('Мин. 6 символов', 'error'); return; }
+  if (code.length < 6) { toast('≥6 символов', 'error'); return; }
   await sb.from('config').upsert({ key:'creator_code', value: code });
   toast('Код сохранён', 'success');
 };
 document.getElementById('btnSaveDevCode').onclick = async () => {
   const code = document.getElementById('newDevCode').value.trim();
-  if (code.length < 4) { toast('Мин. 4 символа', 'error'); return; }
+  if (code.length < 4) { toast('≥4 символа', 'error'); return; }
   await sb.from('config').upsert({ key:'developer_code', value: code });
   toast('Мастер-код сохранён', 'success');
 };
-
-// ============ GITHUB SAVE ============
 document.getElementById('btnSaveGitHub').onclick = async () => {
   const owner = document.getElementById('ghOwner').value.trim();
   const repo = document.getElementById('ghRepo').value.trim();
   const branch = document.getElementById('ghBranch').value.trim() || 'main';
   const folder = document.getElementById('ghFolder').value.trim() || 'games';
   const token = document.getElementById('ghToken').value.trim();
-
   try {
     await sb.from('config').upsert({ key:'github_owner', value: owner });
     await sb.from('config').upsert({ key:'github_repo', value: repo });
@@ -1322,62 +1081,47 @@ document.getElementById('btnSaveGitHub').onclick = async () => {
     toast('GitHub сохранён', 'success');
   } catch(e) { toast('Ошибка: ' + e.message, 'error'); }
 };
-
 document.getElementById('btnExport').onclick = () => {
-  const data = {
-    exported_at: new Date().toISOString(),
-    tickets: State.tickets, incidents: State.incidents,
-    records: State.records, config: State.config, games: State.games
-  };
+  const data = { exported_at: new Date().toISOString(), tickets: State.tickets, incidents: State.incidents, records: State.records, config: State.config, games: State.games };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url;
-  a.download = 'sibkodbox_backup_' + new Date().toISOString().slice(0,10) + '.json';
-  a.click();
-  URL.revokeObjectURL(url);
+  a.href = url; a.download = 'sibkodbox_backup_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click(); URL.revokeObjectURL(url);
   toast('Backup скачан', 'success');
 };
 
-/* ---------- TABS ---------- */
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.onclick = () => {
     const tabs = btn.parentElement;
     tabs.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    tabs.querySelectorAll('.tab-btn').forEach(b => {
-      const p = document.getElementById('pane-' + b.getAttribute('data-tab'));
-      if (p) p.classList.remove('active');
-    });
+    tabs.querySelectorAll('.tab-btn').forEach(b => { const p = document.getElementById('pane-' + b.getAttribute('data-tab')); if (p) p.classList.remove('active'); });
     btn.classList.add('active');
     const target = document.getElementById('pane-' + btn.getAttribute('data-tab'));
     if (target) target.classList.add('active');
   };
 });
-
 document.getElementById('btnReloadT').onclick = () => { loadAll(); toast('Обновлено', 'success'); };
 document.getElementById('btnReloadD').onclick = () => { loadAll(); toast('Обновлено', 'success'); };
 
 /* =====================================================================
-   РАЗРАБОТЧИК: платформы и публикация
+   DEVELOPER: платформы
    ===================================================================== */
 const PLATFORM_INFO = {
   html: {
     inputType: 'html',
-    instructions: `<b>📄 HTML-файл или код</b><br>
-      Загрузите готовый HTML (Scratch→TurboWarp, Processing→p5.js, Godot Export, Unity WebGL).
-      <ul style="margin-left:18px;margin-top:6px;">
-        <li><b>≤ 10 МБ</b> → Supabase Storage (быстро, ссылка мгновенно)</li>
-        <li><b>&gt; 10 МБ</b> → GitHub (нужны настройки GitHub в разделе «Настройки»)</li>
-      </ul>`
+    instructions: `<b>📦 HTML или ZIP</b><br>
+      • HTML ≤ 10 МБ → Supabase Storage<br>
+      • HTML > 10 МБ → GitHub<br>
+      • ZIP (любой размер) → GitHub одним коммитом<br>
+      Внутри ZIP должен быть <code>index.html</code> (в корне или в подпапке).`
   },
   url: {
     inputType: 'url',
     instructions: `<b>🔗 Готовая ссылка</b><br>
-      Подойдёт: GitHub Pages, itch.io, Vercel, любой статический хостинг.<br>
-      Убедитесь, что URL открывается в браузере и использует HTTPS.`
+      Подойдёт: GitHub Pages, itch.io, Vercel, любой статический хостинг.`
   }
 };
-
 document.querySelectorAll('.platform-card').forEach(card => {
   card.onclick = () => {
     document.querySelectorAll('.platform-card').forEach(c => c.classList.remove('active'));
@@ -1386,7 +1130,6 @@ document.querySelectorAll('.platform-card').forEach(card => {
     selectPlatform(State.platform);
   };
 });
-
 function selectPlatform(plat) {
   const info = PLATFORM_INFO[plat];
   if (!info) return;
@@ -1394,59 +1137,70 @@ function selectPlatform(plat) {
   document.getElementById('addGameCard').style.display = 'block';
   document.getElementById('htmlBlock').style.display = info.inputType === 'html' ? 'block' : 'none';
   document.getElementById('urlBlock').style.display = info.inputType === 'url' ? 'block' : 'none';
-  if (info.inputType === 'html') updateSizeIndicator();
 }
 
-/* ============ SIZE INDICATOR + FILE HANDLING ============ */
+/* =====================================================================
+   ФАЙЛ/ZIP ОБРАБОТКА
+   ===================================================================== */
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('devGameFile');
 const htmlTextarea = document.getElementById('devGameHtml');
 const sizeIndicator = document.getElementById('sizeIndicator');
-const sizeValue = document.getElementById('sizeValue');
-const storageTarget = document.getElementById('storageTarget');
-
-function updateSizeIndicator() {
-  const html = htmlTextarea.value;
-  const bytes = new Blob([html]).size;
-  sizeValue.textContent = humanSize(bytes);
-  sizeIndicator.classList.remove('warn', 'danger');
-
-  if (bytes === 0) {
-    storageTarget.textContent = '—';
-    storageTarget.style.color = '#aaa';
-    return;
-  }
-  if (bytes <= SUPABASE_LIMIT_BYTES) {
-    storageTarget.textContent = 'Supabase Storage';
-    storageTarget.style.color = '#00ff88';
-  } else if (bytes <= 45 * 1024 * 1024) {
-    sizeIndicator.classList.add('warn');
-    storageTarget.textContent = 'GitHub (нужен токен)';
-    storageTarget.style.color = '#ffaa00';
-  } else {
-    sizeIndicator.classList.add('danger');
-    storageTarget.textContent = 'Слишком большой (>45 МБ)';
-    storageTarget.style.color = '#ff3344';
-  }
-}
-
-htmlTextarea.addEventListener('input', updateSizeIndicator);
 
 dropZone.onclick = () => fileInput.click();
-fileInput.onchange = async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const text = await file.text();
-  htmlTextarea.value = text;
-  updateSizeIndicator();
-  // Автозаполнение названия из имени файла
-  if (!document.getElementById('devGameTitle').value) {
-    const name = file.name.replace(/\.html?$/i, '').replace(/[-_]/g, ' ');
-    document.getElementById('devGameTitle').value = name;
-  }
-  toast('Файл загружен: ' + humanSize(file.size), 'success');
-};
+fileInput.onchange = async (e) => { const f = e.target.files[0]; if (f) await handleGameFile(f); };
 
+async function handleGameFile(file) {
+  const fname = file.name.toLowerCase();
+
+  // ---- HTML ----
+  if (fname.endsWith('.html') || fname.endsWith('.htm')) {
+    State.loadedZip = null;
+    const text = await file.text();
+    htmlTextarea.value = text;
+    const size = new Blob([text]).size;
+    sizeIndicator.className = 'size-indicator' + (size > SUPABASE_LIMIT_BYTES ? ' warn' : '');
+    sizeIndicator.innerHTML = `📄 <b>${file.name}</b> • ${humanSize(size)} • ${size <= SUPABASE_LIMIT_BYTES ? '→ Supabase' : '→ GitHub'}`;
+    if (!document.getElementById('devGameTitle').value) {
+      document.getElementById('devGameTitle').value = file.name.replace(/\.html?$/i, '').replace(/[-_]/g, ' ');
+    }
+    toast('HTML загружен: ' + humanSize(file.size), 'success');
+    return;
+  }
+
+  // ---- ZIP ----
+  if (fname.endsWith('.zip')) {
+    toast('Распаковка архива...', 'success');
+    try {
+      const zip = await JSZip.loadAsync(file);
+      const allFiles = Object.keys(zip.files).filter(n => !zip.files[n].dir);
+      const indexPath = findIndexHtml(allFiles);
+      if (!indexPath) { toast('В архиве нет index.html!', 'error'); return; }
+
+      let totalSize = 0;
+      for (const n of allFiles) {
+        const blob = await zip.files[n].async('blob');
+        totalSize += blob.size;
+      }
+
+      State.loadedZip = zip;
+      State.loadedZipName = file.name;
+      htmlTextarea.value = '';
+
+      sizeIndicator.className = 'size-indicator' + (totalSize > 100 * 1024 * 1024 ? ' warn' : '');
+      sizeIndicator.innerHTML = `📦 <b>${file.name}</b> • файлов: <b>${allFiles.length}</b> • распаковано: <b>${humanSize(totalSize)}</b> • index: <b style="color:#00f0ff;">${indexPath}</b> • → GitHub`;
+
+      if (!document.getElementById('devGameTitle').value) {
+        document.getElementById('devGameTitle').value = file.name.replace(/\.zip$/i, '').replace(/[-_]/g, ' ');
+      }
+      toast(`ZIP распакован: ${allFiles.length} файлов`, 'success');
+    } catch (err) {
+      toast('Ошибка распаковки: ' + err.message, 'error');
+    }
+    return;
+  }
+  toast('Поддерживается только .html и .zip', 'error');
+}
 ['dragenter','dragover'].forEach(ev => {
   dropZone.addEventListener(ev, e => { e.preventDefault(); dropZone.classList.add('dragover'); });
 });
@@ -1454,20 +1208,16 @@ fileInput.onchange = async (e) => {
   dropZone.addEventListener(ev, e => { e.preventDefault(); dropZone.classList.remove('dragover'); });
 });
 dropZone.addEventListener('drop', async e => {
-  const file = e.dataTransfer.files[0];
-  if (!file) return;
-  if (!/\.html?$/i.test(file.name)) { toast('Только .html файлы', 'error'); return; }
-  const text = await file.text();
-  htmlTextarea.value = text;
-  updateSizeIndicator();
-  if (!document.getElementById('devGameTitle').value) {
-    const name = file.name.replace(/\.html?$/i, '').replace(/[-_]/g, ' ');
-    document.getElementById('devGameTitle').value = name;
-  }
-  toast('Файл загружен: ' + humanSize(file.size), 'success');
+  const f = e.dataTransfer.files[0];
+  if (f) await handleGameFile(f);
+});
+htmlTextarea.addEventListener('input', () => {
+  if (State.loadedZip) return;
+  const size = new Blob([htmlTextarea.value]).size;
+  sizeIndicator.className = 'size-indicator' + (size > SUPABASE_LIMIT_BYTES ? ' warn' : '');
+  sizeIndicator.innerHTML = `HTML-код • ${humanSize(size)} • ${size <= SUPABASE_LIMIT_BYTES ? '→ Supabase' : '→ GitHub'}`;
 });
 
-/* ============ PREVIEW ============ */
 document.getElementById('btnPreviewGame').onclick = () => {
   const box = document.getElementById('previewBox');
   const frame = document.getElementById('previewFrame');
@@ -1485,119 +1235,177 @@ document.getElementById('btnPreviewGame').onclick = () => {
   }
 };
 
-/* ============ SUPABASE UPLOAD (≤ 10 MB) ============ */
-async function uploadToSupabase(htmlCode, gameId) {
+/* =====================================================================
+   SUPABASE UPLOAD (одиночный HTML)
+   ===================================================================== */
+async function uploadHtmlToSupabase(htmlCode, gameId) {
   const path = `${gameId}/index.html`;
   const blob = new Blob([htmlCode], { type: 'text/html;charset=utf-8' });
   const { error } = await sb.storage.from('games').upload(path, blob, {
-    contentType: 'text/html;charset=utf-8',
-    upsert: true,
-    cacheControl: '3600'
+    contentType: 'text/html;charset=utf-8', upsert: true, cacheControl: '3600'
   });
   if (error) throw error;
   const { data } = sb.storage.from('games').getPublicUrl(path);
   return data.publicUrl;
 }
 
-/* ============ GITHUB UPLOAD (> 10 MB) ============ */
-async function uploadToGitHub(htmlCode, gameId, meta) {
+/* =====================================================================
+   GITHUB UPLOAD: одиночный HTML
+   ===================================================================== */
+async function uploadHtmlToGitHub(htmlCode, gameId, meta) {
   const owner = State.config.github_owner;
   const repo = State.config.github_repo;
   const branch = State.config.github_branch || 'main';
   const folder = State.config.github_folder || 'games';
   const token = State.config.github_token;
-
-  if (!owner || !repo || !token) {
-    throw new Error('GitHub не настроен. Заполните owner/repo/token в разделе «Настройки».');
-  }
+  if (!owner || !repo || !token) throw new Error('GitHub не настроен (owner/repo/token)');
 
   const path = `${folder}/${gameId}/index.html`;
-  const contentBase64 = utf8ToBase64(htmlCode);
   const apiHeaders = {
     'Authorization': `Bearer ${token}`,
     'Accept': 'application/vnd.github+json',
     'Content-Type': 'application/json'
   };
 
-  // 1. Получаем SHA последнего коммита в ветке
-  const refRes = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/git/ref/heads/${branch}`,
-    { headers: apiHeaders }
-  );
-  if (!refRes.ok) {
-    const err = await refRes.json().catch(()=>({}));
-    throw new Error(`GitHub ref: ${refRes.status} ${err.message || ''}`);
-  }
-  const refData = await refRes.json();
-  const baseSha = refData.object.sha;
+  const refRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/ref/heads/${branch}`, { headers: apiHeaders });
+  if (!refRes.ok) throw new Error(`GitHub ref: ${refRes.status}`);
+  const baseSha = (await refRes.json()).object.sha;
 
-  // 2. Создаём blob
-  const blobRes = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/git/blobs`,
-    {
-      method: 'POST',
-      headers: apiHeaders,
-      body: JSON.stringify({ content: contentBase64, encoding: 'base64' })
-    }
-  );
+  const commitRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/commits/${baseSha}`, { headers: apiHeaders });
+  const baseCommit = await commitRes.json();
+
+  const blobRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/blobs`, {
+    method: 'POST', headers: apiHeaders,
+    body: JSON.stringify({ content: utf8ToBase64(htmlCode), encoding: 'base64' })
+  });
   if (!blobRes.ok) throw new Error(`GitHub blob: ${blobRes.status}`);
   const blob = await blobRes.json();
 
-  // 3. Получаем base tree
-  const commitRes = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/git/commits/${baseSha}`,
-    { headers: apiHeaders }
-  );
-  if (!commitRes.ok) throw new Error(`GitHub commit: ${commitRes.status}`);
-  const baseCommit = await commitRes.json();
-
-  // 4. Создаём tree
-  const treeRes = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/git/trees`,
-    {
-      method: 'POST',
-      headers: apiHeaders,
-      body: JSON.stringify({
-        base_tree: baseCommit.tree.sha,
-        tree: [{ path, mode: '100644', type: 'blob', sha: blob.sha }]
-      })
-    }
-  );
+  const treeRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/trees`, {
+    method: 'POST', headers: apiHeaders,
+    body: JSON.stringify({ base_tree: baseCommit.tree.sha, tree: [{ path, mode: '100644', type: 'blob', sha: blob.sha }] })
+  });
   if (!treeRes.ok) throw new Error(`GitHub tree: ${treeRes.status}`);
   const tree = await treeRes.json();
 
-  // 5. Создаём коммит
-  const newCommitRes = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/git/commits`,
-    {
-      method: 'POST',
-      headers: apiHeaders,
-      body: JSON.stringify({
-        message: `Add game: ${meta.title || gameId}`,
-        tree: tree.sha,
-        parents: [baseSha]
-      })
-    }
-  );
-  if (!newCommitRes.ok) throw new Error(`GitHub commit2: ${newCommitRes.status}`);
+  const newCommitRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/commits`, {
+    method: 'POST', headers: apiHeaders,
+    body: JSON.stringify({ message: `Add game: ${meta.title || gameId}`, tree: tree.sha, parents: [baseSha] })
+  });
+  if (!newCommitRes.ok) throw new Error(`GitHub commit: ${newCommitRes.status}`);
   const newCommit = await newCommitRes.json();
 
-  // 6. Обновляем ref
-  const updRes = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/git/refs/heads/${branch}`,
-    {
-      method: 'PATCH',
-      headers: apiHeaders,
-      body: JSON.stringify({ sha: newCommit.sha })
-    }
-  );
+  const updRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/refs/heads/${branch}`, {
+    method: 'PATCH', headers: apiHeaders,
+    body: JSON.stringify({ sha: newCommit.sha })
+  });
   if (!updRes.ok) throw new Error(`GitHub ref update: ${updRes.status}`);
 
-  // 7. Возвращаем jsDelivr CDN URL
   return `https://cdn.jsdelivr.net/gh/${owner}/${repo}@${branch}/${path}`;
 }
 
-/* ============ SAVE GAME ============ */
+/* =====================================================================
+   GITHUB UPLOAD: ZIP → все файлы одним коммитом
+   ===================================================================== */
+async function uploadZipToGitHub(zip, gameId, meta, onProgress) {
+  const owner = State.config.github_owner;
+  const repo = State.config.github_repo;
+  const branch = State.config.github_branch || 'main';
+  const folder = State.config.github_folder || 'games';
+  const token = State.config.github_token;
+  if (!owner || !repo || !token) throw new Error('GitHub не настроен (owner/repo/token)');
+
+  const apiHeaders = {
+    'Authorization': `Bearer ${token}`,
+    'Accept': 'application/vnd.github+json',
+    'Content-Type': 'application/json'
+  };
+
+  const allFiles = Object.keys(zip.files).filter(n => !zip.files[n].dir);
+  const commonPrefix = findCommonPrefix(allFiles);
+  const indexPath = findIndexHtml(allFiles);
+  if (!indexPath) throw new Error('index.html не найден в архиве');
+
+  onProgress && onProgress(0, allFiles.length, 'Получение ветки...');
+
+  // 1. Base ref
+  const refRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/ref/heads/${branch}`, { headers: apiHeaders });
+  if (!refRes.ok) throw new Error(`GitHub ref: ${refRes.status} — проверьте owner/repo/token`);
+  const baseSha = (await refRes.json()).object.sha;
+
+  // 2. Base tree
+  const commitRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/commits/${baseSha}`, { headers: apiHeaders });
+  const baseCommit = await commitRes.json();
+
+  // 3. Параллельно создаём blob'ы
+  let done = 0;
+  const treeItems = await parallelLimit(allFiles, GITHUB_PARALLEL, async (filePath) => {
+    const blob = await zip.files[filePath].async('blob');
+    const buf = await blob.arrayBuffer();
+    const base64 = arrayBufferToBase64(buf);
+
+    const blobRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/blobs`, {
+      method: 'POST', headers: apiHeaders,
+      body: JSON.stringify({ content: base64, encoding: 'base64' })
+    });
+    if (!blobRes.ok) throw new Error(`blob ${filePath}: ${blobRes.status}`);
+    const blobData = await blobRes.json();
+
+    done++;
+    onProgress && onProgress(done, allFiles.length, filePath);
+
+    const cleanPath = (commonPrefix && filePath.startsWith(commonPrefix))
+      ? filePath.slice(commonPrefix.length)
+      : filePath;
+
+    return {
+      path: `${folder}/${gameId}/${cleanPath}`,
+      mode: '100644',
+      type: 'blob',
+      sha: blobData.sha
+    };
+  });
+
+  onProgress && onProgress(allFiles.length, allFiles.length, 'Создание tree...');
+
+  // 4. Tree
+  const treeRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/trees`, {
+    method: 'POST', headers: apiHeaders,
+    body: JSON.stringify({ base_tree: baseCommit.tree.sha, tree: treeItems })
+  });
+  if (!treeRes.ok) throw new Error(`GitHub tree: ${treeRes.status}`);
+  const tree = await treeRes.json();
+
+  // 5. Commit
+  const newCommitRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/commits`, {
+    method: 'POST', headers: apiHeaders,
+    body: JSON.stringify({
+      message: `Add game: ${meta.title || gameId} (${allFiles.length} files)`,
+      tree: tree.sha,
+      parents: [baseSha]
+    })
+  });
+  if (!newCommitRes.ok) throw new Error(`GitHub commit: ${newCommitRes.status}`);
+  const newCommit = await newCommitRes.json();
+
+  // 6. Update ref
+  const updRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/refs/heads/${branch}`, {
+    method: 'PATCH', headers: apiHeaders,
+    body: JSON.stringify({ sha: newCommit.sha })
+  });
+  if (!updRes.ok) throw new Error(`GitHub ref update: ${updRes.status}`);
+
+  // 7. jsDelivr URL на index.html
+  const cleanIndex = (commonPrefix && indexPath.startsWith(commonPrefix))
+    ? indexPath.slice(commonPrefix.length)
+    : indexPath;
+
+  return `https://cdn.jsdelivr.net/gh/${owner}/${repo}@${branch}/${folder}/${gameId}/${cleanIndex}`;
+}
+
+/* =====================================================================
+   SAVE GAME
+   ===================================================================== */
 document.getElementById('btnSaveGame').onclick = async () => {
   const title = document.getElementById('devGameTitle').value.trim();
   const genre = document.getElementById('devGameGenre').value.trim();
@@ -1624,22 +1432,35 @@ document.getElementById('btnSaveGame').onclick = async () => {
     const gameId = 'g-' + Date.now().toString(36);
 
     if (info.inputType === 'html') {
-      const html = htmlTextarea.value.trim();
-      if (!html) throw new Error('Загрузите HTML-файл или вставьте код');
-      const bytes = new Blob([html]).size;
-
-      if (bytes <= SUPABASE_LIMIT_BYTES) {
-        stat.textContent = `Загрузка в Supabase (${humanSize(bytes)})...`;
-        fill.style.width = '40%';
-        url = await uploadToSupabase(html, gameId);
-        storageMode = 'supabase';
-        fill.style.width = '90%';
+      if (State.loadedZip) {
+        // ===== ZIP → GitHub =====
+        const fileCount = Object.keys(State.loadedZip.files).filter(n => !State.loadedZip.files[n].dir).length;
+        stat.textContent = `Загрузка ZIP в GitHub (${fileCount} файлов)...`;
+        fill.style.width = '10%';
+        url = await uploadZipToGitHub(State.loadedZip, gameId, { title }, (done, total, name) => {
+          const pct = 10 + (done / total) * 85;
+          fill.style.width = pct + '%';
+          stat.textContent = `GitHub: ${done}/${total} — ${name.split('/').pop()}`;
+        });
+        storageMode = 'github-zip';
+        fill.style.width = '95%';
       } else {
-        stat.textContent = `Загрузка в GitHub (${humanSize(bytes)})...`;
-        fill.style.width = '20%';
-        url = await uploadToGitHub(html, gameId, { title });
-        storageMode = 'github';
-        fill.style.width = '90%';
+        const html = htmlTextarea.value.trim();
+        if (!html) throw new Error('Загрузите HTML или ZIP');
+        const bytes = new Blob([html]).size;
+        if (bytes <= SUPABASE_LIMIT_BYTES) {
+          stat.textContent = `Supabase (${humanSize(bytes)})...`;
+          fill.style.width = '40%';
+          url = await uploadHtmlToSupabase(html, gameId);
+          storageMode = 'supabase';
+          fill.style.width = '90%';
+        } else {
+          stat.textContent = `GitHub (${humanSize(bytes)})...`;
+          fill.style.width = '20%';
+          url = await uploadHtmlToGitHub(html, gameId, { title });
+          storageMode = 'github';
+          fill.style.width = '90%';
+        }
       }
     } else {
       url = document.getElementById('devGameUrl').value.trim();
@@ -1657,12 +1478,8 @@ document.getElementById('btnSaveGame').onclick = async () => {
       url, platform: State.platform, storage: storageMode,
       created_at: new Date().toISOString()
     };
-
     const updated = [...State.games, newGame];
-    const { error } = await sb.from('config').upsert({
-      key: 'games_json',
-      value: JSON.stringify(updated)
-    });
+    const { error } = await sb.from('config').upsert({ key: 'games_json', value: JSON.stringify(updated) });
     if (error) throw error;
 
     State.games = updated;
@@ -1672,15 +1489,11 @@ document.getElementById('btnSaveGame').onclick = async () => {
     resetAddGameForm();
     renderDevGamesList();
   } catch(e) {
-    console.error(e);
     stat.textContent = '❌ ' + e.message;
     toast('Ошибка: ' + e.message, 'error');
   } finally {
     document.getElementById('btnSaveGame').disabled = false;
-    setTimeout(() => {
-      prog.classList.remove('show');
-      fill.style.width = '0%';
-    }, 2500);
+    setTimeout(() => { prog.classList.remove('show'); fill.style.width = '0%'; }, 2500);
   }
 };
 
@@ -1688,39 +1501,29 @@ function resetAddGameForm() {
   ['devGameTitle','devGameGenre','devGameBadge','devGameCover','devGameBg','devGameDesc','devGameUrl']
     .forEach(id => document.getElementById(id).value = '');
   htmlTextarea.value = '';
-  updateSizeIndicator();
+  State.loadedZip = null;
+  State.loadedZipName = '';
+  sizeIndicator.className = 'size-indicator';
+  sizeIndicator.textContent = 'Файл не загружен';
   document.getElementById('previewBox').style.display = 'none';
   document.getElementById('previewFrame').src = 'about:blank';
   fileInput.value = '';
 }
 
-/* ---------- GAMES LIST (developer) ---------- */
 function renderDevGamesList() {
   const list = document.getElementById('devGamesList');
   if (!list) return;
   if (State.games.length === 0) {
-    list.innerHTML = '<div class="empty"><div class="empty-icon">🎮</div>В каталоге пока нет игр</div>';
+    list.innerHTML = '<div class="empty"><div class="empty-icon">🎮</div>В каталоге нет игр</div>';
     return;
   }
   list.innerHTML = State.games.map((g, i) => {
-    const thumb = g.cover
-      ? `<img src="${esc(g.cover)}" onerror="this.style.display='none'">`
-      : '🎮';
-    const storageIcon = g.storage === 'github' ? '📦 GitHub'
+    const thumb = g.cover ? `<img src="${esc(g.cover)}" onerror="this.style.display='none'">` : '🎮';
+    const storageIcon = g.storage === 'github-zip' ? '📦 GitHub ZIP'
+                      : g.storage === 'github' ? '📦 GitHub'
                       : g.storage === 'supabase' ? '☁️ Supabase'
                       : '🔗 URL';
-    return `<div class="game-item">
-      <div class="game-thumb">${thumb}</div>
-      <div>
-        <div class="game-title">${esc(g.title)}</div>
-        <div class="game-meta">${esc(g.genre)} • ${esc(g.badge || 'GAME')} • ${storageIcon}</div>
-        <div class="game-meta" style="font-family:monospace;color:#00f0ff;font-size:11px;margin-top:3px;overflow:hidden;text-overflow:ellipsis;">${esc(g.url || '—')}</div>
-      </div>
-      <div class="row-actions">
-        <button class="btn btn-sm" onclick="devPreviewGame(${i})">👁️</button>
-        <button class="btn btn-sm danger" onclick="devDeleteGame(${i})">✕</button>
-      </div>
-    </div>`;
+    return `<div class="game-item"><div class="game-thumb">${thumb}</div><div><div class="game-title">${esc(g.title)}</div><div class="game-meta">${esc(g.genre)} • ${storageIcon}</div><div class="game-meta" style="font-family:monospace;color:#00f0ff;font-size:11px;margin-top:3px;overflow:hidden;text-overflow:ellipsis;">${esc(g.url || '—')}</div></div><div class="row-actions"><button class="btn btn-sm" onclick="devPreviewGame(${i})">👁️</button><button class="btn btn-sm danger" onclick="devDeleteGame(${i})">✕</button></div></div>`;
   }).join('');
 }
 window.devPreviewGame = (i) => {
@@ -1730,21 +1533,15 @@ window.devPreviewGame = (i) => {
 };
 window.devDeleteGame = (i) => {
   const g = State.games[i];
-  askConfirm('Удалить игру?', `"${g.title}" будет удалена из каталога.`, async () => {
+  askConfirm('Удалить игру?', `"${g.title}"`, async () => {
     State.games.splice(i, 1);
     try {
-      await sb.from('config').upsert({
-        key: 'games_json',
-        value: JSON.stringify(State.games)
-      });
+      await sb.from('config').upsert({ key: 'games_json', value: JSON.stringify(State.games) });
       toast('Игра удалена', 'success');
       renderDevGamesList();
     } catch(e) { toast('Ошибка: ' + e.message, 'error'); }
   });
 };
-
-// Инициализация
-updateSizeIndicator();
 </script>
 </body>
 </html>
