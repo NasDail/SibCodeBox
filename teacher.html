@@ -395,16 +395,16 @@
       <div class="card">
         <div class="card-title">📦 GitHub для ZIP и больших игр</div>
         <div class="card-sub">
-          ZIP-архивы и HTML &gt; 10 МБ загружаются в GitHub одним коммитом.
-          Маленькие HTML (&le; 10 МБ) идут в Supabase.
+          ZIP и HTML &gt; 10 МБ идут в GitHub. Файлы раздаются через <b>raw.githack.com</b>
+          (правильные MIME — игра откроется, а не покажется как текст).
         </div>
         <div class="card-sub" style="background:rgba(255,170,0,0.1);padding:10px 14px;border-radius:8px;border-left:3px solid #ffaa00;">
           <b>⚠️ Нужен Personal Access Token</b> с правами <code style="color:#ffaa00;">repo</code> (или Contents: Read & Write).
-          Создать: GitHub → Settings → Developer settings → Personal access tokens.
+          GitHub → Settings → Developer settings → Personal access tokens.
         </div>
         <div class="form-row">
-          <div class="form-group"><label>GitHub владелец</label><input type="text" class="form-input" id="ghOwner" placeholder="username"></div>
-          <div class="form-group"><label>Репозиторий</label><input type="text" class="form-input" id="ghRepo" placeholder="sibcodebox-games"></div>
+          <div class="form-group"><label>GitHub владелец</label><input type="text" class="form-input" id="ghOwner" placeholder="NasDail"></div>
+          <div class="form-group"><label>Репозиторий</label><input type="text" class="form-input" id="ghRepo" placeholder="Games"></div>
         </div>
         <div class="form-row">
           <div class="form-group"><label>Ветка</label><input type="text" class="form-input" id="ghBranch" value="main"></div>
@@ -478,13 +478,13 @@
           <div class="drop-zone" id="dropZone">
             <div class="drop-icon">📦</div>
             <div class="drop-title">Перетащите .html или .zip сюда</div>
-            <div class="drop-hint">Для ZIP — внутри должен быть index.html (в корне или подпапке)</div>
+            <div class="drop-hint">Для ZIP — внутри должен быть index.html</div>
             <input type="file" id="devGameFile" accept=".html,.htm,.zip,text/html,application/zip" style="display:none;">
           </div>
           <div class="size-indicator" id="sizeIndicator">Файл не загружен</div>
 
           <div class="form-group" style="margin-top:14px;">
-            <label>Или вставьте HTML-код вручную</label>
+            <label>Или вставьте HTML-код</label>
             <textarea class="form-input" id="devGameHtml" rows="6" placeholder="<!DOCTYPE html>..."></textarea>
           </div>
         </div>
@@ -531,16 +531,12 @@
         <div class="card-title">📖 Как опубликовать игру</div>
         <div class="instructions">
           <b style="color:#00ff88;">HTML ≤ 10 МБ</b>
-          <ol>
-            <li>Загрузите .html → уйдёт в Supabase Storage.</li>
-            <li>Ссылка появится в каталоге автомата.</li>
-          </ol>
+          <ol><li>Загрузите .html → уйдёт в Supabase Storage.</li></ol>
           <b style="color:#ffaa00;">ZIP любой размер</b>
           <ol>
-            <li>Внутри архива должен быть <code>index.html</code> (в корне или в подпапке).</li>
-            <li>Файл распакуется в браузере, все файлы уйдут в GitHub одним коммитом.</li>
-            <li>Игра откроется через jsDelivr CDN с правильными MIME.</li>
-            <li>Относительные пути (assets/, wasm/, pck/) работают.</li>
+            <li>Внутри архива должен быть <code>index.html</code>.</li>
+            <li>Распакуется в браузере, все файлы уйдут в GitHub одним коммитом.</li>
+            <li>Игра откроется через <code>raw.githack.com</code> — правильные MIME, относительные пути работают.</li>
           </ol>
           <b style="color:#00f0ff;">Готовая ссылка</b>
           <ol><li>Залейте на GitHub Pages / itch.io / Vercel, вставьте URL.</li></ol>
@@ -572,9 +568,6 @@
 </div>
 
 <script>
-/* =====================================================================
-   КОНФИГ
-   ===================================================================== */
 const SUPABASE_URL = 'https://otsuvtcxnbdxrodayeta.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im90c3V2dGN4bmJkeHJvZGF5ZXRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4NjkyMzQsImV4cCI6MjEwNTQ0NTIzNH0.fsS73p3tRcbe0JIeRVjeqPStFzRe0lMKGLJQm7ki8oA';
 const TEACHER_TOKEN = 'SibTeacher_2025_x7k9_Arcade';
@@ -596,7 +589,6 @@ const State = {
   loadedZipName: ''
 };
 
-/* ===== UTILS ===== */
 function toast(text, type) {
   const el = document.getElementById('toast');
   el.textContent = text;
@@ -641,7 +633,6 @@ function arrayBufferToBase64(buf) {
 function utf8ToBase64(str) {
   return arrayBufferToBase64(new TextEncoder().encode(str).buffer);
 }
-// Общий префикс (напр. "my-game/") в путях ZIP
 function findCommonPrefix(files) {
   if (files.length === 0) return '';
   const first = files[0];
@@ -651,7 +642,6 @@ function findCommonPrefix(files) {
   for (const f of files) if (!f.startsWith(candidate)) return '';
   return candidate;
 }
-// Поиск index.html
 function findIndexHtml(files) {
   const root = files.find(f => /^index\.html?$/i.test(f));
   if (root) return root;
@@ -665,7 +655,6 @@ function findIndexHtml(files) {
   const cands = files.filter(f => /index\.html?$/i.test(f)).sort((a,b) => a.length - b.length);
   return cands[0] || null;
 }
-// Параллельный запуск с лимитом
 async function parallelLimit(items, limit, fn) {
   let i = 0;
   const results = new Array(items.length);
@@ -679,7 +668,6 @@ async function parallelLimit(items, limit, fn) {
   return results;
 }
 
-/* ===== КЛАССЫ ===== */
 (function fillClasses(){
   const sel = document.getElementById('ownerClass');
   const letters = ['А','Б','В','Г','Д','Е','Ж'];
@@ -693,9 +681,6 @@ async function parallelLimit(items, limit, fn) {
   }
 })();
 
-/* =====================================================================
-   LOGIN GATE
-   ===================================================================== */
 const gate = document.getElementById('gate');
 const gateInput = document.getElementById('gateInput');
 const gateBtn = document.getElementById('gateBtn');
@@ -783,9 +768,6 @@ function failLogin(msg) {
 document.getElementById('btnLogoutT').onclick = () => { gate.classList.remove('hidden'); document.getElementById('teacherApp').style.display = 'none'; gateInput.value = ''; };
 document.getElementById('btnLogoutD').onclick = () => { gate.classList.remove('hidden'); document.getElementById('devApp').style.display = 'none'; gateInput.value = ''; };
 
-/* =====================================================================
-   LOAD DATA
-   ===================================================================== */
 async function loadAll() {
   try {
     const [tRes, iRes, rRes, cRes] = await Promise.all([
@@ -848,9 +830,6 @@ function subscribeRealtime() {
   } catch(e) {}
 }
 
-/* =====================================================================
-   STATS / MAINTENANCE / ROLE / CREATE TICKET
-   ===================================================================== */
 function renderStats() {
   document.getElementById('statTotal').textContent = State.tickets.length;
   document.getElementById('statActive').textContent = State.tickets.filter(t => !t.used && !t.banned).length;
@@ -1039,9 +1018,6 @@ document.getElementById('btnClearRecords').onclick = () => {
   });
 };
 
-/* =====================================================================
-   SETTINGS
-   ===================================================================== */
 document.getElementById('btnSavePin').onclick = async () => {
   const pin = document.getElementById('newPin').value.trim();
   if (pin.length !== 4 || !/^\d+$/.test(pin)) { toast('4 цифры', 'error'); return; }
@@ -1104,17 +1080,14 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 document.getElementById('btnReloadT').onclick = () => { loadAll(); toast('Обновлено', 'success'); };
 document.getElementById('btnReloadD').onclick = () => { loadAll(); toast('Обновлено', 'success'); };
 
-/* =====================================================================
-   DEVELOPER: платформы
-   ===================================================================== */
 const PLATFORM_INFO = {
   html: {
     inputType: 'html',
     instructions: `<b>📦 HTML или ZIP</b><br>
       • HTML ≤ 10 МБ → Supabase Storage<br>
       • HTML > 10 МБ → GitHub<br>
-      • ZIP (любой размер) → GitHub одним коммитом<br>
-      Внутри ZIP должен быть <code>index.html</code> (в корне или в подпапке).`
+      • ZIP (любой размер) → GitHub одним коммитом → raw.githack CDN<br>
+      Внутри ZIP должен быть <code>index.html</code>.`
   },
   url: {
     inputType: 'url',
@@ -1139,9 +1112,6 @@ function selectPlatform(plat) {
   document.getElementById('urlBlock').style.display = info.inputType === 'url' ? 'block' : 'none';
 }
 
-/* =====================================================================
-   ФАЙЛ/ZIP ОБРАБОТКА
-   ===================================================================== */
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('devGameFile');
 const htmlTextarea = document.getElementById('devGameHtml');
@@ -1153,7 +1123,6 @@ fileInput.onchange = async (e) => { const f = e.target.files[0]; if (f) await ha
 async function handleGameFile(file) {
   const fname = file.name.toLowerCase();
 
-  // ---- HTML ----
   if (fname.endsWith('.html') || fname.endsWith('.htm')) {
     State.loadedZip = null;
     const text = await file.text();
@@ -1168,7 +1137,6 @@ async function handleGameFile(file) {
     return;
   }
 
-  // ---- ZIP ----
   if (fname.endsWith('.zip')) {
     toast('Распаковка архива...', 'success');
     try {
@@ -1235,9 +1203,6 @@ document.getElementById('btnPreviewGame').onclick = () => {
   }
 };
 
-/* =====================================================================
-   SUPABASE UPLOAD (одиночный HTML)
-   ===================================================================== */
 async function uploadHtmlToSupabase(htmlCode, gameId) {
   const path = `${gameId}/index.html`;
   const blob = new Blob([htmlCode], { type: 'text/html;charset=utf-8' });
@@ -1249,9 +1214,6 @@ async function uploadHtmlToSupabase(htmlCode, gameId) {
   return data.publicUrl;
 }
 
-/* =====================================================================
-   GITHUB UPLOAD: одиночный HTML
-   ===================================================================== */
 async function uploadHtmlToGitHub(htmlCode, gameId, meta) {
   const owner = State.config.github_owner;
   const repo = State.config.github_repo;
@@ -1301,12 +1263,10 @@ async function uploadHtmlToGitHub(htmlCode, gameId, meta) {
   });
   if (!updRes.ok) throw new Error(`GitHub ref update: ${updRes.status}`);
 
-  return `https://cdn.jsdelivr.net/gh/${owner}/${repo}@${branch}/${path}`;
+  // ✅ raw.githack — правильный Content-Type для HTML
+  return `https://raw.githack.com/${owner}/${repo}/${branch}/${path}`;
 }
 
-/* =====================================================================
-   GITHUB UPLOAD: ZIP → все файлы одним коммитом
-   ===================================================================== */
 async function uploadZipToGitHub(zip, gameId, meta, onProgress) {
   const owner = State.config.github_owner;
   const repo = State.config.github_repo;
@@ -1328,16 +1288,13 @@ async function uploadZipToGitHub(zip, gameId, meta, onProgress) {
 
   onProgress && onProgress(0, allFiles.length, 'Получение ветки...');
 
-  // 1. Base ref
   const refRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/ref/heads/${branch}`, { headers: apiHeaders });
   if (!refRes.ok) throw new Error(`GitHub ref: ${refRes.status} — проверьте owner/repo/token`);
   const baseSha = (await refRes.json()).object.sha;
 
-  // 2. Base tree
   const commitRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/commits/${baseSha}`, { headers: apiHeaders });
   const baseCommit = await commitRes.json();
 
-  // 3. Параллельно создаём blob'ы
   let done = 0;
   const treeItems = await parallelLimit(allFiles, GITHUB_PARALLEL, async (filePath) => {
     const blob = await zip.files[filePath].async('blob');
@@ -1368,7 +1325,6 @@ async function uploadZipToGitHub(zip, gameId, meta, onProgress) {
 
   onProgress && onProgress(allFiles.length, allFiles.length, 'Создание tree...');
 
-  // 4. Tree
   const treeRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/trees`, {
     method: 'POST', headers: apiHeaders,
     body: JSON.stringify({ base_tree: baseCommit.tree.sha, tree: treeItems })
@@ -1376,7 +1332,6 @@ async function uploadZipToGitHub(zip, gameId, meta, onProgress) {
   if (!treeRes.ok) throw new Error(`GitHub tree: ${treeRes.status}`);
   const tree = await treeRes.json();
 
-  // 5. Commit
   const newCommitRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/commits`, {
     method: 'POST', headers: apiHeaders,
     body: JSON.stringify({
@@ -1388,24 +1343,20 @@ async function uploadZipToGitHub(zip, gameId, meta, onProgress) {
   if (!newCommitRes.ok) throw new Error(`GitHub commit: ${newCommitRes.status}`);
   const newCommit = await newCommitRes.json();
 
-  // 6. Update ref
   const updRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/refs/heads/${branch}`, {
     method: 'PATCH', headers: apiHeaders,
     body: JSON.stringify({ sha: newCommit.sha })
   });
   if (!updRes.ok) throw new Error(`GitHub ref update: ${updRes.status}`);
 
-  // 7. jsDelivr URL на index.html
   const cleanIndex = (commonPrefix && indexPath.startsWith(commonPrefix))
     ? indexPath.slice(commonPrefix.length)
     : indexPath;
 
-  return `https://cdn.jsdelivr.net/gh/${owner}/${repo}@${branch}/${folder}/${gameId}/${cleanIndex}`;
+  // ✅ raw.githack — HTML, WASM, изображения — все с правильным Content-Type
+  return `https://raw.githack.com/${owner}/${repo}/${branch}/${folder}/${gameId}/${cleanIndex}`;
 }
 
-/* =====================================================================
-   SAVE GAME
-   ===================================================================== */
 document.getElementById('btnSaveGame').onclick = async () => {
   const title = document.getElementById('devGameTitle').value.trim();
   const genre = document.getElementById('devGameGenre').value.trim();
@@ -1433,7 +1384,6 @@ document.getElementById('btnSaveGame').onclick = async () => {
 
     if (info.inputType === 'html') {
       if (State.loadedZip) {
-        // ===== ZIP → GitHub =====
         const fileCount = Object.keys(State.loadedZip.files).filter(n => !State.loadedZip.files[n].dir).length;
         stat.textContent = `Загрузка ZIP в GitHub (${fileCount} файлов)...`;
         fill.style.width = '10%';
