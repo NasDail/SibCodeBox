@@ -1877,6 +1877,72 @@ function focusGameFrame() {
   } catch(e) { /* cross-origin */ }
 }
 
+// ============ ФИКС MIME + КОДИРОВКИ ============
+// Таблица CP1251 → Unicode (для исправления mojibake)
+const CP1251_TABLE = 'ЂЃ‚ѓ„…†‡€‰Љ‹ЊЌЋЏђ‘’“”•–—™љ›њќћџЎўЈ¤Ґ¦§Ё©Є«¬®Ї°±Ііґµ¶·ё№є»јЅѕїАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя';
+
+// Определяет "побит ли" текст — если да, чинит
+function fixMojibake(text) {
+  // Быстрая проверка: если много "Р", "С", "вЂ" — это точно mojibake
+  const mojibakeMarkers = (text.match(/Р[А-яІ-ӿќћў]/g) || []).length
+                        + (text.match(/С[А-яІ-ӿќћў]/g) || []).length
+                        + (text.match(/вЂ|в„|РІР|РЎР/g) || []).length;
+  const cyrillicCount = (text.match(/[А-Яа-яЁё]/g) || []).length;
+
+  // Если mojibake-маркеров больше, чем нормальной кириллицы — чиним
+  if (mojibakeMarkers < 10 || mojibakeMarkers < cyrillicCount * 0.5) {
+    return text; // текст в порядке
+  }
+
+  try {
+    // Конвертируем строку в байты CP1251, потом декодируем как UTF-8
+    const bytes = new Uint8Array(text.length);
+    for (let i = 0; i < text.length; i++) {
+      const c = text.charCodeAt(i);
+      if (c < 0x80) {
+        bytes[i] = c;
+      } else {
+        const idx = CP1251_TABLE.indexOf(text[i]);
+        bytes[i] = idx >= 0 ? 0x80 + idx : 0x3F; // '?' если не нашли
+      }
+    }
+    const fixed = new TextDecoder('utf-8', { fatal: false }).decode(bytes);
+    // Проверяем, стало ли лучше
+    const newCyr = (fixed.match(/[А-Яа-яЁё]/g) || []).length;
+    if (newCyr > cyrillicCount * 0.8) return fixed;
+  } catch (e) {
+    console.warn('Mojibake fix failed:', e);
+  }
+  return text;
+}
+
+// Загружает HTML с правильной кодировкой
+async function fetchGameHtml(url) {
+  const res = await fetch(url, { mode: 'cors' });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+
+  // Читаем как байты — так мы контролируем декодирование
+  const buf = await res.arrayBuffer();
+  const bytes = new Uint8Array(buf);
+
+  // 1) Пробуем UTF-8
+  let text = new TextDecoder('utf-8', { fatal: false }).decode(bytes);
+
+  // 2) Если UTF-8 дал много «замещающих» символов — пробуем CP1251
+  const replacementCount = (text.match(/\uFFFD/g) || []).length;
+  if (replacementCount > 5) {
+    try {
+      const cp1251Text = new TextDecoder('windows-1251').decode(bytes);
+      text = cp1251Text;
+    } catch (e) { /* оставляем UTF-8 */ }
+  }
+
+  // 3) Чиним double-encoded mojibake (UTF-8 → CP1251)
+  text = fixMojibake(text);
+
+  return text;
+}
+
 function launchGame(){
   if(isGameRunning||GAMES_CATALOG.length===0) return;
   if(!SIB.activeSession){ showLoginGate(); return; }
@@ -1888,28 +1954,65 @@ function launchGame(){
   SoundMaster.pauseBGM();
   viewportTitle.textContent=`СибКодБокс — ${lastGameTitle}`;
   portal.classList.add('show');
-  setTimeout(()=>{
-    const game=GAMES_CATALOG[activeGameIndex];
 
-    // ✅ FIX: сначала onload, потом присваиваем src/srcdoc
+  setTimeout(async () => {
+    const game = GAMES_CATALOG[activeGameIndex];
+
+    // ---- Динамический sandbox (без allow-same-origin) ----
+    if (game.srcdoc) {
+      gameFrame.removeAttribute('sandbox');
+    } else {
+      gameFrame.setAttribute('sandbox',
+        'allow-scripts allow-pointer-lock allow-forms allow-popups allow-modals');
+    }
+
+    // ---- Фокус после загрузки ----
     gameFrame.onload = () => {
       focusGameFrame();
-      // повторно через небольшие задержки — на случай медленной инициализации
       setTimeout(focusGameFrame, 100);
       setTimeout(focusGameFrame, 400);
       setTimeout(focusGameFrame, 1000);
     };
 
-    if(game.srcdoc){ gameFrame.removeAttribute('src'); gameFrame.srcdoc=game.srcdoc; }
-    else { gameFrame.removeAttribute('srcdoc'); gameFrame.src=game.url; }
+    // ---- Загрузка ----
+    if (game.srcdoc) {
+      // Встроенная игра — уже в виде HTML-строки
+      gameFrame.removeAttribute('src');
+      gameFrame.srcdoc = game.srcdoc;
+    } else if (game.url) {
+      // ✅ ГЛАВНЫЙ ФИКС: скачиваем как текст и рендерим через srcdoc
+      try {
+        const html = await fetchGameHtml(game.url);
+
+        // Добавляем <base>, чтобы относительные пути (картинки, скрипты)
+        // продолжали работать
+        const baseUrl = new URL('.', game.url).href;
+        let patched = html;
+        if (/<head[^>]*>/i.test(html)) {
+          patched = html.replace(
+            /<head([^>]*)>/i,
+            `<head$1><base href="${baseUrl}">`
+          );
+        } else {
+          patched = `<base href="${baseUrl}">` + html;
+        }
+
+        gameFrame.removeAttribute('src');
+        gameFrame.srcdoc = patched;
+      } catch (e) {
+        console.warn('Fetch failed, fallback to src:', e);
+        // Fallback: обычная загрузка (может показать текст — если MIME плохой)
+        gameFrame.removeAttribute('srcdoc');
+        gameFrame.src = game.url;
+      }
+    }
 
     viewport.classList.add('active');
     portal.classList.remove('show');
 
-    // ✅ FIX: страховка — повторный фокус после показа
     setTimeout(focusGameFrame, 600);
     setTimeout(focusGameFrame, 1200);
-  },500);
+  }, 500);
 }
 
 function exitGame(){
