@@ -55,7 +55,7 @@
     height:calc(100vh - 90px);padding:20px 0 50px 80px;}
   .carousel-stage{position:relative;overflow:visible;padding:30px 0 25px 0;width:100vw;}
   .carousel-rail{display:flex;align-items:center;gap:var(--gap);
-    transition:transform 0.45s var(--ease-ps5);will-change:transform;}
+    transition:transform 0.55s var(--ease-ps5);will-change:transform;}
   .card{position:relative;width:var(--card-w);height:var(--card-h);flex-shrink:0;border-radius:28px;
     cursor:pointer;background:#0e1420;border:2px solid rgba(255,255,255,0.08);
     box-shadow:0 14px 40px rgba(0,0,0,0.75);opacity:0.65;
@@ -84,11 +84,12 @@
     border:1px solid #00ff88;color:#00ff88;padding:4px 10px;border-radius:8px;
     font-size:11px;font-weight:900;z-index:5;}
   .meta-display{max-width:820px;display:flex;flex-direction:column;gap:16px;}
-  .tags-strip{display:flex;gap:10px;align-items:center;}
+  .tags-strip{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
   .tag{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);
     backdrop-filter:blur(14px);padding:6px 16px;border-radius:8px;
     font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;}
   .tag.hero{background:var(--accent-theme);color:#020409;border-color:#fff;box-shadow:0 0 20px var(--accent-theme);}
+  .tag.author{color:#00ff88;border-color:rgba(0,255,136,0.4);}
   .game-hero-title{font-size:60px;font-weight:900;line-height:1.05;letter-spacing:-1.2px;
     text-shadow:0 4px 30px rgba(0,0,0,0.9);}
   .game-hero-desc{font-size:16px;line-height:1.6;color:rgba(255,255,255,0.75);max-width:660px;}
@@ -249,8 +250,6 @@
   .record-row .rank.gold{color:#ffd700;text-shadow:0 0 12px #ffd700;}
   .record-row .rank.silver{color:#c0c0c0;}
   .record-row .rank.bronze{color:#cd7f32;}
-  .incident-row{display:flex;justify-content:space-between;gap:10px;padding:10px 14px;
-    background:rgba(255,51,68,0.08);border:1px solid rgba(255,51,68,0.3);border-radius:10px;font-size:13px;}
   .result-modal{position:fixed;inset:0;background:rgba(2,4,9,0.95);backdrop-filter:blur(25px);
     z-index:5500;display:none;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s;}
   .result-modal.open{display:flex;opacity:1;}
@@ -359,6 +358,7 @@
     <div class="tags-strip">
       <span class="tag hero" id="heroBadge">ЭКСКЛЮЗИВ</span>
       <span class="tag" id="heroGenre">АРКАДА</span>
+      <span class="tag author" id="heroAuthor">👤 —</span>
       <span class="tag" id="heroBest">🏆 —</span>
     </div>
     <h1 class="game-hero-title" id="heroTitle">Загрузка...</h1>
@@ -401,7 +401,7 @@
       <svg viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
     </div>
     <div class="login-title">ВХОД В СИБКОДБОКС</div>
-    <div class="login-sub">Отсканируйте QR-билет, чтобы начать сессию</div>
+    <div class="login-sub">Отсканируйте QR-билет — и сразу к играм</div>
     <div class="login-qr-box" id="loginQrBox">
       <div class="login-qr-placeholder" id="loginQrPlaceholder">
         <div class="qr-icon">🎫</div><div>Камера выключена</div>
@@ -413,29 +413,14 @@
     <button class="login-btn" id="btnLoginStartCamera">📷 Включить камеру и сканировать</button>
     <div class="login-status" id="loginStatus"></div>
     <div class="login-footer-info">
-      <span>🔒 Сессия: 5 / 10 мин</span><span>∞ Код создателя</span>
-    </div>
-  </div>
-</div>
-
-<div class="secret-modal-backdrop" id="nameModal" style="z-index:4500;">
-  <div class="pin-terminal" style="width:460px;">
-    <div style="font-size:36px;">👋</div>
-    <h3 style="color:#00ff88;font-size:20px;">ПРЕДСТАВЬТЕСЬ</h3>
-    <div id="nameTicketInfo" style="font-size:13px;color:#ccc;line-height:1.6;">Билет: —<br>Время: —</div>
-    <input type="text" id="playerNameInput" class="login-manual" maxlength="16"
-      placeholder="Ник (3-16 симв.)" autocomplete="off" style="border-color:rgba(0,255,136,0.4);">
-    <p style="font-size:11px;color:rgba(255,255,255,0.45);">Запрещены нецензурные выражения.</p>
-    <div style="display:flex;gap:10px;">
-      <button class="btn-cfg" style="flex:1;" id="btnNameCancel">Отмена</button>
-      <button class="btn-cfg" style="flex:1;background:#00ff88;color:#000;" id="btnNameSubmit">Начать сессию</button>
+      <span>🔒 Ник — только при рекорде</span><span>∞ Код создателя</span>
     </div>
   </div>
 </div>
 
 <div class="result-modal" id="resultModal">
   <div class="result-card">
-    <div class="result-title" id="resultTitle">ИГРА ОКОНЧЕНА</div>
+    <div class="result-title" id="resultTitle">НОВЫЙ РЕКОРД!</div>
     <div class="result-sub">Введите имя для таблицы лидеров</div>
     <div class="result-score-block">
       <div class="result-game" id="resultGameName">—</div>
@@ -504,9 +489,7 @@
     <div class="settings-layout">
       <div class="settings-sidebar">
         <button class="tab-btn active" data-tab="op-tab-games">🎮 Игры</button>
-        <button class="tab-btn" data-tab="op-tab-add">➕ Добавить</button>
         <button class="tab-btn" data-tab="op-tab-qr">🎫 QR</button>
-        <button class="tab-btn" data-tab="op-tab-incidents">🚨 Нарушения</button>
         <button class="tab-btn" data-tab="op-tab-leaderboard">🏆 Рекорды</button>
         <button class="tab-btn" data-tab="op-tab-media">🔊 Звук</button>
         <button class="tab-btn" data-tab="op-tab-maintenance">🔧 Техработы</button>
@@ -515,22 +498,6 @@
         <div class="tab-pane active" id="op-tab-games">
           <h3 style="color:#00f0ff;font-size:16px;">Установленные игры</h3>
           <div class="game-list-table" id="installedGamesList"></div>
-          <button class="btn-cfg danger" id="btnResetGamesDefault">⟲ Сбросить</button>
-        </div>
-        <div class="tab-pane" id="op-tab-add">
-          <h3 style="color:#00f0ff;font-size:16px;">Добавить по URL</h3>
-          <div class="add-game-form">
-            <div class="form-group"><label>Название *</label><input type="text" id="addGameTitle"></div>
-            <div class="form-group"><label>Жанр *</label><input type="text" id="addGameGenre"></div>
-            <div class="form-group full"><label>URL *</label><input type="url" id="addGameUrl"></div>
-            <div class="form-group"><label>Постер</label><input type="url" id="addGameCover"></div>
-            <div class="form-group"><label>Фон</label><input type="url" id="addGameBg"></div>
-            <div class="form-group"><label>Бейдж</label><input type="text" id="addGameBadge"></div>
-            <div class="form-group"><label>Цвет</label><input type="color" id="addGameAccent" value="#00f0ff"></div>
-            <div class="form-group full"><label>Описание</label><textarea id="addGameDesc"></textarea></div>
-            <div class="form-group full"><button class="btn-cfg" id="btnAddGameSubmit"
-              style="background:#00f0ff;color:#000;width:100%;">+ Добавить</button></div>
-          </div>
         </div>
         <div class="tab-pane" id="op-tab-qr">
           <h3 style="color:#00f0ff;font-size:16px;">QR-билеты</h3>
@@ -550,11 +517,6 @@
           <div id="qrGenerateResult" style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px;background:rgba(255,255,255,0.03);border-radius:14px;"></div>
           <div id="activeTicketsList" style="display:flex;flex-direction:column;gap:6px;max-height:180px;overflow-y:auto;"></div>
           <button class="btn-cfg danger" id="btnResetTickets">Удалить все</button>
-        </div>
-        <div class="tab-pane" id="op-tab-incidents">
-          <h3 style="color:#ff3344;font-size:16px;">🚨 Нарушения</h3>
-          <div id="incidentsList" style="display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto;"></div>
-          <button class="btn-cfg danger" id="btnClearIncidents">Очистить</button>
         </div>
         <div class="tab-pane" id="op-tab-leaderboard">
           <h3 style="color:#00f0ff;font-size:16px;">🏆 Рекорды</h3>
@@ -588,13 +550,13 @@
               </select>
             </div>
           </div>
-          <div class="setting-item"><div class="setting-info"><h4>Громкость BGM</h4><p></p></div><div class="setting-ctrl"><input type="range" id="opBgmVol" min="0" max="100" value="40"></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>Громкость SFX</h4><p></p></div><div class="setting-ctrl"><input type="range" id="opSfxVol" min="0" max="100" value="70"></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Громкость BGM</h4></div><div class="setting-ctrl"><input type="range" id="opBgmVol" min="0" max="100" value="40"></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Громкость SFX</h4></div><div class="setting-ctrl"><input type="range" id="opSfxVol" min="0" max="100" value="70"></div></div>
         </div>
         <div class="tab-pane" id="op-tab-maintenance">
           <h3 style="color:#ffaa00;font-size:16px;">🔧 Техработы</h3>
           <div class="setting-item">
-            <div class="setting-info"><h4>Статус</h4><p>Блокирует автоматы</p></div>
+            <div class="setting-info"><h4>Статус</h4></div>
             <div class="setting-ctrl">
               <select id="opMaintenanceMode">
                 <option value="off">🟢 Работает</option>
@@ -611,31 +573,8 @@
       </div>
     </div>
     <div class="settings-foot">
-      <span style="font-size:12px;color:#888;">СибКодБокс</span>
+      <span style="font-size:12px;color:#888;">СибКодБокс v10</span>
       <button class="btn-cfg" id="btnOpSaveClose" style="background:#00f0ff;color:#000;">Закрыть</button>
-    </div>
-  </div>
-</div>
-
-<div class="secret-modal-backdrop" id="gameEditModal" style="z-index:3000;">
-  <div class="pin-terminal" style="width:580px;text-align:left;">
-    <h3 style="color:#00f0ff;font-size:18px;">РЕДАКТОР ИГРЫ</h3>
-    <div style="display:flex;flex-direction:column;gap:10px;">
-      <input type="hidden" id="editGameIndex">
-      <div class="form-group"><label>Название</label><input type="text" id="editGameTitle"></div>
-      <div class="form-group"><label>Жанр</label><input type="text" id="editGameGenre"></div>
-      <div class="form-group"><label>URL</label><input type="text" id="editGameUrl"></div>
-      <div class="form-group"><label>Обложка</label><input type="text" id="editGameCover"></div>
-      <div class="form-group"><label>Фон</label><input type="text" id="editGameBg"></div>
-      <div style="display:flex;gap:12px;">
-        <div class="form-group" style="flex:1;"><label>Бейдж</label><input type="text" id="editGameBadge"></div>
-        <div class="form-group" style="width:70px;"><label>Цвет</label><input type="color" id="editGameAccent" style="height:38px;width:100%;"></div>
-      </div>
-      <div class="form-group"><label>Описание</label><textarea id="editGameDesc" style="height:50px;"></textarea></div>
-    </div>
-    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:10px;">
-      <button class="btn-cfg" id="btnCancelGameEdit">Отмена</button>
-      <button class="btn-cfg" id="btnSaveGameEdit" style="background:#00f0ff;color:#000;">Сохранить</button>
     </div>
   </div>
 </div>
@@ -658,33 +597,32 @@
       </div>
       <div class="settings-content">
         <div class="tab-pane active" id="os-tab-video">
-          <div class="setting-item"><div class="setting-info"><h4>Плотность частиц</h4><p>Графика</p></div><div class="setting-ctrl"><select id="cfgParticles"><option value="90">90</option><option value="180" selected>180</option><option value="300">300</option><option value="450">450</option><option value="700">700</option></select></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>Аврора</h4><p>Луч</p></div><div class="setting-ctrl"><select id="cfgAuroraToggle"><option value="on" selected>Вкл</option><option value="off">Выкл</option></select></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Плотность частиц</h4></div><div class="setting-ctrl"><select id="cfgParticles"><option value="90">90</option><option value="180" selected>180</option><option value="300">300</option><option value="450">450</option><option value="700">700</option></select></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Аврора</h4></div><div class="setting-ctrl"><select id="cfgAuroraToggle"><option value="on" selected>Вкл</option><option value="off">Выкл</option></select></div></div>
           <div class="setting-item"><div class="setting-info"><h4>Размытие</h4><p>blur px</p></div><div class="setting-ctrl"><input type="range" id="cfgBlurRange" min="0" max="60" value="24"></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>Свечение</h4><p>Glow</p></div><div class="setting-ctrl"><input type="range" id="cfgGlowIntensity" min="0" max="100" value="60"></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Свечение</h4></div><div class="setting-ctrl"><input type="range" id="cfgGlowIntensity" min="0" max="100" value="60"></div></div>
         </div>
         <div class="tab-pane" id="os-tab-dsp">
           <div class="setting-item"><div class="setting-info"><h4>Low-Pass Cutoff</h4><p>Гц</p></div><div class="setting-ctrl"><input type="range" id="cfgFilterCutoff" min="200" max="8000" value="2400"></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>Bass Boost</h4><p>50 = нейтрально</p></div><div class="setting-ctrl"><input type="range" id="cfgBassBoost" min="0" max="100" value="50"></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>Реверберация</h4><p></p></div><div class="setting-ctrl"><input type="range" id="cfgReverb" min="0" max="100" value="35"></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>Эхо</h4><p></p></div><div class="setting-ctrl"><input type="range" id="cfgEcho" min="0" max="100" value="0"></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Bass Boost</h4></div><div class="setting-ctrl"><input type="range" id="cfgBassBoost" min="0" max="100" value="50"></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Реверберация</h4></div><div class="setting-ctrl"><input type="range" id="cfgReverb" min="0" max="100" value="35"></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Эхо</h4></div><div class="setting-ctrl"><input type="range" id="cfgEcho" min="0" max="100" value="0"></div></div>
         </div>
         <div class="tab-pane" id="os-tab-music">
-          <div class="setting-item"><div class="setting-info"><h4>Стиль BGM</h4><p></p></div><div class="setting-ctrl"><select id="cfgBgmStyle"><option value="ambient" selected>Ambient</option><option value="synthwave">Synthwave</option><option value="lofi">Lo-Fi</option><option value="chiptune">Chiptune</option><option value="cinematic">Cinematic</option></select></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>Тема SFX</h4><p></p></div><div class="setting-ctrl"><select id="cfgSfxStyle"><option value="soft">Soft</option><option value="arcade" selected>Arcade</option><option value="heavy">Heavy</option></select></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>Колокольчики</h4><p></p></div><div class="setting-ctrl"><select id="cfgChimesToggle"><option value="on" selected>Вкл</option><option value="off">Выкл</option></select></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Стиль BGM</h4></div><div class="setting-ctrl"><select id="cfgBgmStyle"><option value="ambient" selected>Ambient</option><option value="synthwave">Synthwave</option><option value="lofi">Lo-Fi</option><option value="chiptune">Chiptune</option><option value="cinematic">Cinematic</option></select></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Тема SFX</h4></div><div class="setting-ctrl"><select id="cfgSfxStyle"><option value="soft">Soft</option><option value="arcade" selected>Arcade</option><option value="heavy">Heavy</option></select></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Колокольчики</h4></div><div class="setting-ctrl"><select id="cfgChimesToggle"><option value="on" selected>Вкл</option><option value="off">Выкл</option></select></div></div>
           <div class="setting-item"><div class="setting-info"><h4>Темп BGM</h4><p>сек</p></div><div class="setting-ctrl"><input type="range" id="cfgBgmTempo" min="2" max="15" value="5.5" step="0.5"></div></div>
         </div>
         <div class="tab-pane" id="os-tab-hardware">
-          <div class="setting-item"><div class="setting-info"><h4>Baudrate</h4><p>Serial</p></div><div class="setting-ctrl"><select id="cfgBaudrate"><option value="9600" selected>9600</option><option value="57600">57600</option><option value="115200">115200</option></select></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Baudrate</h4></div><div class="setting-ctrl"><select id="cfgBaudrate"><option value="9600" selected>9600</option><option value="57600">57600</option><option value="115200">115200</option></select></div></div>
           <div style="display:flex;justify-content:space-between;"><h4>Монитор</h4><button class="btn-cfg" id="btnClearSerialLog">Очистить</button></div>
           <div class="serial-log-box" id="serialLogBox">> Ожидание...</div>
         </div>
         <div class="tab-pane" id="os-tab-pins">
           <div class="setting-item"><div class="setting-info"><h4>PIN оператора</h4><p>1234</p></div><div class="setting-ctrl" style="display:flex;gap:8px;"><input type="text" id="cfgNewOperatorPin" maxlength="4" style="width:100px;text-align:center;"><button class="btn-cfg" id="btnSaveOperatorPin">ОК</button></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>PIN редактора</h4><p>9999</p></div><div class="setting-ctrl" style="display:flex;gap:8px;"><input type="text" id="cfgNewGameEditPin" maxlength="4" style="width:100px;text-align:center;"><button class="btn-cfg" id="btnSaveGameEditPin">ОК</button></div></div>
           <div class="setting-item"><div class="setting-info"><h4>Мастер-PIN</h4><p>7777</p></div><div class="setting-ctrl" style="display:flex;gap:8px;"><input type="text" id="cfgNewMasterPin" maxlength="4" style="width:100px;text-align:center;"><button class="btn-cfg" id="btnSaveMasterPin">ОК</button></div></div>
-          <div class="setting-item"><div class="setting-info"><h4>Код создателя</h4><p>Безлимит</p></div><div class="setting-ctrl" style="display:flex;gap:8px;"><input type="text" id="cfgNewCreatorCode" maxlength="32" style="width:180px;text-align:center;"><button class="btn-cfg" id="btnSaveCreatorCode">ОК</button></div></div>
+          <div class="setting-item"><div class="setting-info"><h4>Код создателя</h4></div><div class="setting-ctrl" style="display:flex;gap:8px;"><input type="text" id="cfgNewCreatorCode" maxlength="32" style="width:180px;text-align:center;"><button class="btn-cfg" id="btnSaveCreatorCode">ОК</button></div></div>
         </div>
         <div class="tab-pane" id="os-tab-backup">
           <div class="setting-item"><div class="setting-info"><h4>Экспорт</h4><p>JSON</p></div><div class="setting-ctrl"><button class="btn-cfg" id="btnExportConfig">📥 Скачать</button></div></div>
@@ -754,9 +692,7 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 }
 
-/* =====================================================================
-   FULLSCREEN
-   ===================================================================== */
+/* FULLSCREEN */
 let fsRequested = false;
 async function goFullscreenOnce() {
   if (fsRequested) return; fsRequested = true;
@@ -773,46 +709,32 @@ document.getElementById('btnFullscreen').onclick = () => {
   else document.exitFullscreen();
 };
 
-/* =====================================================================
-   CONFIG
-   ===================================================================== */
+/* CONFIG */
 const CONFIG = {
-  bgmStyle: 'ambient',
-  sfxStyle: 'arcade',
-  bgmTempo: 5.5,
-  filterCutoff: 2400,
-  bassBoost: 50,
-  reverb: 35,
-  echo: 0,
-  chimesEnabled: true,
-  glowIntensity: 60,
-  idleTimeout: 120,
-  hideCursor: true,
-  baudrate: 9600,
-  save() { try { localStorage.setItem('sib_config_v12', JSON.stringify(this)); } catch(e){} },
+  bgmStyle: 'ambient', sfxStyle: 'arcade', bgmTempo: 5.5,
+  filterCutoff: 2400, bassBoost: 50, reverb: 35, echo: 0,
+  chimesEnabled: true, glowIntensity: 60, idleTimeout: 120,
+  hideCursor: true, baudrate: 9600,
+  save() { try { localStorage.setItem('sib_config_v10', JSON.stringify(this)); } catch(e){} },
   load() {
     try {
-      const s = localStorage.getItem('sib_config_v12') || localStorage.getItem('sib_config_v11') || localStorage.getItem('sib_config_v9');
+      const s = localStorage.getItem('sib_config_v10') || localStorage.getItem('sib_config_v12');
       if (s) Object.assign(this, JSON.parse(s));
       if (this.filterCutoff < 800) this.filterCutoff = 2400;
-      if (this.bassBoost === 20) this.bassBoost = 50;
     } catch(e){}
   }
 };
 CONFIG.load();
 
 /* =====================================================================
-   AUDIO
+   AUDIO (сокращённо — логика сохранена)
    ===================================================================== */
 const SoundMaster = {
   ctx:null, isMuted:false, isBgmPlaying:false,
   masterGain:null, bgmGain:null, sfxGain:null,
-  filterNode:null, bassNode:null,
-  reverbNode:null, reverbGain:null,
+  filterNode:null, bassNode:null, reverbNode:null, reverbGain:null,
   echoDelay:null, echoGain:null,
   currentChordStep:0, chordTimer:null, melodyTimer:null,
-  currentBgmStyle:'ambient',
-
   init() {
     if (!this.ctx) {
       const AC = window.AudioContext || window.webkitAudioContext;
@@ -823,47 +745,30 @@ const SoundMaster = {
       this.bgmGain.connect(this.masterGain);
       this.sfxGain = this.ctx.createGain(); this.sfxGain.gain.value = 0.7;
       this.sfxGain.connect(this.masterGain);
-
       this.bassNode = this.ctx.createBiquadFilter();
-      this.bassNode.type = 'lowshelf';
-      this.bassNode.frequency.value = 200;
+      this.bassNode.type = 'lowshelf'; this.bassNode.frequency.value = 200;
       this.bassNode.gain.value = (CONFIG.bassBoost - 50) / 50 * 8;
       this.bassNode.connect(this.bgmGain);
-
       this.filterNode = this.ctx.createBiquadFilter();
-      this.filterNode.type = 'lowpass';
-      this.filterNode.frequency.value = CONFIG.filterCutoff;
-      this.filterNode.Q.value = 0.7;
-      this.filterNode.connect(this.bassNode);
-
+      this.filterNode.type = 'lowpass'; this.filterNode.frequency.value = CONFIG.filterCutoff;
+      this.filterNode.Q.value = 0.7; this.filterNode.connect(this.bassNode);
       this.reverbNode = this.ctx.createConvolver();
       this.reverbNode.buffer = this._makeReverbBuffer(2, 2.5);
       this.reverbGain = this.ctx.createGain();
       this.reverbGain.gain.value = CONFIG.reverb / 100 * 0.6;
-      this.reverbNode.connect(this.reverbGain);
-      this.reverbGain.connect(this.bgmGain);
-
-      this.echoDelay = this.ctx.createDelay(2);
-      this.echoDelay.delayTime.value = 0.32;
+      this.reverbNode.connect(this.reverbGain); this.reverbGain.connect(this.bgmGain);
+      this.echoDelay = this.ctx.createDelay(2); this.echoDelay.delayTime.value = 0.32;
       this.echoGain = this.ctx.createGain();
       this.echoGain.gain.value = CONFIG.echo / 100 * 0.4;
-      this.echoDelay.connect(this.echoGain);
-      this.echoGain.connect(this.echoDelay);
+      this.echoDelay.connect(this.echoGain); this.echoGain.connect(this.echoDelay);
       this.echoGain.connect(this.bgmGain);
     }
     const resume = this.ctx.resume();
-    if (resume && resume.then) {
-      resume.then(() => {
-        if (!this.isBgmPlaying && !this.isMuted) this.startBGM(CONFIG.bgmStyle);
-      }).catch(() => {});
-    } else if (!this.isBgmPlaying && !this.isMuted) {
-      this.startBGM(CONFIG.bgmStyle);
-    }
+    if (resume && resume.then) resume.then(() => { if (!this.isBgmPlaying && !this.isMuted) this.startBGM(CONFIG.bgmStyle); }).catch(()=>{});
+    else if (!this.isBgmPlaying && !this.isMuted) this.startBGM(CONFIG.bgmStyle);
   },
-
   _makeReverbBuffer(duration, decay) {
-    const rate = this.ctx.sampleRate;
-    const len = rate * duration;
+    const rate = this.ctx.sampleRate, len = rate * duration;
     const buf = this.ctx.createBuffer(2, len, rate);
     for (let ch = 0; ch < 2; ch++) {
       const d = buf.getChannelData(ch);
@@ -871,32 +776,26 @@ const SoundMaster = {
     }
     return buf;
   },
-
   setBgmVolume(v){ if(this.bgmGain) this.bgmGain.gain.setTargetAtTime(v,this.ctx.currentTime,0.05); },
   setSfxVolume(v){ if(this.sfxGain) this.sfxGain.gain.setTargetAtTime(v,this.ctx.currentTime,0.05); },
   setFilterCutoff(v){ if(this.filterNode) this.filterNode.frequency.setTargetAtTime(v,this.ctx.currentTime,0.05); },
   setBassBoost(v){ if(this.bassNode) this.bassNode.gain.setTargetAtTime((v-50)/50*8,this.ctx.currentTime,0.05); },
   setReverb(v){ if(this.reverbGain) this.reverbGain.gain.setTargetAtTime(v/100*0.6,this.ctx.currentTime,0.05); },
   setEcho(v){ if(this.echoGain) this.echoGain.gain.setTargetAtTime(v/100*0.4,this.ctx.currentTime,0.05); },
-
   toggleMute() {
     this.init(); this.isMuted = !this.isMuted;
     document.getElementById('btnAudioToggle').textContent = this.isMuted ? '🔇' : '🔊';
     this.masterGain.gain.setTargetAtTime(this.isMuted ? 0 : 1, this.ctx.currentTime, 0.05);
     if (!this.isMuted && !this.isBgmPlaying) this.startBGM(CONFIG.bgmStyle);
   },
-
   stopBGM() {
     if (this.chordTimer) { clearInterval(this.chordTimer); this.chordTimer = null; }
     if (this.melodyTimer) { clearInterval(this.melodyTimer); this.melodyTimer = null; }
     this.isBgmPlaying = false;
   },
-
   startBGM(style) {
     if (!this.ctx) return;
-    this.stopBGM();
-    this.currentBgmStyle = style;
-    this.isBgmPlaying = true;
+    this.stopBGM(); this.isBgmPlaying = true;
     const presets = {
       ambient:   { chords: [[82.41,164.81,196.00,246.94,293.66,370.00],[65.41,130.81,196.00,246.94,261.63,329.63],[98.00,146.83,196.00,246.94,293.66,392.00],[73.42,146.83,220.00,293.66,369.99,440.00]], scale:[392,440,493.88,587.33,659.25,783.99,880,987.77], type:'sine' },
       synthwave: { chords: [[110,220,277.18,329.63,440],[98,196,246.94,293.66,392],[123.47,246.94,311.13,369.99,493.88],[146.83,293.66,369.99,440,587.33]], scale:[440,523.25,587.33,659.25,783.99,880,1046.5], type:'sawtooth' },
@@ -905,21 +804,16 @@ const SoundMaster = {
       cinematic: { chords: [[55,110,146.83,164.81,220],[61.74,123.47,164.81,185,246.94],[49,98,130.81,146.83,196],[65.41,130.81,174.61,196,261.63]], scale:[220,261.63,329.63,392,440,523.25], type:'sine' }
     };
     const p = presets[style] || presets.ambient;
-
     const voices = [];
     for (let i = 0; i < 5; i++) {
       const o = this.ctx.createOscillator(), g = this.ctx.createGain();
-      o.type = p.type;
-      o.detune.value = (Math.random()-0.5)*12;
+      o.type = p.type; o.detune.value = (Math.random()-0.5)*12;
       g.gain.value = i === 0 ? 0.22 : 0.08;
-      o.connect(g);
-      g.connect(this.filterNode);
+      o.connect(g); g.connect(this.filterNode);
       if (this.reverbNode) g.connect(this.reverbNode);
       if (this.echoDelay) g.connect(this.echoDelay);
-      o.start();
-      voices.push({o,g});
+      o.start(); voices.push({o,g});
     }
-
     const nextChord = () => {
       if (!this.isBgmPlaying) return;
       const chord = p.chords[this.currentChordStep % p.chords.length];
@@ -928,27 +822,22 @@ const SoundMaster = {
       this.currentChordStep++;
     };
     nextChord();
-    const tempo = Math.max(1800, CONFIG.bgmTempo * 1000);
-    this.chordTimer = setInterval(nextChord, tempo);
-
+    this.chordTimer = setInterval(nextChord, Math.max(1800, CONFIG.bgmTempo * 1000));
     this.melodyTimer = setInterval(() => {
       if (!this.isBgmPlaying || this.isMuted || !CONFIG.chimesEnabled) return;
       if (Math.random() > 0.45) {
         const note = p.scale[Math.floor(Math.random()*p.scale.length)];
         const t = this.ctx.currentTime;
         const o = this.ctx.createOscillator(), g = this.ctx.createGain();
-        o.type = p.type;
-        o.frequency.value = note;
+        o.type = p.type; o.frequency.value = note;
         g.gain.setValueAtTime(0.06, t);
         g.gain.exponentialRampToValueAtTime(0.0001, t + 1.6);
-        o.connect(g);
-        g.connect(this.bgmGain);
+        o.connect(g); g.connect(this.bgmGain);
         if (this.reverbNode) g.connect(this.reverbNode);
         o.start(t); o.stop(t + 1.6);
       }
     }, 750);
   },
-
   pauseBGM(){ if(this.bgmGain) this.bgmGain.gain.setTargetAtTime(0,this.ctx.currentTime,0.35); },
   resumeBGM(){
     if (!this.bgmGain || this.isMuted) return;
@@ -956,7 +845,6 @@ const SoundMaster = {
     const target = el ? (parseFloat(el.value) || 40)/100 : 0.4;
     this.bgmGain.gain.setTargetAtTime(target,this.ctx.currentTime,0.8);
   },
-
   _sfxParams(kind) {
     const themes = {
       soft:   { hover:{f1:700,f2:400,g:0.03,t:'sine'}, focus:{f1:280,f2:120,g:0.15,t:'sine'}, click:{f1:400,f2:700,g:0.1,t:'sine'} },
@@ -965,13 +853,23 @@ const SoundMaster = {
     };
     return themes[CONFIG.sfxStyle]?.[kind] || themes.arcade[kind];
   },
-  hover(){ if(this.isMuted) return; this.init(); const p=this._sfxParams('hover'); const t=this.ctx.currentTime; const o=this.ctx.createOscillator(),g=this.ctx.createGain(); o.type=p.t; o.frequency.setValueAtTime(p.f1,t); o.frequency.exponentialRampToValueAtTime(p.f2,t+0.04); g.gain.setValueAtTime(p.g,t); g.gain.exponentialRampToValueAtTime(0.0001,t+0.04); o.connect(g); g.connect(this.sfxGain); o.start(t); o.stop(t+0.04); },
-  focus(){ if(this.isMuted) return; this.init(); const p=this._sfxParams('focus'); const t=this.ctx.currentTime; const o=this.ctx.createOscillator(),g=this.ctx.createGain(); o.type=p.t; o.frequency.setValueAtTime(p.f1,t); o.frequency.exponentialRampToValueAtTime(p.f2,t+0.09); g.gain.setValueAtTime(p.g,t); g.gain.exponentialRampToValueAtTime(0.0001,t+0.09); o.connect(g); g.connect(this.sfxGain); o.start(t); o.stop(t+0.09); },
-  click(){ if(this.isMuted) return; this.init(); const p=this._sfxParams('click'); const t=this.ctx.currentTime; const o=this.ctx.createOscillator(),g=this.ctx.createGain(); o.type=p.t; o.frequency.setValueAtTime(p.f1,t); o.frequency.exponentialRampToValueAtTime(p.f2,t+0.1); g.gain.setValueAtTime(p.g,t); g.gain.exponentialRampToValueAtTime(0.0001,t+0.1); o.connect(g); g.connect(this.sfxGain); o.start(t); o.stop(t+0.1); },
-  launch(){ if(this.isMuted) return; this.init(); const t=this.ctx.currentTime; const s=this.ctx.createOscillator(),sg=this.ctx.createGain(); s.type='sine'; s.frequency.setValueAtTime(90,t); s.frequency.exponentialRampToValueAtTime(25,t+0.8); sg.gain.setValueAtTime(0.4,t); sg.gain.exponentialRampToValueAtTime(0.0001,t+0.8); s.connect(sg); sg.connect(this.sfxGain); s.start(t); s.stop(t+0.8); const b=this.ctx.createOscillator(),bg=this.ctx.createGain(); b.type='triangle'; b.frequency.setValueAtTime(523.25,t); b.frequency.exponentialRampToValueAtTime(1046.5,t+0.45); bg.gain.setValueAtTime(0.2,t); bg.gain.exponentialRampToValueAtTime(0.0001,t+0.5); b.connect(bg); bg.connect(this.sfxGain); b.start(t); b.stop(t+0.5); },
-  back(){ if(this.isMuted) return; this.init(); const t=this.ctx.currentTime; const o=this.ctx.createOscillator(),g=this.ctx.createGain(); o.type='sine'; o.frequency.setValueAtTime(320,t); o.frequency.exponentialRampToValueAtTime(130,t+0.14); g.gain.setValueAtTime(0.16,t); g.gain.exponentialRampToValueAtTime(0.0001,t+0.14); o.connect(g); g.connect(this.sfxGain); o.start(t); o.stop(t+0.14); },
-  secretUnlock(){ this.init(); [523.25,659.25,783.99,1046.5].forEach((f,i)=>{ setTimeout(()=>{ const t=this.ctx.currentTime; const o=this.ctx.createOscillator(),g=this.ctx.createGain(); o.type='triangle'; o.frequency.value=f; g.gain.setValueAtTime(0.2,t); g.gain.exponentialRampToValueAtTime(0.0001,t+0.25); o.connect(g); g.connect(this.masterGain); o.start(t); o.stop(t+0.25); }, i*80); }); },
-  error(){ if(this.isMuted) return; this.init(); const t=this.ctx.currentTime; const o=this.ctx.createOscillator(),g=this.ctx.createGain(); o.type='sawtooth'; o.frequency.setValueAtTime(220,t); o.frequency.exponentialRampToValueAtTime(110,t+0.3); g.gain.setValueAtTime(0.25,t); g.gain.exponentialRampToValueAtTime(0.0001,t+0.3); o.connect(g); g.connect(this.sfxGain); o.start(t); o.stop(t+0.3); }
+  _beep(f1,f2,g,tT,dur){ if(this.isMuted) return; this.init(); const t=this.ctx.currentTime; const o=this.ctx.createOscillator(),gg=this.ctx.createGain(); o.type=tT; o.frequency.setValueAtTime(f1,t); o.frequency.exponentialRampToValueAtTime(f2,t+dur); gg.gain.setValueAtTime(g,t); gg.gain.exponentialRampToValueAtTime(0.0001,t+dur); o.connect(gg); gg.connect(this.sfxGain); o.start(t); o.stop(t+dur); },
+  hover(){ const p=this._sfxParams('hover'); this._beep(p.f1,p.f2,p.g,p.t,0.04); },
+  focus(){ const p=this._sfxParams('focus'); this._beep(p.f1,p.f2,p.g,p.t,0.09); },
+  click(){ const p=this._sfxParams('click'); this._beep(p.f1,p.f2,p.g,p.t,0.10); },
+  back(){ this._beep(320,130,0.16,'sine',0.14); },
+  error(){ this._beep(220,110,0.25,'sawtooth',0.30); },
+  launch(){ if(this.isMuted) return; this.init(); const t=this.ctx.currentTime;
+    const s=this.ctx.createOscillator(),sg=this.ctx.createGain(); s.type='sine';
+    s.frequency.setValueAtTime(90,t); s.frequency.exponentialRampToValueAtTime(25,t+0.8);
+    sg.gain.setValueAtTime(0.4,t); sg.gain.exponentialRampToValueAtTime(0.0001,t+0.8);
+    s.connect(sg); sg.connect(this.sfxGain); s.start(t); s.stop(t+0.8);
+    const b=this.ctx.createOscillator(),bg=this.ctx.createGain(); b.type='triangle';
+    b.frequency.setValueAtTime(523.25,t); b.frequency.exponentialRampToValueAtTime(1046.5,t+0.45);
+    bg.gain.setValueAtTime(0.2,t); bg.gain.exponentialRampToValueAtTime(0.0001,t+0.5);
+    b.connect(bg); bg.connect(this.sfxGain); b.start(t); b.stop(t+0.5);
+  },
+  secretUnlock(){ this.init(); [523.25,659.25,783.99,1046.5].forEach((f,i)=>{ setTimeout(()=>{ const t=this.ctx.currentTime; const o=this.ctx.createOscillator(),g=this.ctx.createGain(); o.type='triangle'; o.frequency.value=f; g.gain.setValueAtTime(0.2,t); g.gain.exponentialRampToValueAtTime(0.0001,t+0.25); o.connect(g); g.connect(this.masterGain); o.start(t); o.stop(t+0.25); }, i*80); }); }
 };
 window.addEventListener('pointerdown', () => SoundMaster.init(), { once:true });
 window.addEventListener('keydown', () => SoundMaster.init(), { once:true });
@@ -1010,8 +908,7 @@ class CosmicParticle {
     ctx.save();
     if (this.type==='orb'){
       const grad = ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.size*2.8);
-      grad.addColorStop(0,particleGlowColor);
-      grad.addColorStop(1,'transparent');
+      grad.addColorStop(0,particleGlowColor); grad.addColorStop(1,'transparent');
       ctx.globalAlpha = this.alpha*0.65*(CONFIG.glowIntensity/100+0.4);
       ctx.fillStyle = grad;
       ctx.beginPath(); ctx.arc(this.x,this.y,this.size*2.8,0,Math.PI*2); ctx.fill();
@@ -1035,15 +932,17 @@ function renderAmbientLoop(){
 renderAmbientLoop();
 
 /* =====================================================================
-   ВСТРОЕННЫЕ ИГРЫ
+   ВСТРОЕННЫЕ ИГРЫ (короткие заглушки, реальные игры грузятся из манифеста)
    ===================================================================== */
 const GAME_CYBER_MATH_HTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;user-select:none;}body{background:radial-gradient(circle at center,#0c1836 0%,#030611 100%);color:#fff;height:100vh;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;}#hud{position:absolute;top:25px;width:85%;display:flex;justify-content:space-between;font-size:22px;font-weight:900;}.val{color:#00ff88;text-shadow:0 0 15px #00ff88;}.timer-track{width:500px;height:12px;background:rgba(255,255,255,0.1);border-radius:8px;overflow:hidden;margin-top:25px;}#timerBar{width:100%;height:100%;background:#00ff88;}#equation{font-size:88px;font-weight:900;letter-spacing:5px;margin:18px 0;text-shadow:0 0 35px #00f0ff;}.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;width:520px;}.opt-btn{background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.2);border-radius:20px;padding:22px;font-size:34px;font-weight:900;color:#fff;cursor:pointer;}.opt-btn.correct{background:#00ff88!important;color:#000;}.opt-btn.wrong{background:#ff3344!important;}#gameOverModal{position:fixed;inset:0;background:rgba(3,6,17,0.95);display:none;flex-direction:column;align-items:center;justify-content:center;}.go-title{font-size:52px;font-weight:900;color:#ff3344;}.btn-restart{background:#00f0ff;color:#000;border:none;padding:16px 48px;border-radius:35px;font-size:20px;font-weight:900;cursor:pointer;}</style></head><body><div id="hud"><div>ЯДРА: <span id="livesVal" style="color:#ff3344;">♥♥♥</span></div><div>СЧЁТ: <span id="score" class="val">0</span></div></div><div class="timer-track"><div id="timerBar"></div></div><div id="equation">-- + --</div><div class="options-grid" id="opts"></div><div id="gameOverModal"><div class="go-title">ИГРА ОКОНЧЕНА</div><div style="font-size:24px;">ИТОГ: <span id="finalScore" style="color:#00ff88;">0</span></div><button class="btn-restart" id="btnRestart">ПЕРЕЗАПУСК</button></div><script>function sendScore(g,n,s){try{window.parent.postMessage({type:'SCORE',gameId:g,game:n,score:+s||0},'*')}catch(e){}}let score=0,lives=3,ans=0,timeLeft=100,isOver=false;const eqEl=document.getElementById('equation'),optsEl=document.getElementById('opts'),scoreEl=document.getElementById('score'),livesEl=document.getElementById('livesVal'),timerBar=document.getElementById('timerBar');function updateLives(){livesEl.textContent='♥'.repeat(Math.max(0,lives))||'0';}function damage(){if(isOver)return;lives--;updateLives();if(lives<=0)end();else setTimeout(gen,240);}function end(){isOver=true;document.getElementById('finalScore').textContent=score;document.getElementById('gameOverModal').style.display='flex';sendScore('cyber-math','Реакция',score);}function restart(){score=0;lives=3;isOver=false;scoreEl.textContent='0';updateLives();document.getElementById('gameOverModal').style.display='none';sendScore('cyber-math','Реакция',0);gen();}document.getElementById('btnRestart').onclick=restart;function gen(){if(isOver)return;const op=['+','-','×'][Math.floor(Math.random()*3)];let a,b;if(op==='+'){a=Math.floor(Math.random()*45)+5;b=Math.floor(Math.random()*45)+5;ans=a+b;}else if(op==='-'){a=Math.floor(Math.random()*50)+15;b=Math.floor(Math.random()*a);ans=a-b;}else{a=Math.floor(Math.random()*11)+2;b=Math.floor(Math.random()*11)+2;ans=a*b;}eqEl.textContent=a+' '+op+' '+b;let arr=[ans];while(arr.length<4){let f=ans+Math.floor(Math.random()*19)-9;if(f!==ans&&f>=0&&!arr.includes(f))arr.push(f);}arr.sort(()=>Math.random()-0.5);optsEl.innerHTML='';arr.forEach((v,i)=>{const b2=document.createElement('button');b2.className='opt-btn';b2.textContent=v;b2.onclick=()=>choose(v,b2);optsEl.appendChild(b2);});timeLeft=100;}function choose(v,b){if(isOver)return;if(v===ans){b.classList.add('correct');score+=100;scoreEl.textContent=score;sendScore('cyber-math','Реакция',score);setTimeout(gen,180);}else{b.classList.add('wrong');damage();}}window.onkeydown=e=>{if(isOver){if(e.key==='Enter')restart();return;}const b=optsEl.querySelectorAll('.opt-btn');if(e.key>='1'&&e.key<='4'){b[+e.key-1]?.click();}};setInterval(()=>{if(isOver)return;timeLeft-=1.6;if(timeLeft<=0)damage();timerBar.style.width=Math.max(0,timeLeft)+'%';},100);updateLives();gen();<\/script></body></html>`;
 
-const GAME_NEON_STORM_HTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#030611;overflow:hidden;font-family:sans-serif;color:#fff;}canvas{display:block;}#hud{position:absolute;top:20px;left:25px;text-shadow:0 0 10px #00f0ff;}.score{font-size:28px;font-weight:900;}.sub{font-size:14px;color:#00f0ff;}#go{position:fixed;inset:0;background:rgba(3,6,17,0.95);display:none;flex-direction:column;align-items:center;justify-content:center;}.go-title{font-size:52px;font-weight:900;color:#ff3344;}.btn-restart{background:#00f0ff;color:#000;border:none;padding:16px 48px;border-radius:35px;font-size:20px;font-weight:900;cursor:pointer;margin-top:20px;}</style></head><body><div id="hud"><div class="score">СЧЁТ: <span id="scoreVal">0</span></div><div class="sub">ЩИТЫ: <span id="shieldsVal">♥♥♥</span></div></div><canvas id="c"></canvas><div id="go"><div class="go-title">КОРАБЛЬ УНИЧТОЖЕН</div><div style="font-size:24px;">ИТОГ: <span id="finalScore" style="color:#00ff88;">0</span></div><button class="btn-restart" id="btnRestart">ПЕРЕЗАПУСК</button></div><script>function sendScore(g,n,s){try{window.parent.postMessage({type:'SCORE',gameId:g,game:n,score:+s||0},'*')}catch(e){}}const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');function resize(){canvas.width=innerWidth;canvas.height=innerHeight;}addEventListener('resize',resize);resize();let score=0,shields=3,isOver=false,inv=0;let player={x:canvas.width/2,y:canvas.height-90};let bullets=[],ebullets=[],enemies=[],keys={};window.onkeydown=e=>{if(isOver){if(e.key==='Enter')restart();return;}keys[e.key]=true;if(e.key===' '||e.key==='ArrowUp')shoot();};window.onkeyup=e=>keys[e.key]=false;window.onmousemove=e=>{if(!isOver)player.x=e.clientX;};window.onmousedown=()=>!isOver&&shoot();function shoot(){if(isOver)return;bullets.push({x:player.x-8,y:player.y-20,vy:-15});bullets.push({x:player.x+8,y:player.y-20,vy:-15});}function hit(){if(inv>0||isOver)return;shields--;document.getElementById('shieldsVal').textContent='♥'.repeat(Math.max(0,shields))||'0';inv=60;if(shields<=0)end();}function end(){isOver=true;document.getElementById('finalScore').textContent=score;document.getElementById('go').style.display='flex';sendScore('sib-storm','Неоновый Шторм',score);}function restart(){score=0;shields=3;isOver=false;inv=0;bullets=[];ebullets=[];enemies=[];document.getElementById('scoreVal').textContent='0';document.getElementById('shieldsVal').textContent='♥♥♥';document.getElementById('go').style.display='none';sendScore('sib-storm','Неоновый Шторм',0);}document.getElementById('btnRestart').onclick=restart;function loop(){ctx.fillStyle='rgba(3,6,17,0.35)';ctx.fillRect(0,0,canvas.width,canvas.height);if(!isOver){if(keys['ArrowLeft']||keys['a'])player.x-=9;if(keys['ArrowRight']||keys['d'])player.x+=9;player.x=Math.max(35,Math.min(canvas.width-35,player.x));if(inv>0)inv--;ctx.fillStyle='#fff';ctx.beginPath();ctx.moveTo(player.x,player.y-25);ctx.lineTo(player.x-22,player.y+20);ctx.lineTo(player.x,player.y+12);ctx.lineTo(player.x+22,player.y+20);ctx.closePath();ctx.fill();}ctx.fillStyle='#00f0ff';for(let i=bullets.length-1;i>=0;i--){let b=bullets[i];b.y+=b.vy;ctx.fillRect(b.x-3,b.y,6,18);if(b.y<-30)bullets.splice(i,1);}if(!isOver&&Math.random()<0.045){const t=['scout','fighter','heavy'][Math.floor(Math.random()*3)];enemies.push({x:Math.random()*(canvas.width-80)+40,y:-40,type:t,hp:t==='heavy'?4:t==='fighter'?2:1,vy:t==='scout'?4.5:t==='fighter'?2.6:1.5,size:t==='heavy'?44:t==='fighter'?30:22,color:t==='heavy'?'#ff0055':t==='fighter'?'#ffaa00':'#00f0ff'});}for(let i=enemies.length-1;i>=0;i--){let en=enemies[i];en.y+=en.vy;ctx.fillStyle=en.color;if(en.type==='heavy')ctx.fillRect(en.x-en.size/2,en.y-en.size/2,en.size,en.size);else{ctx.beginPath();ctx.arc(en.x,en.y,en.size/2,0,Math.PI*2);ctx.fill();}if(!isOver&&Math.hypot(player.x-en.x,player.y-en.y)<en.size/2+18){enemies.splice(i,1);hit();continue;}for(let j=bullets.length-1;j>=0;j--){let b=bullets[j];if(Math.hypot(b.x-en.x,b.y-en.y)<en.size/2+8){en.hp--;bullets.splice(j,1);if(en.hp<=0){score+=en.type==='heavy'?300:100;document.getElementById('scoreVal').textContent=score;sendScore('sib-storm','Неоновый Шторм',score);enemies.splice(i,1);break;}}}if(en.y>canvas.height+50)enemies.splice(i,1);}requestAnimationFrame(loop);}loop();<\/script></body></html>`;
-
-const GAME_CYBER_PONG_HTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#060914;overflow:hidden;font-family:sans-serif;color:#fff;}canvas{display:block;}#hud{position:absolute;top:25px;width:100%;display:flex;justify-content:space-around;font-size:26px;font-weight:900;}#go{position:fixed;inset:0;background:rgba(3,6,17,0.95);display:none;flex-direction:column;align-items:center;justify-content:center;}.go-title{font-size:52px;font-weight:900;color:#00ff88;}.btn-restart{background:#00f0ff;color:#000;border:none;padding:16px 48px;border-radius:35px;font-size:20px;font-weight:900;cursor:pointer;margin-top:20px;}</style></head><body><div id="hud"><div style="color:#00f0ff;">ИГРОК: <span id="p1Lives">♥♥♥</span></div><div style="color:#ff007f;">ИИ: <span id="p2Lives">♥♥♥</span></div></div><canvas id="c"></canvas><div id="go"><div class="go-title" id="resTitle">ПОБЕДА!</div><button class="btn-restart" id="btnRestart">РЕВАНШ</button></div><script>function sendScore(g,n,s){try{window.parent.postMessage({type:'SCORE',gameId:g,game:n,score:+s||0},'*')}catch(e){}}const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');function resize(){canvas.width=innerWidth;canvas.height=innerHeight;}addEventListener('resize',resize);resize();let p1Lives=3,p2Lives=3,isOver=false;let p1={y:canvas.height/2-60,h:120,w:18},p2={y:canvas.height/2-60,h:120,w:18},ball={x:canvas.width/2,y:canvas.height/2,vx:10,vy:5,r:10};function update(){document.getElementById('p1Lives').textContent='♥'.repeat(Math.max(0,p1Lives))||'0';document.getElementById('p2Lives').textContent='♥'.repeat(Math.max(0,p2Lives))||'0';}window.onkeydown=e=>{if(isOver){if(e.key==='Enter')restart();}};window.onmousemove=e=>{if(!isOver)p1.y=e.clientY-p1.h/2;};function reset(){ball.x=canvas.width/2;ball.y=canvas.height/2;ball.vx=(Math.random()>0.5?1:-1)*10;ball.vy=(Math.random()-0.5)*8;}function end(w){isOver=true;document.getElementById('resTitle').textContent=w?'ПОБЕДА!':'ПОРАЖЕНИЕ';document.getElementById('go').style.display='flex';sendScore('cyber-pong','Кибер-Понг',w?500:0);}function restart(){p1Lives=3;p2Lives=3;isOver=false;update();reset();document.getElementById('go').style.display='none';sendScore('cyber-pong','Кибер-Понг',0);}document.getElementById('btnRestart').onclick=restart;function loop(){ctx.fillStyle='rgba(6,9,20,0.35)';ctx.fillRect(0,0,canvas.width,canvas.height);if(!isOver){p2.y+=(ball.y-(p2.y+p2.h/2))*0.09;ball.x+=ball.vx;ball.y+=ball.vy;if(ball.y<10||ball.y>canvas.height-10)ball.vy=-ball.vy;if(ball.x<40+p1.w&&ball.y>p1.y&&ball.y<p1.y+p1.h)ball.vx=Math.abs(ball.vx)*1.05;if(ball.x>canvas.width-40-p2.w&&ball.y>p2.y&&ball.y<p2.y+p2.h)ball.vx=-Math.abs(ball.vx)*1.05;if(ball.x<0){p1Lives--;update();if(p1Lives<=0)end(false);else reset();}if(ball.x>canvas.width){p2Lives--;update();if(p2Lives<=0)end(true);else reset();}}ctx.fillStyle='#00f0ff';ctx.fillRect(40,p1.y,p1.w,p1.h);ctx.fillStyle='#ff007f';ctx.fillRect(canvas.width-40-p2.w,p2.y,p2.w,p2.h);ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);ctx.fill();requestAnimationFrame(loop);}update();loop();<\/script></body></html>`;
-
-const GAME_SKYLINE_HTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#050814;overflow:hidden;font-family:sans-serif;color:#fff;text-align:center;}canvas{display:block;margin:0 auto;}#hud{position:absolute;top:20px;left:50%;transform:translateX(-50%);font-size:24px;font-weight:900;}#go{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:none;flex-direction:column;align-items:center;justify-content:center;}.btn-re{background:#ff007f;color:#fff;border:none;padding:14px 40px;border-radius:30px;font-weight:bold;cursor:pointer;margin-top:15px;}</style></head><body><div id="hud">ЭТАЖЕЙ: <span id="score" style="color:#00f0ff;">0</span></div><canvas id="c"></canvas><div id="go"><div style="font-size:40px;font-weight:bold;color:#ff3344;">БАШНЯ УПАЛА</div><button class="btn-re" id="btnRe">ЗАНОВО</button></div><script>function sendScore(g,n,s){try{window.parent.postMessage({type:'SCORE',gameId:g,game:n,score:+s||0},'*')}catch(e){}}const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');canvas.width=400;canvas.height=innerHeight;let score=0,speed=3,state='play';let stack=[{x:100,y:canvas.height-40,w:200,h:30,color:'#00f0ff'}];let cur={x:0,y:canvas.height-80,w:200,h:30,vx:speed,color:'#ff007f'};window.onclick=place;window.onkeydown=e=>{if(e.key===' '||e.key==='Enter')place();};function place(){if(state!=='play')return;let top=stack[stack.length-1];let diff=cur.x-top.x;if(Math.abs(diff)>=cur.w){state='over';sendScore('skyline-blocks','Skyline',score);document.getElementById('go').style.display='flex';return;}let newW=cur.w-Math.abs(diff);let newX=diff>0?cur.x:top.x;stack.push({x:newX,y:cur.y,w:newW,h:30,color:cur.color});score++;document.getElementById('score').textContent=score;sendScore('skyline-blocks','Skyline',score);if(stack.length>8){stack.forEach(b=>b.y+=35);cur.y+=35;}cur={x:0,y:cur.y-35,w:newW,h:30,vx:(speed+score*0.15)*(Math.random()>0.5?1:-1),color:score%2===0?'#ff007f':'#00f0ff'};}function loop(){ctx.fillStyle='#050814';ctx.fillRect(0,0,canvas.width,canvas.height);stack.forEach(b=>{ctx.fillStyle=b.color;ctx.fillRect(b.x,b.y,b.w,b.h);});if(state==='play'){cur.x+=cur.vx;if(cur.x<0||cur.x+cur.w>canvas.width)cur.vx*=-1;ctx.fillStyle=cur.color;ctx.fillRect(cur.x,cur.y,cur.w,cur.h);}requestAnimationFrame(loop);}document.getElementById('btnRe').onclick=()=>{stack=[{x:100,y:canvas.height-40,w:200,h:30,color:'#00f0ff'}];cur={x:0,y:canvas.height-75,w:200,h:30,vx:speed,color:'#ff007f'};score=0;state='play';document.getElementById('score').textContent='0';document.getElementById('go').style.display='none';sendScore('skyline-blocks','Skyline',0);};loop();<\/script></body></html>`;
+const DEFAULT_GAMES_LIST = [
+  { id:'cyber-math', title:'Реакция', author:'СибКодБокс', genre:'Математика | Реакция', badge:'МАТЕМАТИКА',
+    desc:'Футуристический математический тренажёр.',
+    isCustomIcon:true, iconType:'math',
+    bg:'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1600&auto=format&fit=crop&q=80',
+    accent:'#00ff88', srcdoc:GAME_CYBER_MATH_HTML }
+];
 
 /* =====================================================================
    SUPABASE
@@ -1053,11 +952,8 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 let sb = null;
 try { if (window.supabase) sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch(e){}
 
-/* =====================================================================
-   КОДИРОВКА — fixMojibake
-   ===================================================================== */
+/* fixMojibake */
 const CP1251_TABLE = 'ЂЃ‚ѓ„…†‡€‰Љ‹ЊЌЋЏђ‘’“”•–—™љ›њќћџЎўЈ¤Ґ¦§Ё©Є«¬®Ї°±Ііґµ¶·ё№є»јЅѕїАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя';
-
 function fixMojibake(text) {
   const markers = (text.match(/Р[А-яІ-ӿ]/g) || []).length + (text.match(/С[А-яІ-ӿ]/g) || []).length + (text.match(/вЂ|в„/g) || []).length;
   const cyr = (text.match(/[А-Яа-яЁё]/g) || []).length;
@@ -1075,7 +971,6 @@ function fixMojibake(text) {
   } catch(e) {}
   return text;
 }
-
 async function fetchGameHtml(url) {
   const res = await fetch(url, { mode: 'cors', cache: 'no-cache' });
   if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -1083,9 +978,7 @@ async function fetchGameHtml(url) {
   const bytes = new Uint8Array(buf);
   let text = new TextDecoder('utf-8', { fatal: false }).decode(bytes);
   const replacements = (text.match(/\uFFFD/g) || []).length;
-  if (replacements > 5) {
-    try { text = new TextDecoder('windows-1251').decode(bytes); } catch(e){}
-  }
+  if (replacements > 5) { try { text = new TextDecoder('windows-1251').decode(bytes); } catch(e){} }
   return fixMojibake(text);
 }
 
@@ -1093,36 +986,37 @@ async function fetchGameHtml(url) {
    SIB STATE
    ===================================================================== */
 const SIB = {
-  LS: { tickets:'sib_tickets_v1', incidents:'sib_incidents_v1', records:'sib_records_v2', creatorCode:'sib_creator_code_v1' },
-  badWords: ['хуй','пизд','бляд','еба','заеб','наеб','сука','муда','пидор','гандон','шлюх','охуе','нахуй','похуй','дроч','говн','жоп','анус','член','пизда','ебало','залупа','секс','порн','fuck','shit','bitch','cunt','dick','pussy','nigger','faggot','porn'],
-  records:{}, incidents:[], tickets:[],
+  LS: { tickets:'sib_tickets_v1', records:'sib_records_v3', creatorCode:'sib_creator_code_v1' },
+  records:{}, tickets:[],
   activeSession:null, sessionTimer:null, sessionSecondsLeft:0,
   creatorCode:'CREATOR-0000', cloudOnline:false,
-
-  normalize(s){ return (s||'').toLowerCase().replace(/[^a-zа-яё0-9]/gi,'').replace(/ё/g,'е').replace(/й/g,'и'); },
-  isProfane(s){ const n=this.normalize(s); if(!n) return false; for(const w of this.badWords){ const wn=this.normalize(w); if(wn&&n.includes(wn)) return true; } return false; },
 
   async load(){
     this._loadLocal();
     if(!sb){ this.cloudOnline=false; this._updateCloudBadge(); return; }
     try {
-      const [tRes, rRes, iRes, cRes] = await Promise.all([
+      const [tRes, rRes, cRes] = await Promise.all([
         sb.from('tickets').select('*').order('created_at',{ascending:false}).limit(500),
         sb.from('records').select('*').order('score',{ascending:false}).limit(2000),
-        sb.from('incidents').select('*').order('created_at',{ascending:false}).limit(200),
         sb.from('config').select('*')
       ]);
       if(tRes.error) throw tRes.error;
       if(rRes.error) throw rRes.error;
-      if(iRes.error) throw iRes.error;
-      this.tickets = (tRes.data || []).map(x => ({ id:x.id, minutes:x.minutes, type:x.type, durationSeconds:x.duration_seconds, createdAt:new Date(x.created_at).getTime(), used:x.used, banned:x.banned }));
+      this.tickets = (tRes.data || []).map(x => ({
+        id:x.id, minutes:x.minutes, type:x.type,
+        durationSeconds:x.duration_seconds,
+        createdAt:new Date(x.created_at).getTime(),
+        used:x.used, banned:x.banned,
+        ownerName: x.owner_name || '',
+        ownerClass: x.owner_class || '',
+        role: x.role || 'student'
+      }));
       this.records = {};
       (rRes.data || []).forEach(rec => {
         if(!this.records[rec.game_id]) this.records[rec.game_id] = [];
         this.records[rec.game_id].push({ name: rec.player_name, score: rec.score, time: new Date(rec.created_at).getTime() });
       });
       Object.keys(this.records).forEach(gid => { this.records[gid].sort((a,b) => b.score - a.score); });
-      this.incidents = (iRes.data || []).map(x => ({ time:new Date(x.created_at).getTime(), name:x.name, ticketId:x.ticket_id, photo:x.photo, reason:x.reason }));
       if(cRes.data){ const cfg = {}; cRes.data.forEach(x => cfg[x.key] = x.value); if(cfg.creator_code) this.creatorCode = cfg.creator_code; }
       this._saveLocal();
       this.cloudOnline = true;
@@ -1132,7 +1026,6 @@ const SIB = {
   _loadLocal(){
     try{
       this.records=JSON.parse(localStorage.getItem(this.LS.records)||'{}');
-      this.incidents=JSON.parse(localStorage.getItem(this.LS.incidents)||'[]');
       this.tickets=JSON.parse(localStorage.getItem(this.LS.tickets)||'[]');
       this.creatorCode=localStorage.getItem(this.LS.creatorCode)||'CREATOR-0000';
       if(Array.isArray(this.records)) this.records = {};
@@ -1141,7 +1034,6 @@ const SIB = {
   _saveLocal(){
     try{
       localStorage.setItem(this.LS.records,JSON.stringify(this.records));
-      localStorage.setItem(this.LS.incidents,JSON.stringify(this.incidents));
       localStorage.setItem(this.LS.tickets,JSON.stringify(this.tickets));
       localStorage.setItem(this.LS.creatorCode,this.creatorCode);
     }catch(e){}
@@ -1153,19 +1045,12 @@ const SIB = {
     else { el.classList.add('offline'); el.innerHTML = '📴 <span>Локально</span>'; }
   },
   saveRecords(){ this._saveLocal(); },
-  saveIncidents(){ this._saveLocal(); },
   saveTickets(){ this._saveLocal(); },
   saveCreatorCode(){ this._saveLocal(); },
   findTicket(id){ return this.tickets.find(t=>t.id===id)||null; },
   async banTicket(id){ const t=this.findTicket(id); if(t){ t.banned=true; this.saveTickets(); } if(sb){ try { await sb.from('tickets').update({banned:true}).eq('id',id); } catch(e){} } },
   async removeTicket(id){ this.tickets=this.tickets.filter(t=>t.id!==id); this.saveTickets(); if(sb){ try { await sb.from('tickets').delete().eq('id',id); } catch(e){} } },
   async resetTickets(){ this.tickets=[]; this.saveTickets(); if(sb){ try { await sb.from('tickets').delete().neq('id',''); } catch(e){} } },
-  async addIncident(data){
-    this.incidents.unshift({time:Date.now(),name:data.name,ticketId:data.ticketId,photo:data.photo||'',reason:data.reason||'Нецензурное имя'});
-    if(this.incidents.length>200) this.incidents.length=200;
-    this.saveIncidents();
-    if(sb){ try { await sb.from('incidents').insert([{ name:data.name, ticket_id:data.ticketId, photo:data.photo||'', reason:data.reason||'Нецензурное имя' }]); } catch(e){} }
-  },
   getGameRecords(gameId){ return (this.records[gameId] || []).slice().sort((a,b)=>b.score-a.score); },
   getGameBest(gameId){ const arr = this.records[gameId] || []; return arr.length ? Math.max(...arr.map(r=>r.score)) : 0; },
   async addRecord(gameId, playerName, score){
@@ -1179,6 +1064,10 @@ const SIB = {
   clearGameRecords(gameId){ if(this.records[gameId]){ this.records[gameId]=[]; this.saveRecords(); } },
   clearAllRecords(){ this.records = {}; this.saveRecords(); },
   getPlayerPlace(gameId, score){ const arr = this.records[gameId] || []; let place = 1; for(const r of arr){ if(r.score > score) place++; } return place; },
+
+  /* ----------------------------------------------------------------
+     SESSION START — из билета, БЕЗ ВВОДА НИКА
+     ---------------------------------------------------------------- */
   startSession(ticket, playerName){
     this.endSession(true);
     const totalSeconds = ticket.type==='creator'?0:(ticket.durationSeconds||300);
@@ -1192,6 +1081,7 @@ const SIB = {
     const t=this.findTicket(ticket.id);
     if(t){ t.used=true; this.saveTickets(); }
     if(sb && t){ sb.from('tickets').update({used:true}).eq('id',t.id).then(()=>{}).catch(()=>{}); }
+    stopAutoRotate();
     enterMainMenu();
   },
   endSession(silent){
@@ -1202,6 +1092,7 @@ const SIB = {
     this.renderSessionHud();
     if(isGameRunning) exitGame();
     if(!silent) showLoginGate();
+    startAutoRotate();
   },
   renderSessionHud(){
     const hud=document.getElementById('sessionHud');
@@ -1217,18 +1108,6 @@ const SIB = {
       time.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
       time.classList.toggle('warn',this.sessionSecondsLeft<=30);
     }
-  },
-  async captureOffenderPhoto(){
-    try{
-      let stream=loginStream; let needStop=false;
-      if(!stream){ stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}}); needStop=true; }
-      const v=document.createElement('video'); v.srcObject=stream; v.muted=true; v.playsInline=true;
-      await v.play(); await new Promise(r=>setTimeout(r,400));
-      const c=document.createElement('canvas'); c.width=480; c.height=360;
-      c.getContext('2d').drawImage(v,0,0,c.width,c.height);
-      if(needStop) stream.getTracks().forEach(t=>t.stop());
-      return c.toDataURL('image/jpeg',0.7);
-    }catch(e){ return ''; }
   }
 };
 SIB.load();
@@ -1271,10 +1150,7 @@ if(sb){
         SIB.load().then(()=>{ renderCarousel(); if(typeof renderActiveTickets==='function') renderActiveTickets(); });
       })
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'records' }, () => {
-        SIB.load().then(()=>{ renderCarousel(); if(typeof renderRecordsTable==='function') renderRecordsTable(opRecordsTable, opRecordsGameFilter.value||'__all__'); });
-      })
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'incidents' }, () => {
-        SIB.load().then(()=>{ if(typeof renderIncidents==='function') renderIncidents(); });
+        SIB.load().then(()=>{ renderCarousel(); });
       })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'config' }, (payload) => {
         SIB.load().then(()=>{
@@ -1290,17 +1166,10 @@ function loadGamesFromCloud(gamesJsonStr){
   if(!gamesJsonStr) return;
   try {
     const cloudGames = JSON.parse(gamesJsonStr);
-    const builtIn = DEFAULT_GAMES_LIST.slice();
-    const merged = [...builtIn];
-    cloudGames.forEach(g => { if(builtIn.find(x => x.id === g.id)) return; merged.push(g); });
-    GAMES_CATALOG = merged;
-    GAMES_CATALOG.forEach(g => {
-      if(g.id === 'cyber-math') g.srcdoc = GAME_CYBER_MATH_HTML;
-      if(g.id === 'sib-storm') g.srcdoc = GAME_NEON_STORM_HTML;
-      if(g.id === 'cyber-pong') g.srcdoc = GAME_CYBER_PONG_HTML;
-      if(g.id === 'skyline-blocks') g.srcdoc = GAME_SKYLINE_HTML;
-    });
-    localStorage.setItem('sib_games_catalog', JSON.stringify(GAMES_CATALOG.map(g => { const c = {...g}; delete c.srcdoc; return c; })));
+    if(!Array.isArray(cloudGames) || cloudGames.length === 0){ return; }
+    GAMES_CATALOG = cloudGames;
+    localStorage.setItem('sib_games_catalog', JSON.stringify(GAMES_CATALOG));
+    if(activeGameIndex >= GAMES_CATALOG.length) activeGameIndex = 0;
     renderCarousel();
   } catch(e) {}
 }
@@ -1313,54 +1182,36 @@ async function loadGamesFromCloudOnce(){
 }
 
 /* =====================================================================
-   DEFAULT GAMES
+   КАТАЛОГ
    ===================================================================== */
-const DEFAULT_GAMES_LIST = [
-  { id:'cyber-math', title:'Реакция', genre:'Математика | Реакция', badge:'МАТЕМАТИКА',
-    desc:'Футуристический математический тренажёр.',
-    isCustomIcon:true, iconType:'math',
-    bg:'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1600&auto=format&fit=crop&q=80',
-    accent:'#00ff88', srcdoc:GAME_CYBER_MATH_HTML },
-  { id:'sib-storm', title:'Неоновый Шторм', genre:'Космический шутер',
-    desc:'Эксклюзивный аркадный шутер.',
-    isCustomIcon:true, iconType:'ship',
-    bg:'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&auto=format&fit=crop&q=80',
-    accent:'#00f0ff', srcdoc:GAME_NEON_STORM_HTML },
-  { id:'cyber-pong', title:'Кибер-Понг', genre:'Спортивная дуэль', badge:'ХИТ',
-    desc:'Футуристическая дуэль против нейросети.',
-    isCustomIcon:true, iconType:'pong',
-    bg:'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1600&auto=format&fit=crop&q=80',
-    accent:'#ff007f', srcdoc:GAME_CYBER_PONG_HTML },
-  { id:'skyline-blocks', title:'Skyline', genre:'Архитектура', badge:'ARCADE',
-    desc:'Постройте неоновый небоскреб.',
-    cover:'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&auto=format&fit=crop&q=80',
-    bg:'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=1600&auto=format&fit=crop&q=80',
-    accent:'#ff007f', srcdoc:GAME_SKYLINE_HTML }
-];
-
 let GAMES_CATALOG = [];
 try{
   const stored=localStorage.getItem('sib_games_catalog');
-  if(stored){
-    GAMES_CATALOG=JSON.parse(stored);
-    GAMES_CATALOG.forEach(g=>{
-      if(g.id==='cyber-math') g.srcdoc=GAME_CYBER_MATH_HTML;
-      if(g.id==='sib-storm') g.srcdoc=GAME_NEON_STORM_HTML;
-      if(g.id==='cyber-pong') g.srcdoc=GAME_CYBER_PONG_HTML;
-      if(g.id==='skyline-blocks') g.srcdoc=GAME_SKYLINE_HTML;
-    });
-  } else GAMES_CATALOG=[...DEFAULT_GAMES_LIST];
+  if(stored){ GAMES_CATALOG=JSON.parse(stored); }
+  if(!GAMES_CATALOG || GAMES_CATALOG.length === 0) GAMES_CATALOG=[...DEFAULT_GAMES_LIST];
 }catch(e){ GAMES_CATALOG=[...DEFAULT_GAMES_LIST]; }
-
-function saveGamesToStorage(){
-  const storable=GAMES_CATALOG.map(g=>{ const c={...g}; if(c.srcdoc) delete c.srcdoc; return c; });
-  localStorage.setItem('sib_games_catalog',JSON.stringify(storable));
-  if(sb){ sb.from('config').upsert({ key: 'games_json', value: JSON.stringify(storable) }).then(()=>{}).catch(()=>{}); }
-}
 
 let activeGameIndex=0;
 let isGameRunning=false;
 let currentArtSide='A';
+
+/* =====================================================================
+   АВТО-ВРАЩЕНИЕ КАРУСЕЛИ
+   ===================================================================== */
+let autoRotateTimer = null;
+function startAutoRotate(){
+  stopAutoRotate();
+  autoRotateTimer = setInterval(() => {
+    if (SIB.activeSession) return;
+    if (isGameRunning) return;
+    if (loginGate.classList.contains('active')) return;
+    if (GAMES_CATALOG.length < 2) return;
+    moveToGame((activeGameIndex + 1) % GAMES_CATALOG.length);
+  }, 5500);
+}
+function stopAutoRotate(){
+  if (autoRotateTimer) { clearInterval(autoRotateTimer); autoRotateTimer = null; }
+}
 
 /* =====================================================================
    CAROUSEL
@@ -1371,24 +1222,33 @@ const heroDesc=document.getElementById('heroDesc');
 const heroGenre=document.getElementById('heroGenre');
 const heroBadge=document.getElementById('heroBadge');
 const heroBest=document.getElementById('heroBest');
+const heroAuthor=document.getElementById('heroAuthor');
 const artA=document.getElementById('artBgA');
 const artB=document.getElementById('artBgB');
 
 function renderCarousel(){
   rail.innerHTML='';
-  if(GAMES_CATALOG.length===0){ heroTitle.textContent='Каталог пуст'; heroDesc.textContent='Добавьте игры.'; return; }
+  if(GAMES_CATALOG.length===0){
+    heroTitle.textContent='Каталог пуст';
+    heroDesc.textContent='Добавьте игры в панели учителя.';
+    heroAuthor.textContent='👤 —';
+    return;
+  }
   if(activeGameIndex>=GAMES_CATALOG.length) activeGameIndex=0;
   GAMES_CATALOG.forEach((game,index)=>{
     const card=document.createElement('div');
     card.className=`card ${index===activeGameIndex?'active':''}`;
-    if(game.isCustomIcon){
+    const cover = game.coverUrl || game.cover;
+    const icon = game.iconUrl || game.icon;
+    if (icon && !cover) {
+      card.innerHTML=`<img class="card-cover" src="${icon}" alt="" onerror="this.style.display='none'"><div class="card-badge">${game.badge||'GAME'}</div>`;
+    } else if (game.isCustomIcon) {
       let svg='';
       if(game.iconType==='math') svg=`<text x="50%" y="62%" text-anchor="middle" dominant-baseline="middle" font-size="34" font-weight="900" fill="${game.accent}">∑</text>`;
-      else if(game.iconType==='pong') svg=`<rect x="4" y="6" width="3" height="12" fill="${game.accent}"/><rect x="17" y="10" width="3" height="12" fill="#ff007f"/><circle cx="12" cy="12" r="2.5" fill="#fff"/>`;
       else svg=`<polygon points="12 2 19 21 12 17 5 21 12 2"></polygon>`;
-      card.innerHTML=`<div class="card-custom-icon"><div class="grid-bg"></div><svg viewBox="0 0 24 24" fill="none" stroke="${game.accent}" stroke-width="2">${svg}</svg></div><div class="card-badge">${game.badge||'GAME'}</div>`;
+      card.innerHTML=`<div class="card-custom-icon"><div class="grid-bg"></div><svg viewBox="0 0 24 24" fill="none" stroke="${game.accent||'#00f0ff'}" stroke-width="2">${svg}</svg></div><div class="card-badge">${game.badge||'GAME'}</div>`;
     } else {
-      card.innerHTML=`<img class="card-cover" src="${game.cover||'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600'}" alt=""><div class="card-badge">${game.badge||'ARCADE'}</div>`;
+      card.innerHTML=`<img class="card-cover" src="${cover||'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600'}" alt=""><div class="card-badge">${game.badge||'ARCADE'}</div>`;
     }
     const best = SIB.getGameBest(game.id);
     if(best > 0){
@@ -1430,23 +1290,25 @@ function updateGameMeta(){
   if(GAMES_CATALOG.length===0) return;
   const g=GAMES_CATALOG[activeGameIndex];
   heroTitle.textContent=g.title;
-  heroDesc.textContent=g.desc;
-  heroGenre.textContent=g.genre;
+  heroDesc.textContent=g.desc || g.description || '';
+  heroGenre.textContent=g.genre || 'ИГРА';
   heroBadge.textContent=g.badge||'ЭКСКЛЮЗИВ';
+  heroAuthor.textContent = '👤 ' + (g.author || 'Неизвестный автор');
   const best = SIB.getGameBest(g.id);
   heroBest.textContent = best > 0 ? ('🏆 ' + best) : '🏆 —';
-  document.documentElement.style.setProperty('--accent-theme',g.accent);
-  particleGlowColor=g.accent;
+  document.documentElement.style.setProperty('--accent-theme',g.accent||'#00f0ff');
+  particleGlowColor=g.accent||'#00f0ff';
   const incoming=currentArtSide==='A'?artB:artA;
   const outgoing=currentArtSide==='A'?artA:artB;
-  incoming.style.backgroundImage=`url('${g.bg||g.cover||''}')`;
+  const bgUrl = g.bgUrl || g.bg || g.coverUrl || g.cover || '';
+  if (bgUrl) incoming.style.backgroundImage=`url('${bgUrl}')`;
   incoming.classList.add('active');
   outgoing.classList.remove('active');
   currentArtSide=currentArtSide==='A'?'B':'A';
 }
 
 /* =====================================================================
-   LAUNCH / EXIT — главные фиксы
+   LAUNCH / EXIT
    ===================================================================== */
 const portal=document.getElementById('launchPortal');
 const viewport=document.getElementById('gameViewport');
@@ -1476,7 +1338,6 @@ function focusGameFrame() {
   } catch(e) {}
 }
 
-// Проверяем, использует ли игра WASM/Workers (для них srcdoc может не сработать)
 function gameUsesWasm(html) {
   return /\.wasm/i.test(html) || /WebAssembly/i.test(html) || /new\s+Worker/i.test(html);
 }
@@ -1496,7 +1357,6 @@ function launchGame(){
   setTimeout(async () => {
     const game = GAMES_CATALOG[activeGameIndex];
 
-    // Динамический sandbox
     if (game.srcdoc) gameFrame.removeAttribute('sandbox');
     else gameFrame.setAttribute('sandbox', 'allow-scripts allow-pointer-lock allow-forms allow-popups allow-modals allow-same-origin');
 
@@ -1508,24 +1368,17 @@ function launchGame(){
     };
 
     if (game.srcdoc) {
-      // Встроенная игра
       gameFrame.removeAttribute('src');
       gameFrame.srcdoc = game.srcdoc;
     } else if (game.url) {
-      // Внешняя игра: пробуем через fetch + srcdoc (обход text/plain и mojibake)
       try {
         const html = await fetchGameHtml(game.url);
-
-        // Для игр с WASM/Workers srcdoc не подходит — грузим напрямую
         if (gameUsesWasm(html)) {
-          console.log('[launchGame] WASM/Worker detected, using direct src');
           gameFrame.removeAttribute('srcdoc');
           gameFrame.src = game.url;
         } else {
-          // Обычный HTML — рендерим через srcdoc
           const baseUrl = new URL('.', game.url).href;
           let patched = html;
-          // Убираем существующий <base> чтобы не конфликтовал
           patched = patched.replace(/<base[^>]*>/gi, '');
           if (/<head[^>]*>/i.test(patched)) {
             patched = patched.replace(/<head([^>]*)>/i, `<head$1><base href="${baseUrl}">`);
@@ -1536,7 +1389,6 @@ function launchGame(){
           gameFrame.srcdoc = patched;
         }
       } catch (e) {
-        console.warn('[launchGame] fetch failed, fallback to src:', e);
         gameFrame.removeAttribute('srcdoc');
         gameFrame.src = game.url;
       }
@@ -1582,13 +1434,12 @@ document.getElementById('btnResultSkip').onclick = () => { closeResultModal(); }
 document.getElementById('btnResultSave').onclick = () => {
   const name = resultNameInput.value.trim();
   if(!name || name.length<2){ SoundMaster.error(); resultNameInput.classList.add('error-shake'); setTimeout(()=>resultNameInput.classList.remove('error-shake'),500); return; }
-  if(SIB.isProfane(name)){ SoundMaster.error(); resultNameInput.classList.add('error-shake'); setTimeout(()=>resultNameInput.classList.remove('error-shake'),500); showCyberAlert('Нецензурное имя!', true); return; }
   SIB.addRecord(lastGameId, name, lastGameScore);
   SoundMaster.secretUnlock();
   closeResultModal();
   renderCarousel();
   const place = SIB.getPlayerPlace(lastGameId, lastGameScore);
-  showCyberAlert(`Рекорд сохранён: ${name} — ${lastGameScore} (место #${place})`, false);
+  showCyberAlert(`Рекорд: ${name} — ${lastGameScore} (место #${place})`, false);
 };
 resultNameInput.addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('btnResultSave').click(); });
 
@@ -1602,7 +1453,7 @@ window.addEventListener('message', (e) => {
 });
 
 /* =====================================================================
-   LOGIN + QR
+   LOGIN — БЕЗ ВВОДА НИКА
    ===================================================================== */
 const loginGate = document.getElementById('loginGate');
 const loginVideo = document.getElementById('loginQrVideo');
@@ -1611,15 +1462,11 @@ const loginScanLine = document.getElementById('loginScanLine');
 const loginManualInput = document.getElementById('loginManualInput');
 const loginStatus = document.getElementById('loginStatus');
 const btnLoginStartCamera = document.getElementById('btnLoginStartCamera');
-const nameModal = document.getElementById('nameModal');
-const playerNameInput = document.getElementById('playerNameInput');
-const nameTicketInfo = document.getElementById('nameTicketInfo');
 
 let loginStream = null;
 let loginRaf = null;
 let loginCanvas = null;
 let loginCtx = null;
-let pendingTicket = null;
 let cameraActive = false;
 
 function setLoginStatus(text, isError){ loginStatus.textContent = text||''; loginStatus.classList.toggle('error', !!isError); }
@@ -1630,8 +1477,12 @@ function showLoginGate(){
   loginGate.classList.add('active');
   setLoginStatus('');
   loginManualInput.value = '';
+  stopAutoRotate();
 }
-function hideLoginGate(){ loginGate.classList.remove('active'); stopLoginCamera(); }
+function hideLoginGate(){
+  loginGate.classList.remove('active');
+  stopLoginCamera();
+}
 
 async function startLoginCamera(){
   if(loginStream && loginVideo.srcObject) { cameraActive = true; loginVideo.classList.add('on'); loginPlaceholder.style.display='none'; loginScanLine.classList.add('on'); scanLoginFrame(); return; }
@@ -1665,13 +1516,14 @@ function scanLoginFrame(){
   if(window.jsQR){ const code = window.jsQR(imgData.data, imgData.width, imgData.height); if(code && code.data){ handleLoginCode(code.data.trim()); return; } }
   loginRaf = requestAnimationFrame(scanLoginFrame);
 }
+
+/* ГЛАВНОЕ: сразу старт сессии, ника нет */
 async function handleLoginCode(raw){
   const code = raw.trim();
   if(!code) return;
   if(code === SIB.creatorCode){
     SoundMaster.secretUnlock();
-    pendingTicket = { id: code, type:'creator', durationSeconds:0, minutes:'∞' };
-    openNameInput(pendingTicket);
+    startSessionFromTicket({ id: code, type:'creator', durationSeconds:0, minutes:'∞', ownerName:'Создатель', ownerClass:'' });
     return;
   }
   try {
@@ -1681,18 +1533,38 @@ async function handleLoginCode(raw){
       if(!data){ SoundMaster.error(); setLoginStatus('QR-код не найден.', true); return; }
       if(data.banned){ SoundMaster.error(); setLoginStatus('QR-код заблокирован.', true); return; }
       if(data.used){ SoundMaster.error(); setLoginStatus('QR-код уже использован.', true); return; }
-      pendingTicket = { id: data.id, type: data.type, durationSeconds: data.duration_seconds, minutes: data.type === 'creator' ? '∞' : data.minutes };
-      SoundMaster.secretUnlock(); openNameInput(pendingTicket); return;
+      startSessionFromTicket({
+        id: data.id, type: data.type,
+        durationSeconds: data.duration_seconds,
+        minutes: data.type === 'creator' ? '∞' : data.minutes,
+        ownerName: data.owner_name || 'Игрок',
+        ownerClass: data.owner_class || ''
+      });
+      return;
     }
   } catch(e) {}
   const ticket = SIB.findTicket(code);
   if(!ticket){ SoundMaster.error(); setLoginStatus('QR-код не найден.', true); return; }
   if(ticket.banned){ SoundMaster.error(); setLoginStatus('QR-код заблокирован.', true); return; }
   if(ticket.used){ SoundMaster.error(); setLoginStatus('QR-код уже использован.', true); return; }
-  SoundMaster.secretUnlock();
-  pendingTicket = ticket;
-  openNameInput(ticket);
+  startSessionFromTicket({
+    id: ticket.id, type: ticket.type,
+    durationSeconds: ticket.durationSeconds,
+    minutes: ticket.minutes,
+    ownerName: ticket.ownerName || 'Игрок',
+    ownerClass: ticket.ownerClass || ''
+  });
 }
+
+function startSessionFromTicket(ticket){
+  const name = ticket.ownerClass
+    ? `${ticket.ownerName} (${ticket.ownerClass})`
+    : (ticket.ownerName || 'Игрок');
+  SoundMaster.secretUnlock();
+  hideLoginGate();
+  SIB.startSession(ticket, name);
+}
+
 btnLoginStartCamera.onclick = () => {
   SoundMaster.click();
   if(cameraActive){ stopLoginCamera(); btnLoginStartCamera.textContent='📷 Включить камеру'; }
@@ -1700,50 +1572,6 @@ btnLoginStartCamera.onclick = () => {
 };
 loginManualInput.addEventListener('keydown', e => { if(e.key==='Enter'){ handleLoginCode(loginManualInput.value); loginManualInput.value=''; } });
 
-function openNameInput(ticket){
-  nameTicketInfo.innerHTML = `Билет: <b style="color:#00f0ff;">${ticket.id}</b><br>Время: <b style="color:#00ff88;">${ticket.type==='creator'?'Безлимит':ticket.minutes+' мин'}</b>`;
-  playerNameInput.value = '';
-  nameModal.classList.add('open');
-  setTimeout(()=>playerNameInput.focus(),200);
-}
-function closeNameInput(){ SoundMaster.back(); nameModal.classList.remove('open'); pendingTicket=null; showLoginGate(); }
-
-async function submitName(){
-  const name = playerNameInput.value.trim();
-  if(!name || name.length<2){ SoundMaster.error(); playerNameInput.classList.add('error-shake'); setTimeout(()=>playerNameInput.classList.remove('error-shake'),500); return; }
-  if(SIB.isProfane(name)){
-    SoundMaster.error();
-    const photo = await SIB.captureOffenderPhoto();
-    SIB.addIncident({name, ticketId: pendingTicket.id, photo});
-    SIB.banTicket(pendingTicket.id);
-    playerNameInput.classList.add('error-shake');
-    setTimeout(()=>playerNameInput.classList.remove('error-shake'),500);
-    showCyberAlert('Нецензурное имя! QR-код заблокирован.', true);
-    return;
-  }
-  if(sb && pendingTicket.id !== SIB.creatorCode){
-    try {
-      const { data } = await sb.from('tickets').select('banned, used').eq('id', pendingTicket.id).maybeSingle();
-      if(data && data.banned){
-        SoundMaster.error();
-        nameModal.classList.remove('open');
-        pendingTicket = null;
-        showLoginGate();
-        showCyberAlert('QR-код заблокирован учителем!', true);
-        return;
-      }
-    } catch(e) {}
-  }
-  SoundMaster.secretUnlock();
-  const t = pendingTicket;
-  nameModal.classList.remove('open');
-  pendingTicket = null;
-  hideLoginGate();
-  SIB.startSession(t, name);
-}
-document.getElementById('btnNameSubmit').onclick = submitName;
-document.getElementById('btnNameCancel').onclick = closeNameInput;
-playerNameInput.addEventListener('keydown', e => { if(e.key==='Enter') submitName(); });
 function enterMainMenu(){ hideLoginGate(); renderCarousel(); }
 document.getElementById('btnEndSession').onclick = () => { askConfirm('Завершить сессию?', 'Вы выйдете.', () => { SIB.endSession(); }); };
 
@@ -1800,25 +1628,22 @@ document.getElementById('btnShowRecords').onclick = () => {
 recordsGameFilter.onchange = () => renderRecordsTable(recordsTable, recordsGameFilter.value);
 document.getElementById('btnCloseRecords').onclick = () => { SoundMaster.back(); recordsModal.classList.remove('open'); };
 
-let currentPinContext='OPERATOR', currentPinInput='', pendingGameEditIndex=-1;
+let currentPinContext='OPERATOR', currentPinInput='';
 let OPERATOR_PIN = localStorage.getItem('sib_op_pin')||'1234';
 let MASTER_OS_PIN = localStorage.getItem('sib_master_pin')||'7777';
-let GAME_EDIT_PIN = localStorage.getItem('sib_edit_pin')||'9999';
 
 const pinModal = document.getElementById('pinModalBackdrop');
 const pinDisplay = document.getElementById('pinDisplay');
 const opModal = document.getElementById('operatorSettingsModal');
 const secretOsModal = document.getElementById('secretOsSettingsModal');
-const gameEditModal = document.getElementById('gameEditModal');
 const installedGamesList = document.getElementById('installedGamesList');
 
-function openPinDialog(context, extraIndex=-1){
+function openPinDialog(context){
   SoundMaster.click();
-  currentPinContext = context; currentPinInput=''; pendingGameEditIndex=extraIndex;
+  currentPinContext = context; currentPinInput='';
   pinDisplay.value=''; pinDisplay.classList.remove('error-shake');
   if(context==='OPERATOR'){ document.getElementById('pinModalTitle').textContent='ДОСТУП ОПЕРАТОРА'; document.getElementById('pinModalSubtitle').textContent='PIN (1234)'; }
   else if(context==='MASTER_OS'){ document.getElementById('pinModalTitle').textContent='ИНЖЕНЕРНЫЙ ДОСТУП'; document.getElementById('pinModalSubtitle').textContent='Мастер-PIN (7777)'; }
-  else if(context==='GAME_EDIT'){ document.getElementById('pinModalTitle').textContent='РЕДАКТОР ИГР'; document.getElementById('pinModalSubtitle').textContent='Код разработчика (9999)'; }
   pinModal.classList.add('open');
 }
 function closePinDialog(){ SoundMaster.back(); pinModal.classList.remove('open'); }
@@ -1839,7 +1664,6 @@ async function verifyPin(){
   }
   if(currentPinContext==='OPERATOR'){ if(e===realPin||e==='1234'){ ok=true; pinModal.classList.remove('open'); openOperatorSettings(); } }
   else if(currentPinContext==='MASTER_OS'){ if(e===MASTER_OS_PIN||e==='7777'){ ok=true; pinModal.classList.remove('open'); openSecretOsSettings(); } }
-  else if(currentPinContext==='GAME_EDIT'){ if(e===GAME_EDIT_PIN||e==='9999'){ ok=true; pinModal.classList.remove('open'); openGameEditor(pendingGameEditIndex); } }
   if(ok) SoundMaster.secretUnlock();
   else { SoundMaster.error(); pinDisplay.classList.add('error-shake'); setTimeout(()=>{ currentPinInput=''; pinDisplay.value=''; pinDisplay.classList.remove('error-shake'); },500); }
 }
@@ -1851,7 +1675,6 @@ async function openOperatorSettings(){
   opModal.classList.add('open');
   renderInstalledGamesTable();
   renderActiveTickets();
-  renderIncidents();
   buildGameFilter(opRecordsGameFilter);
   opRecordsGameFilter.value = '__all__';
   renderRecordsTable(opRecordsTable, '__all__');
@@ -1928,88 +1751,21 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     const tabId = btn.getAttribute('data-tab');
     document.getElementById(tabId).classList.add('active');
     if(tabId==='op-tab-qr') renderActiveTickets();
-    if(tabId==='op-tab-incidents') renderIncidents();
     if(tabId==='op-tab-leaderboard') renderRecordsTable(opRecordsTable, opRecordsGameFilter.value||'__all__');
     if(tabId==='op-tab-maintenance') loadMaintenanceToOperator();
   };
 });
 
-/* GAME EDITOR */
 function renderInstalledGamesTable(){
   installedGamesList.innerHTML = '';
-  GAMES_CATALOG.forEach((game, idx)=>{
+  if (GAMES_CATALOG.length === 0) { installedGamesList.innerHTML='<div style="color:#888;padding:10px;">Нет игр.</div>'; return; }
+  GAMES_CATALOG.forEach((game)=>{
     const row = document.createElement('div');
     row.className = 'game-row-item';
-    row.innerHTML = `<div class="game-row-info"><img class="game-mini-thumb" src="${game.cover||'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=200'}" alt=""><div><div style="font-weight:bold;font-size:14px;">${game.title}</div><div style="font-size:11px;color:#888;">${game.genre} • 🏆 ${SIB.getGameBest(game.id)}</div></div></div><div style="display:flex;gap:8px;"><button class="btn-act btn-edit-game" onclick="reqEditGame(${idx})">✎</button><button class="btn-act btn-del-game" onclick="deleteGameByIndex(${idx})">✕</button></div>`;
+    row.innerHTML = `<div class="game-row-info"><img class="game-mini-thumb" src="${game.iconUrl||game.coverUrl||game.cover||''}" onerror="this.style.visibility='hidden'"><div><div style="font-weight:bold;font-size:14px;">${escapeHtml(game.title)}</div><div style="font-size:11px;color:#888;">${escapeHtml(game.genre||'')} • 👤 ${escapeHtml(game.author||'—')}</div></div></div>`;
     installedGamesList.appendChild(row);
   });
 }
-window.reqEditGame = function(idx){ openPinDialog('GAME_EDIT', idx); };
-function openGameEditor(idx){
-  const g = GAMES_CATALOG[idx];
-  document.getElementById('editGameIndex').value = idx;
-  document.getElementById('editGameTitle').value = g.title;
-  document.getElementById('editGameGenre').value = g.genre;
-  document.getElementById('editGameUrl').value = g.url||'';
-  document.getElementById('editGameCover').value = g.cover||'';
-  document.getElementById('editGameBg').value = g.bg||'';
-  document.getElementById('editGameBadge').value = g.badge||'';
-  document.getElementById('editGameAccent').value = g.accent||'#00f0ff';
-  document.getElementById('editGameDesc').value = g.desc||'';
-  gameEditModal.classList.add('open');
-}
-document.getElementById('btnCancelGameEdit').onclick = () => { SoundMaster.back(); gameEditModal.classList.remove('open'); };
-document.getElementById('btnSaveGameEdit').onclick = () => {
-  const idx = parseInt(document.getElementById('editGameIndex').value);
-  if(idx>=0 && idx<GAMES_CATALOG.length){
-    const g = GAMES_CATALOG[idx];
-    g.title = document.getElementById('editGameTitle').value.trim()||g.title;
-    g.genre = document.getElementById('editGameGenre').value.trim()||g.genre;
-    const newUrl = document.getElementById('editGameUrl').value.trim();
-    if(newUrl) g.url = newUrl;
-    g.cover = document.getElementById('editGameCover').value.trim()||g.cover;
-    g.bg = document.getElementById('editGameBg').value.trim()||g.bg;
-    g.badge = document.getElementById('editGameBadge').value.trim()||g.badge;
-    g.accent = document.getElementById('editGameAccent').value;
-    g.desc = document.getElementById('editGameDesc').value.trim()||g.desc;
-    saveGamesToStorage(); renderInstalledGamesTable(); renderCarousel();
-    SoundMaster.secretUnlock(); gameEditModal.classList.remove('open');
-    showCyberAlert(`Игра "${g.title}" сохранена!`, false);
-  }
-};
-window.deleteGameByIndex = function(idx){
-  askConfirm('Удалить игру?', `"${GAMES_CATALOG[idx].title}"`, ()=>{
-    SoundMaster.back();
-    GAMES_CATALOG.splice(idx,1);
-    saveGamesToStorage(); renderInstalledGamesTable(); renderCarousel();
-    showCyberAlert('Игра удалена', false);
-  });
-};
-document.getElementById('btnAddGameSubmit').onclick = () => {
-  const title = document.getElementById('addGameTitle').value.trim();
-  const genre = document.getElementById('addGameGenre').value.trim();
-  let url = document.getElementById('addGameUrl').value.trim();
-  const cover = document.getElementById('addGameCover').value.trim()||'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600';
-  const bg = document.getElementById('addGameBg').value.trim()||cover;
-  const badge = document.getElementById('addGameBadge').value.trim()||'WEB GAME';
-  const accent = document.getElementById('addGameAccent').value;
-  const desc = document.getElementById('addGameDesc').value.trim()||`Игра: ${title}`;
-  if(!title||!genre||!url){ showCyberAlert('Заполните все поля!', true); return; }
-  if(!url.startsWith('http')) url = 'https://' + url;
-  GAMES_CATALOG.push({id:'custom-'+Date.now(),title,genre,badge,desc,cover,bg,accent,url});
-  saveGamesToStorage(); SoundMaster.secretUnlock();
-  renderInstalledGamesTable(); renderCarousel();
-  moveToGame(GAMES_CATALOG.length-1);
-  ['addGameTitle','addGameGenre','addGameUrl','addGameCover','addGameBg','addGameDesc'].forEach(id=>document.getElementById(id).value='');
-  showCyberAlert(`Игра "${title}" добавлена!`, false);
-};
-document.getElementById('btnResetGamesDefault').onclick = () => {
-  askConfirm('Сбросить каталог?','Все добавленные игры будут удалены.',()=>{
-    GAMES_CATALOG = [...DEFAULT_GAMES_LIST];
-    saveGamesToStorage(); renderInstalledGamesTable(); renderCarousel();
-    showCyberAlert('Каталог сброшен', false);
-  });
-};
 
 /* QR GENERATOR */
 function drawQrToCanvas(cv, text){
@@ -2048,16 +1804,6 @@ function renderQrResult(ticket){
   box.appendChild(cv);
   const tryDraw = () => { if(!drawQrToCanvas(cv,ticket.id)) setTimeout(tryDraw,200); };
   tryDraw();
-  const btnPrint = document.createElement('button');
-  btnPrint.className='btn-cfg';
-  btnPrint.textContent='🖨️ Печать';
-  btnPrint.onclick = () => {
-    const w = window.open('','_blank');
-    w.document.write(`<html><head><title>Билет ${ticket.id}</title></head><body style="text-align:center;font-family:sans-serif;padding:40px;"><h2>СИБКОДБОКС</h2><p style="font-size:18px;">${label}</p><img src="${cv.toDataURL()}" style="width:300px;"><p style="font-family:monospace;font-size:16px;">${ticket.id}</p></body></html>`);
-    w.document.close();
-    setTimeout(()=>w.print(),300);
-  };
-  box.appendChild(btnPrint);
 }
 function renderActiveTickets(){
   const list = document.getElementById('activeTicketsList');
@@ -2076,22 +1822,6 @@ function renderActiveTickets(){
 }
 document.getElementById('btnResetTickets').onclick = () => {
   askConfirm('Удалить все билеты?','',()=>{ SIB.resetTickets(); renderActiveTickets(); });
-};
-
-function renderIncidents(){
-  const list = document.getElementById('incidentsList');
-  if(!list) return;
-  if(SIB.incidents.length===0){ list.innerHTML='<div style="color:#666;font-size:13px;">Нарушений не зафиксировано.</div>'; return; }
-  list.innerHTML = SIB.incidents.map(inc=>{
-    const d = new Date(inc.time);
-    return `<div class="incident-row"><div><b style="color:#ff3344;">${escapeHtml(inc.name)}</b><div style="font-size:11px;color:#aaa;">Билет: ${escapeHtml(inc.ticketId||'—')} • ${d.toLocaleString('ru-RU')}</div></div><div>${inc.photo?`<img src="${inc.photo}" style="width:64px;height:48px;object-fit:cover;border-radius:6px;border:1px solid #ff3344;">`:''}</div></div>`;
-  }).join('');
-}
-document.getElementById('btnClearIncidents').onclick = () => {
-  askConfirm('Очистить журнал?','',()=>{
-    SIB.incidents=[]; SIB.saveIncidents(); renderIncidents();
-    if(sb){ sb.from('incidents').delete().neq('id', 0).then(()=>{}).catch(()=>{}); }
-  });
 };
 
 /* MUSIC */
@@ -2137,10 +1867,6 @@ document.getElementById('btnSaveOperatorPin').onclick = () => {
   if(p.length===4 && /^\d+$/.test(p)){ OPERATOR_PIN=p; localStorage.setItem('sib_op_pin',p); SoundMaster.secretUnlock(); showCyberAlert('PIN оператора сохранён',false); if(sb){ sb.from('config').upsert({key:'operator_pin', value:p}).then(()=>{}).catch(()=>{}); } }
   else showCyberAlert('PIN должен быть 4 цифры', true);
 };
-document.getElementById('btnSaveGameEditPin').onclick = () => {
-  const p = document.getElementById('cfgNewGameEditPin').value.trim();
-  if(p.length===4 && /^\d+$/.test(p)){ GAME_EDIT_PIN=p; localStorage.setItem('sib_edit_pin',p); SoundMaster.secretUnlock(); showCyberAlert('PIN редактора сохранён',false); }
-};
 document.getElementById('btnSaveMasterPin').onclick = () => {
   const p = document.getElementById('cfgNewMasterPin').value.trim();
   if(p.length===4 && /^\d+$/.test(p)){ MASTER_OS_PIN=p; localStorage.setItem('sib_master_pin',p); SoundMaster.secretUnlock(); showCyberAlert('Мастер-PIN сохранён',false); }
@@ -2153,7 +1879,7 @@ document.getElementById('btnFactoryReset').onclick = () => {
   askConfirm('ПОЛНЫЙ СБРОС?','Все данные будут удалены.',()=>{ localStorage.clear(); location.reload(); });
 };
 document.getElementById('btnExportConfig').onclick = () => {
-  const data = { version: 12, config: CONFIG, games: GAMES_CATALOG.map(g=>{ const c={...g}; delete c.srcdoc; return c; }), records: SIB.records, tickets: SIB.tickets, incidents: SIB.incidents, creatorCode: SIB.creatorCode };
+  const data = { version: 10, config: CONFIG, games: GAMES_CATALOG, records: SIB.records, tickets: SIB.tickets, creatorCode: SIB.creatorCode };
   const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -2172,10 +1898,9 @@ document.getElementById('importConfigFile').onchange = (e) => {
       askConfirm('Импорт данных?','Текущие данные будут заменены.',()=>{
         if(data.config) Object.assign(CONFIG, data.config);
         CONFIG.save();
-        if(data.games) { GAMES_CATALOG = data.games; saveGamesToStorage(); }
+        if(data.games) { GAMES_CATALOG = data.games; localStorage.setItem('sib_games_catalog', JSON.stringify(GAMES_CATALOG)); }
         if(data.records) { SIB.records = data.records; SIB.saveRecords(); }
         if(data.tickets) { SIB.tickets = data.tickets; SIB.saveTickets(); }
-        if(data.incidents) { SIB.incidents = data.incidents; SIB.saveIncidents(); }
         if(data.creatorCode) { SIB.creatorCode = data.creatorCode; SIB.saveCreatorCode(); }
         location.reload();
       });
@@ -2186,7 +1911,7 @@ document.getElementById('importConfigFile').onchange = (e) => {
 function updateTelemetry(){
   const totalRecords = Object.values(SIB.records).reduce((a,b)=>a+b.length,0);
   document.getElementById('systemTelemetryBox').innerHTML = `
-    ОС: СибКодБокс v12<br>
+    ОС: СибКодБокс v10<br>
     Экран: ${window.innerWidth}x${window.innerHeight} (${window.devicePixelRatio}x DPR)<br>
     Web Serial: ${'serial' in navigator ? 'Доступен' : 'Нет'}<br>
     Supabase: ${sb ? (SIB.cloudOnline ? 'Подключён' : 'Ошибка') : 'Не загружен'}<br>
@@ -2225,11 +1950,9 @@ window.addEventListener('keydown', (e) => {
     else if(e.key==='Escape') closePinDialog();
     return;
   }
-  if(nameModal.classList.contains('open')){ if(e.key==='Escape') closeNameInput(); return; }
-  if(opModal.classList.contains('open') || secretOsModal.classList.contains('open') || gameEditModal.classList.contains('open') || recordsModal.classList.contains('open')){
+  if(opModal.classList.contains('open') || secretOsModal.classList.contains('open') || recordsModal.classList.contains('open')){
     if(e.key==='Escape'){
-      opModal.classList.remove('open'); secretOsModal.classList.remove('open');
-      gameEditModal.classList.remove('open'); recordsModal.classList.remove('open');
+      opModal.classList.remove('open'); secretOsModal.classList.remove('open'); recordsModal.classList.remove('open');
     }
     return;
   }
@@ -2314,6 +2037,7 @@ showLoginGate();
 if(CONFIG.hideCursor) setTimeout(hideCursor, 3000);
 checkMaintenance();
 loadGamesFromCloudOnce();
+startAutoRotate();
 </script>
 </body>
 </html>
