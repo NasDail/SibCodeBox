@@ -6,7 +6,6 @@
 <meta name="robots" content="noindex, nofollow">
 <title>СибКодБокс — Пульт</title>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
@@ -85,15 +84,12 @@
   .qr-owner{font-size:14px;color:#fff;text-align:center;line-height:1.5;}
   .qr-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
   .list{display:flex;flex-direction:column;gap:10px;max-height:520px;overflow-y:auto;padding-right:6px;}
-  .list::-webkit-scrollbar{width:8px;}
-  .list::-webkit-scrollbar-thumb{background:rgba(0,240,255,0.3);border-radius:10px;}
   .row-item{display:flex;justify-content:space-between;align-items:center;gap:12px;
     background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
-    border-radius:14px;padding:14px 18px;transition:all 0.2s;}
-  .row-item:hover{background:rgba(255,255,255,0.06);border-color:rgba(0,240,255,0.2);}
+    border-radius:14px;padding:14px 18px;}
   .row-info{flex:1;min-width:0;}
-  .row-main{font-weight:800;font-size:14px;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .row-sub{font-size:12px;color:rgba(255,255,255,0.55);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .row-main{font-weight:800;font-size:14px;margin-bottom:3px;}
+  .row-sub{font-size:12px;color:rgba(255,255,255,0.55);}
   .row-actions{display:flex;gap:6px;flex-shrink:0;}
   .badge{display:inline-block;padding:3px 10px;border-radius:8px;font-size:11px;
     font-weight:900;letter-spacing:0.5px;text-transform:uppercase;}
@@ -106,14 +102,11 @@
     padding:12px 16px;background:rgba(255,255,255,0.04);border-radius:12px;
     border:1px solid rgba(255,255,255,0.08);font-size:14px;}
   .record-row .rank{font-weight:900;color:#00f0ff;}
-  .record-row .rank.gold{color:#ffd700;}
   .incident{display:grid;grid-template-columns:80px 1fr auto;gap:16px;align-items:center;
     background:rgba(255,51,68,0.06);border:1px solid rgba(255,51,68,0.25);
     border-radius:14px;padding:14px 18px;}
   .incident-photo{width:80px;height:80px;border-radius:10px;object-fit:cover;
     border:2px solid rgba(255,51,68,0.4);background:#111;}
-  .incident-name{font-weight:900;color:#ff3344;font-size:16px;margin-bottom:4px;}
-  .incident-meta{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5;}
   .empty{text-align:center;padding:40px 20px;color:rgba(255,255,255,0.4);font-size:14px;}
   .empty-icon{font-size:48px;margin-bottom:12px;opacity:0.5;}
   .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
@@ -123,9 +116,8 @@
   .stat-label{font-size:11px;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:1px;font-weight:700;}
   .maintenance-banner{display:none;background:rgba(255,170,0,0.15);border:2px solid #ffaa00;
     color:#ffaa00;border-radius:14px;padding:16px 22px;margin-bottom:16px;font-weight:800;
-    text-align:center;animation:maintenanceBlink 1.5s infinite ease-in-out;}
+    text-align:center;}
   .maintenance-banner.active{display:block;}
-  @keyframes maintenanceBlink{50%{opacity:0.7;}}
   .gate{position:fixed;inset:0;z-index:5000;
     background:radial-gradient(ellipse at 50% 40%,#0a1a35 0%,#020409 70%);
     display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;}
@@ -154,8 +146,8 @@
     color:#00f0ff;padding:16px 28px;border-radius:14px;font-size:15px;font-weight:900;
     z-index:10000;transition:top 0.4s ease;backdrop-filter:blur(10px);max-width:90vw;text-align:center;}
   #toast.show{top:24px;}
-  #toast.error{border-color:#ff3344;color:#ff3344;box-shadow:0 0 30px rgba(255,51,68,0.5);}
-  #toast.success{border-color:#00ff88;color:#00ff88;box-shadow:0 0 30px rgba(0,255,136,0.5);}
+  #toast.error{border-color:#ff3344;color:#ff3344;}
+  #toast.success{border-color:#00ff88;color:#00ff88;}
   .confirm-modal{position:fixed;inset:0;background:rgba(2,4,9,0.92);backdrop-filter:blur(20px);
     z-index:9000;display:none;align-items:center;justify-content:center;padding:20px;}
   .confirm-modal.open{display:flex;}
@@ -164,30 +156,6 @@
     gap:16px;box-shadow:0 0 60px rgba(0,240,255,0.4);}
   .confirm-actions{display:flex;gap:10px;}
   .confirm-actions .btn{flex:1;}
-  .platform-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:16px;}
-  .platform-card{background:rgba(255,255,255,0.04);border:2px solid rgba(255,255,255,0.1);
-    border-radius:16px;padding:18px 12px;text-align:center;cursor:pointer;transition:all 0.2s;}
-  .platform-card:hover{background:rgba(0,240,255,0.1);border-color:rgba(0,240,255,0.4);transform:translateY(-2px);}
-  .platform-card.active{background:rgba(0,240,255,0.15);border-color:#00f0ff;box-shadow:0 0 20px rgba(0,240,255,0.3);}
-  .platform-icon{font-size:32px;margin-bottom:8px;}
-  .platform-name{font-size:13px;font-weight:900;color:#fff;}
-  .platform-hint{font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px;}
-  .instructions{background:rgba(0,240,255,0.05);border-left:3px solid #00f0ff;
-    border-radius:8px;padding:14px 18px;margin-bottom:14px;font-size:13px;
-    color:rgba(255,255,255,0.85);line-height:1.7;}
-  .instructions ol{margin-left:18px;}
-  .instructions code{background:rgba(0,0,0,0.4);padding:2px 6px;border-radius:5px;
-    font-family:monospace;color:#00ff88;font-size:12px;}
-  .game-item{display:grid;grid-template-columns:64px 1fr auto;gap:14px;align-items:center;
-    background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
-    border-radius:14px;padding:12px 16px;transition:all 0.2s;}
-  .game-item:hover{background:rgba(255,255,255,0.06);}
-  .game-thumb{width:64px;height:64px;border-radius:10px;
-    background:linear-gradient(135deg,#152238,#060a12);display:flex;align-items:center;
-    justify-content:center;font-size:26px;overflow:hidden;}
-  .game-thumb img{width:100%;height:100%;object-fit:cover;}
-  .game-title{font-weight:900;font-size:15px;margin-bottom:3px;}
-  .game-meta{font-size:12px;color:rgba(255,255,255,0.55);}
   .role-pills{display:flex;gap:8px;margin-bottom:14px;}
   .role-pill{flex:1;background:rgba(255,255,255,0.04);border:2px solid rgba(255,255,255,0.1);
     border-radius:12px;padding:10px;font-size:13px;font-weight:800;cursor:pointer;
@@ -199,22 +167,39 @@
   .drop-icon{font-size:52px;margin-bottom:10px;}
   .drop-title{font-size:16px;font-weight:900;color:#00f0ff;margin-bottom:6px;}
   .drop-hint{font-size:12px;color:rgba(255,255,255,0.5);}
+  .file-tree{margin-top:12px;padding:12px;background:rgba(0,0,0,0.3);border-radius:10px;
+    max-height:220px;overflow-y:auto;font-family:monospace;font-size:12px;line-height:1.6;}
+  .file-tree .f{color:#aac;}
+  .file-tree .m{color:#00ff88;font-weight:800;}
+  .file-tree .i{color:#ffaa00;}
   .upload-progress{display:none;margin-top:14px;padding:14px;background:rgba(0,240,255,0.06);
     border-radius:12px;border:1px solid rgba(0,240,255,0.2);}
   .upload-progress.show{display:block;}
   .upload-bar{height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;margin-top:8px;}
   .upload-fill{height:100%;background:linear-gradient(90deg,#00f0ff,#ff007f);width:0%;transition:width 0.3s;}
-  .size-indicator{padding:10px 14px;border-radius:10px;font-size:13px;
-    background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);color:#00ff88;
-    font-weight:700;margin-top:8px;}
-  .size-indicator.warn{background:rgba(255,170,0,0.08);border-color:rgba(255,170,0,0.3);color:#ffaa00;}
-  @media (max-width:600px){
-    .container{padding:16px;} header{padding:12px 16px;}
-    .record-row{grid-template-columns:36px 1fr 80px;font-size:13px;}
-    .record-row > *:last-child{display:none;}
-    .incident{grid-template-columns:60px 1fr;}
-    .form-row{grid-template-columns:1fr;}
-  }
+  .manifest-preview{padding:14px;background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.3);
+    border-radius:12px;margin-top:12px;display:none;grid-template-columns:80px 1fr;gap:14px;align-items:start;}
+  .manifest-preview.show{display:grid;}
+  .manifest-preview img{width:80px;height:80px;object-fit:cover;border-radius:12px;background:#111;border:1px solid rgba(0,255,136,0.3);}
+  .manifest-preview .mi{font-size:12px;color:#ccc;line-height:1.6;}
+  .manifest-preview .mt{font-size:17px;font-weight:900;color:#00ff88;margin-bottom:4px;}
+  .manifest-preview .ma{font-size:12px;color:#00f0ff;margin-bottom:6px;}
+  .instructions{background:rgba(0,240,255,0.05);border-left:3px solid #00f0ff;
+    border-radius:8px;padding:14px 18px;margin-bottom:14px;font-size:13px;
+    color:rgba(255,255,255,0.85);line-height:1.7;}
+  .instructions ol{margin-left:18px;}
+  .instructions code{background:rgba(0,0,0,0.4);padding:2px 6px;border-radius:5px;
+    font-family:monospace;color:#00ff88;font-size:12px;}
+  .game-item{display:grid;grid-template-columns:64px 1fr auto;gap:14px;align-items:center;
+    background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+    border-radius:14px;padding:12px 16px;}
+  .game-thumb{width:64px;height:64px;border-radius:10px;
+    background:linear-gradient(135deg,#152238,#060a12);display:flex;align-items:center;
+    justify-content:center;font-size:26px;overflow:hidden;}
+  .game-thumb img{width:100%;height:100%;object-fit:cover;}
+  .game-title{font-weight:900;font-size:15px;margin-bottom:3px;}
+  .game-meta{font-size:12px;color:rgba(255,255,255,0.55);}
+  @media (max-width:600px){.container{padding:16px;}.form-row{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -256,7 +241,6 @@
     <div class="tabs">
       <button class="tab-btn active" data-tab="qr">🎫 Генератор</button>
       <button class="tab-btn" data-tab="tickets">📋 Билеты</button>
-      <button class="tab-btn" data-tab="incidents">🚨 Нарушители</button>
       <button class="tab-btn" data-tab="records">🏆 Рекорды</button>
       <button class="tab-btn" data-tab="maintenance">🔧 Техработы</button>
       <button class="tab-btn" data-tab="settingsT">⚙️ Настройки</button>
@@ -313,7 +297,6 @@
           <div class="stat"><div class="stat-value" id="statUsed" style="color:#aaa;">0</div><div class="stat-label">Использовано</div></div>
           <div class="stat"><div class="stat-value" id="statBanned" style="color:#ff3344;">0</div><div class="stat-label">Забанено</div></div>
           <div class="stat"><div class="stat-value" id="statRecords" style="color:#ffd700;">0</div><div class="stat-label">Рекордов</div></div>
-          <div class="stat"><div class="stat-value" id="statIncidents" style="color:#ff3344;">0</div><div class="stat-label">Нарушений</div></div>
         </div>
       </div>
     </div>
@@ -329,16 +312,6 @@
           <button class="btn btn-sm danger" id="btnClearTickets" style="margin-left:auto;">🗑️ Удалить все</button>
         </div>
         <div class="list" id="ticketsList"></div>
-      </div>
-    </div>
-
-    <div class="pane" id="pane-incidents">
-      <div class="card">
-        <div class="card-title">🚨 Журнал нарушителей</div>
-        <div style="display:flex;gap:10px;margin-bottom:14px;">
-          <button class="btn btn-sm danger" id="btnClearIncidents" style="margin-left:auto;">🗑️ Очистить</button>
-        </div>
-        <div class="list" id="incidentsList"></div>
       </div>
     </div>
 
@@ -387,23 +360,17 @@
       </div>
       <div class="card">
         <div class="card-title">🛠️ Мастер-код разработчика</div>
-        <div class="card-sub">Единый код для входа в панель разработчика</div>
         <input type="text" class="form-input" id="newDevCode" placeholder="DEV-2025-SIB" style="margin-bottom:12px;">
         <button class="btn primary" id="btnSaveDevCode" style="width:100%;">💾 Сохранить</button>
       </div>
-
       <div class="card">
-        <div class="card-title">📦 GitHub для ZIP и больших игр</div>
+        <div class="card-title">📦 GitHub</div>
         <div class="card-sub">
-          ZIP и HTML &gt; 10 МБ идут в GitHub. Файлы раздаются через <b>raw.githack.com</b>
-          (правильные MIME — игра откроется, а не покажется как текст).
-        </div>
-        <div class="card-sub" style="background:rgba(255,170,0,0.1);padding:10px 14px;border-radius:8px;border-left:3px solid #ffaa00;">
-          <b>⚠️ Нужен Personal Access Token</b> с правами <code style="color:#ffaa00;">repo</code> (или Contents: Read & Write).
-          GitHub → Settings → Developer settings → Personal access tokens.
+          Игры (папки с манифестом) загружаются в указанный репозиторий, отдаются через
+          <b>raw.githack.com</b> — правильные MIME-типы для HTML/WASM.
         </div>
         <div class="form-row">
-          <div class="form-group"><label>GitHub владелец</label><input type="text" class="form-input" id="ghOwner" placeholder="NasDail"></div>
+          <div class="form-group"><label>Владелец</label><input type="text" class="form-input" id="ghOwner" placeholder="NasDail"></div>
           <div class="form-group"><label>Репозиторий</label><input type="text" class="form-input" id="ghRepo" placeholder="Games"></div>
         </div>
         <div class="form-row">
@@ -413,7 +380,6 @@
         <div class="form-group"><label>GitHub Token</label><input type="password" class="form-input" id="ghToken" placeholder="ghp_..."></div>
         <button class="btn primary" id="btnSaveGitHub" style="width:100%;">💾 Сохранить GitHub</button>
       </div>
-
       <div class="card">
         <div class="card-title">💾 Экспорт</div>
         <button class="btn" id="btnExport">📥 Скачать backup</button>
@@ -428,7 +394,7 @@
       <div class="brand-logo">🛠️</div>
       <div>
         <div class="brand-title">СИБКОДБОКС — РАЗРАБОТЧИК</div>
-        <div class="brand-subtitle">Публикация игр в каталог автомата</div>
+        <div class="brand-subtitle">Публикация игр в каталог</div>
       </div>
     </div>
     <div class="header-actions">
@@ -439,9 +405,9 @@
   </header>
   <div class="container">
     <div class="tabs">
-      <button class="tab-btn active" data-tab="dev-games" data-app="dev">🎮 Каталог</button>
-      <button class="tab-btn" data-tab="dev-add" data-app="dev">➕ Добавить</button>
-      <button class="tab-btn" data-tab="dev-guide" data-app="dev">📖 Инструкция</button>
+      <button class="tab-btn active" data-tab="dev-games">🎮 Каталог</button>
+      <button class="tab-btn" data-tab="dev-add">➕ Добавить игру</button>
+      <button class="tab-btn" data-tab="dev-guide">📖 Инструкция</button>
     </div>
 
     <div class="pane active" id="pane-dev-games">
@@ -453,73 +419,64 @@
 
     <div class="pane" id="pane-dev-add">
       <div class="card">
-        <div class="card-title">1. Источник игры</div>
-        <div class="platform-grid" id="platformGrid">
-          <div class="platform-card" data-plat="html">
-            <div class="platform-icon">📄</div>
-            <div class="platform-name">HTML / ZIP</div>
-            <div class="platform-hint">файл или архив</div>
-          </div>
-          <div class="platform-card" data-plat="url">
-            <div class="platform-icon">🔗</div>
-            <div class="platform-name">Ссылка</div>
-            <div class="platform-hint">готовая</div>
-          </div>
+        <div class="card-title">📦 Загрузка папки с игрой</div>
+        <div class="card-sub">
+          Перетащите <b>папку</b> с игрой сюда, либо выберите вручную.
+          Внутри должен быть <code style="color:#00ff88;">index.html</code>
+          и <code style="color:#ffaa00;">manifest.json</code>.
         </div>
-        <div class="instructions" id="platformInstructions">
-          <b>Выберите источник.</b> ZIP автоматически распакуется и загрузится в GitHub.
+
+        <div class="drop-zone" id="dropZone">
+          <div class="drop-icon">📂</div>
+          <div class="drop-title">Перетащите папку (или .zip) сюда</div>
+          <div class="drop-hint">или нажмите, чтобы выбрать папку</div>
+          <input type="file" id="folderInput" webkitdirectory directory multiple style="display:none;">
+          <input type="file" id="fileInput" accept=".zip,application/zip" style="display:none;">
+        </div>
+
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn" id="btnPickFolder">📁 Выбрать папку</button>
+          <button class="btn" id="btnPickZip">📦 Выбрать .zip</button>
+        </div>
+
+        <div class="file-tree" id="fileTree" style="display:none;"></div>
+
+        <div class="manifest-preview" id="manifestPreview">
+          <img id="manIcon" alt="">
+          <div>
+            <div class="mt" id="manTitle">—</div>
+            <div class="ma" id="manAuthor">—</div>
+            <div class="mi" id="manInfo"></div>
+          </div>
         </div>
       </div>
 
-      <div class="card" id="addGameCard" style="display:none;">
-        <div class="card-title">2. Загрузка</div>
-
-        <div id="htmlBlock">
-          <div class="drop-zone" id="dropZone">
-            <div class="drop-icon">📦</div>
-            <div class="drop-title">Перетащите .html или .zip сюда</div>
-            <div class="drop-hint">Для ZIP — внутри должен быть index.html</div>
-            <input type="file" id="devGameFile" accept=".html,.htm,.zip,text/html,application/zip" style="display:none;">
-          </div>
-          <div class="size-indicator" id="sizeIndicator">Файл не загружен</div>
-
-          <div class="form-group" style="margin-top:14px;">
-            <label>Или вставьте HTML-код</label>
-            <textarea class="form-input" id="devGameHtml" rows="6" placeholder="<!DOCTYPE html>..."></textarea>
-          </div>
+      <div class="card">
+        <div class="card-title">📝 Метаданные (авто из манифеста)</div>
+        <div class="form-row">
+          <div class="form-group"><label>Название *</label><input type="text" class="form-input" id="devGameTitle" placeholder="Моя игра"></div>
+          <div class="form-group"><label>Автор *</label><input type="text" class="form-input" id="devGameAuthor" placeholder="Иванов И.И."></div>
         </div>
-
-        <div id="urlBlock" style="display:none;">
-          <div class="form-group">
-            <label>URL игры (HTTPS)</label>
-            <input type="text" class="form-input" id="devGameUrl" placeholder="https://example.com/game.html">
-          </div>
+        <div class="form-row">
+          <div class="form-group"><label>Жанр *</label><input type="text" class="form-input" id="devGameGenre" placeholder="Аркада"></div>
+          <div class="form-group"><label>Бейдж</label><input type="text" class="form-input" id="devGameBadge" placeholder="NEW"></div>
         </div>
-
-        <div style="margin-top:18px;">
-          <div class="form-row">
-            <div class="form-group"><label>Название *</label><input type="text" class="form-input" id="devGameTitle" placeholder="Моя игра"></div>
-            <div class="form-group"><label>Жанр *</label><input type="text" class="form-input" id="devGameGenre" placeholder="Аркада"></div>
-          </div>
-          <div class="form-row">
-            <div class="form-group"><label>Бейдж</label><input type="text" class="form-input" id="devGameBadge" placeholder="NEW"></div>
-            <div class="form-group"><label>Цвет</label><input type="color" class="form-input" id="devGameAccent" value="#00f0ff" style="height:48px;padding:6px;"></div>
-          </div>
-          <div class="form-group"><label>Обложка (URL)</label><input type="text" class="form-input" id="devGameCover" placeholder="https://..."></div>
-          <div class="form-group"><label>Фон (URL)</label><input type="text" class="form-input" id="devGameBg" placeholder="https://..."></div>
-          <div class="form-group"><label>Описание</label><textarea class="form-input" id="devGameDesc" rows="2"></textarea></div>
+        <div class="form-row">
+          <div class="form-group"><label>Версия</label><input type="text" class="form-input" id="devGameVersion" placeholder="1.0.0"></div>
+          <div class="form-group"><label>Цвет</label><input type="color" class="form-input" id="devGameAccent" value="#00f0ff" style="height:48px;padding:6px;"></div>
         </div>
+        <div class="form-group"><label>Описание</label><textarea class="form-input" id="devGameDesc" rows="3"></textarea></div>
+      </div>
 
+      <div class="card">
         <div class="upload-progress" id="uploadProgress">
           <div style="font-size:13px;font-weight:700;" id="uploadStatus">Загрузка...</div>
           <div class="upload-bar"><div class="upload-fill" id="uploadFill"></div></div>
         </div>
-
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
           <button class="btn" id="btnPreviewGame">👁️ Предпросмотр</button>
           <button class="btn primary" id="btnSaveGame" style="flex:1;">📤 Опубликовать</button>
         </div>
-
         <div id="previewBox" style="display:none;width:100%;height:360px;background:#000;border:2px solid rgba(0,240,255,0.3);border-radius:14px;overflow:hidden;margin-top:10px;">
           <iframe id="previewFrame" sandbox="allow-scripts allow-same-origin allow-pointer-lock" style="width:100%;height:100%;border:none;"></iframe>
         </div>
@@ -528,27 +485,29 @@
 
     <div class="pane" id="pane-dev-guide">
       <div class="card">
-        <div class="card-title">📖 Как опубликовать игру</div>
+        <div class="card-title">📖 Формат манифеста</div>
         <div class="instructions">
-          <b style="color:#00ff88;">HTML ≤ 10 МБ</b>
-          <ol><li>Загрузите .html → уйдёт в Supabase Storage.</li></ol>
-          <b style="color:#ffaa00;">ZIP любой размер</b>
-          <ol>
-            <li>Внутри архива должен быть <code>index.html</code>.</li>
-            <li>Распакуется в браузере, все файлы уйдут в GitHub одним коммитом.</li>
-            <li>Игра откроется через <code>raw.githack.com</code> — правильные MIME, относительные пути работают.</li>
-          </ol>
-          <b style="color:#00f0ff;">Готовая ссылка</b>
-          <ol><li>Залейте на GitHub Pages / itch.io / Vercel, вставьте URL.</li></ol>
+          Файл <code>manifest.json</code> в корне папки игры:
+          <pre style="background:#04070d;padding:12px;border-radius:8px;margin-top:8px;color:#00ff88;font-size:12px;overflow-x:auto;">{
+  "id": "my-game",
+  "title": "Моя игра",
+  "author": "Иванов И.И.",
+  "genre": "Аркада",
+  "description": "Краткое описание",
+  "badge": "NEW",
+  "accent": "#00f0ff",
+  "version": "1.0.0",
+  "entry": "index.html",
+  "icon": "icon.png",
+  "cover": "cover.png",
+  "bg": "bg.png"
+}</pre>
         </div>
         <div class="instructions" style="border-left-color:#ffaa00;background:rgba(255,170,0,0.05);">
-          <b style="color:#ffaa00;">Сборщики:</b>
-          <ul style="margin-left:18px;margin-top:6px;">
-            <li><b>Scratch:</b> <a href="https://packager.turbowarp.org/" target="_blank" style="color:#00f0ff;">packager.turbowarp.org</a> → HTML или ZIP</li>
-            <li><b>Processing:</b> <a href="https://editor.p5js.org/" target="_blank" style="color:#00f0ff;">editor.p5js.org</a> → HTML/ZIP</li>
-            <li><b>Godot:</b> Export → Web → ZIP</li>
-            <li><b>Unity:</b> Build Settings → WebGL → ZIP</li>
-          </ul>
+          <b style="color:#ffaa00;">Обязательные поля:</b>
+          <code>title</code>, <code>author</code>, <code>genre</code>,
+          <code>entry</code> (по умолчанию index.html).
+          Остальное — опционально.
         </div>
       </div>
     </div>
@@ -571,7 +530,6 @@
 const SUPABASE_URL = 'https://otsuvtcxnbdxrodayeta.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im90c3V2dGN4bmJkeHJvZGF5ZXRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4NjkyMzQsImV4cCI6MjEwNTQ0NTIzNH0.fsS73p3tRcbe0JIeRVjeqPStFzRe0lMKGLJQm7ki8oA';
 const TEACHER_TOKEN = 'SibTeacher_2025_x7k9_Arcade';
-const SUPABASE_LIMIT_BYTES = 10 * 1024 * 1024;
 const GITHUB_PARALLEL = 5;
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
@@ -579,32 +537,26 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
 });
 
 const State = {
-  tickets: [], incidents: [], records: {}, config: {}, games: [],
+  tickets: [], records: {}, config: {}, games: [],
   currentTicket: null,
   ticketFilter: 'all',
   role: 'student',
   loginMode: 'teacher',
-  platform: null,
-  loadedZip: null,
-  loadedZipName: ''
+  folderFiles: null,   // Map: path → File
+  folderManifest: null,
+  isZip: false
 };
 
 function toast(text, type) {
   const el = document.getElementById('toast');
-  el.textContent = text;
-  el.className = '';
+  el.textContent = text; el.className = '';
   if (type) el.classList.add(type);
   el.classList.add('show');
   clearTimeout(el._t);
   el._t = setTimeout(() => el.classList.remove('show'), 3500);
 }
-function esc(s) {
-  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-function fmtDate(iso) {
-  if (!iso) return '—';
-  return new Date(iso).toLocaleString('ru-RU', {day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
-}
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function fmtDate(iso) { if (!iso) return '—'; return new Date(iso).toLocaleString('ru-RU', {day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}); }
 function askConfirm(title, text, onYes) {
   const modal = document.getElementById('confirmModal');
   document.getElementById('confirmTitle').textContent = title;
@@ -616,54 +568,18 @@ function askConfirm(title, text, onYes) {
   yes.onclick = () => { cleanup(); onYes && onYes(); };
   no.onclick = cleanup;
 }
-function humanSize(bytes) {
-  if (bytes < 1024) return bytes + ' B';
-  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
-  return (bytes/1024/1024).toFixed(2) + ' MB';
-}
+function humanSize(bytes) { if (bytes < 1024) return bytes + ' B'; if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB'; return (bytes/1024/1024).toFixed(2) + ' MB'; }
 function arrayBufferToBase64(buf) {
   const bytes = new Uint8Array(buf);
   let binary = '';
   const chunk = 0x8000;
-  for (let i = 0; i < bytes.length; i += chunk) {
-    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
-  }
+  for (let i = 0; i < bytes.length; i += chunk) binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
   return btoa(binary);
-}
-function utf8ToBase64(str) {
-  return arrayBufferToBase64(new TextEncoder().encode(str).buffer);
-}
-function findCommonPrefix(files) {
-  if (files.length === 0) return '';
-  const first = files[0];
-  const lastSlash = first.lastIndexOf('/');
-  if (lastSlash === -1) return '';
-  const candidate = first.slice(0, lastSlash + 1);
-  for (const f of files) if (!f.startsWith(candidate)) return '';
-  return candidate;
-}
-function findIndexHtml(files) {
-  const root = files.find(f => /^index\.html?$/i.test(f));
-  if (root) return root;
-  const tops = new Set();
-  files.forEach(f => { const p = f.split('/'); if (p.length > 1) tops.add(p[0]); });
-  if (tops.size === 1) {
-    const folder = [...tops][0];
-    const nested = files.find(f => new RegExp(`^${folder}/index\\.html?$`, 'i').test(f));
-    if (nested) return nested;
-  }
-  const cands = files.filter(f => /index\.html?$/i.test(f)).sort((a,b) => a.length - b.length);
-  return cands[0] || null;
 }
 async function parallelLimit(items, limit, fn) {
   let i = 0;
   const results = new Array(items.length);
-  async function worker() {
-    while (i < items.length) {
-      const idx = i++;
-      results[idx] = await fn(items[idx], idx);
-    }
-  }
+  async function worker() { while (i < items.length) { const idx = i++; results[idx] = await fn(items[idx], idx); } }
   await Promise.all(Array(Math.min(limit, items.length)).fill().map(() => worker()));
   return results;
 }
@@ -671,16 +587,14 @@ async function parallelLimit(items, limit, fn) {
 (function fillClasses(){
   const sel = document.getElementById('ownerClass');
   const letters = ['А','Б','В','Г','Д','Е','Ж'];
-  for (let g = 1; g <= 11; g++) {
-    for (const L of letters) {
-      const o = document.createElement('option');
-      o.value = g + L;
-      o.textContent = g + ' ' + L;
-      sel.appendChild(o);
-    }
+  for (let g = 1; g <= 11; g++) for (const L of letters) {
+    const o = document.createElement('option'); o.value = g + L; o.textContent = g + ' ' + L; sel.appendChild(o);
   }
 })();
 
+/* =====================================================================
+   LOGIN
+   ===================================================================== */
 const gate = document.getElementById('gate');
 const gateInput = document.getElementById('gateInput');
 const gateBtn = document.getElementById('gateBtn');
@@ -724,36 +638,18 @@ async function doLogin() {
       if (val === realPin || val === '1234') {
         gate.classList.add('hidden');
         document.getElementById('teacherApp').style.display = 'block';
-        await loadAll(); subscribeRealtime();
+        await loadAll();
         toast('Добро пожаловать, учитель', 'success');
-        return;
-      }
-      const devCheck = await sb.from('tickets').select('*').eq('id', val).eq('role', 'developer').maybeSingle();
-      if (devCheck.data) {
-        gate.classList.add('hidden');
-        document.getElementById('devApp').style.display = 'block';
-        await loadAll(); subscribeRealtime();
-        toast('Доступ разработчика: ' + (devCheck.data.owner_name || val), 'success');
         return;
       }
       failLogin('Неверный PIN');
       return;
     }
-
     if (val === (cfg.developer_code || 'DEV-2025-SIB') || val === 'DEV-2025-SIB') {
       gate.classList.add('hidden');
       document.getElementById('devApp').style.display = 'block';
-      await loadAll(); subscribeRealtime();
+      await loadAll();
       toast('Мастер-доступ разработчика', 'success');
-      return;
-    }
-    const { data } = await sb.from('tickets').select('*').eq('id', val).eq('role', 'developer').maybeSingle();
-    if (data) {
-      if (data.banned) { failLogin('Код заблокирован'); return; }
-      gate.classList.add('hidden');
-      document.getElementById('devApp').style.display = 'block';
-      await loadAll(); subscribeRealtime();
-      toast('Добро пожаловать, ' + (data.owner_name || 'разработчик'), 'success');
       return;
     }
     failLogin('Неверный код');
@@ -768,16 +664,17 @@ function failLogin(msg) {
 document.getElementById('btnLogoutT').onclick = () => { gate.classList.remove('hidden'); document.getElementById('teacherApp').style.display = 'none'; gateInput.value = ''; };
 document.getElementById('btnLogoutD').onclick = () => { gate.classList.remove('hidden'); document.getElementById('devApp').style.display = 'none'; gateInput.value = ''; };
 
+/* =====================================================================
+   LOAD ALL
+   ===================================================================== */
 async function loadAll() {
   try {
-    const [tRes, iRes, rRes, cRes] = await Promise.all([
+    const [tRes, rRes, cRes] = await Promise.all([
       sb.from('tickets').select('*').order('created_at', { ascending: false }).limit(500),
-      sb.from('incidents').select('*').order('created_at', { ascending: false }).limit(200),
       sb.from('records').select('*').order('score', { ascending: false }).limit(2000),
       sb.from('config').select('*')
     ]);
     State.tickets = tRes.data || [];
-    State.incidents = iRes.data || [];
     State.records = {};
     (rRes.data || []).forEach(rec => {
       if (!State.records[rec.game_id]) State.records[rec.game_id] = [];
@@ -802,7 +699,7 @@ async function loadAll() {
     document.getElementById('ghFolder').value = State.config.github_folder || 'games';
     document.getElementById('ghToken').value = State.config.github_token || '';
 
-    renderStats(); renderTickets(); renderIncidents(); renderRecords();
+    renderStats(); renderTickets(); renderRecords();
     renderDevGamesList(); loadMaintenanceState(); updateCloudStatus(true);
   } catch(e) {
     updateCloudStatus(false);
@@ -817,26 +714,16 @@ function updateCloudStatus(online) {
     el.textContent = online ? '☁️ Онлайн' : '📴 Офлайн';
   });
 }
-let realtimeCh = null;
-function subscribeRealtime() {
-  if (realtimeCh) return;
-  try {
-    realtimeCh = sb.channel('sibkodbox-pult')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets' }, () => loadAll())
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'incidents' }, () => { loadAll(); toast('🚨 Новый нарушитель', 'error'); })
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'records' }, () => loadAll())
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'config' }, () => loadAll())
-      .subscribe();
-  } catch(e) {}
-}
 
+/* =====================================================================
+   STATS / TICKETS / RECORDS
+   ===================================================================== */
 function renderStats() {
   document.getElementById('statTotal').textContent = State.tickets.length;
   document.getElementById('statActive').textContent = State.tickets.filter(t => !t.used && !t.banned).length;
   document.getElementById('statUsed').textContent = State.tickets.filter(t => t.used && !t.banned).length;
   document.getElementById('statBanned').textContent = State.tickets.filter(t => t.banned).length;
   document.getElementById('statRecords').textContent = Object.values(State.records).reduce((a,b) => a + b.length, 0);
-  document.getElementById('statIncidents').textContent = State.incidents.length;
 }
 function loadMaintenanceState() {
   const mode = State.config.maintenance_mode === 'on';
@@ -854,6 +741,10 @@ document.getElementById('btnSaveMaintenance').onclick = async () => {
     loadMaintenanceState();
   } catch(e) { toast('Ошибка: ' + e.message, 'error'); }
 };
+
+/* =====================================================================
+   СОЗДАНИЕ БИЛЕТА
+   ===================================================================== */
 document.querySelectorAll('.role-pill').forEach(p => {
   p.onclick = () => {
     document.querySelectorAll('.role-pill').forEach(x => x.classList.remove('active'));
@@ -895,11 +786,9 @@ function renderQr(ticket) {
   const cv = document.getElementById('qrCanvas');
   const qr = window.qrcode(0, 'M');
   qr.addData(ticket.id); qr.make();
-  const count = qr.getModuleCount();
-  const size = 240;
+  const count = qr.getModuleCount(); const size = 240;
   cv.width = size; cv.height = size;
-  const c = cv.getContext('2d');
-  const cell = size / count;
+  const c = cv.getContext('2d'); const cell = size / count;
   c.fillStyle = '#fff'; c.fillRect(0, 0, size, size);
   c.fillStyle = '#000';
   for (let r = 0; r < count; r++) for (let cc = 0; cc < count; cc++) if (qr.isDark(r, cc)) c.fillRect(cc*cell, r*cell, cell, cell);
@@ -955,8 +844,7 @@ function renderTickets() {
 window.viewTicket = (id) => {
   const t = State.tickets.find(x => x.id === id);
   if (!t) return;
-  State.currentTicket = t;
-  renderQr(t);
+  State.currentTicket = t; renderQr(t);
   document.querySelector('[data-tab="qr"]').click();
 };
 window.banTicket = (id) => {
@@ -978,18 +866,6 @@ document.getElementById('btnClearTickets').onclick = () => {
   });
 };
 
-function renderIncidents() {
-  const list = document.getElementById('incidentsList');
-  if (State.incidents.length === 0) { list.innerHTML = '<div class="empty"><div class="empty-icon">✅</div>Нарушений нет</div>'; return; }
-  list.innerHTML = State.incidents.map(i => `<div class="incident"><div>${i.photo ? `<img class="incident-photo" src="${i.photo}">` : '<div class="incident-photo" style="display:flex;align-items:center;justify-content:center;font-size:30px;">👤</div>'}</div><div class="incident-info"><div class="incident-name">${esc(i.name)}</div><div class="incident-meta">Билет: <b style="color:#00f0ff;">${esc(i.ticket_id || '—')}</b><br>${fmtDate(i.created_at)}<br><span style="color:#ff8888;">${esc(i.reason || 'Нецензурное имя')}</span></div></div><div><button class="btn btn-sm danger" onclick="deleteIncident(${i.id})">✕</button></div></div>`).join('');
-}
-window.deleteIncident = (id) => {
-  askConfirm('Удалить запись?', '', async () => { await sb.from('incidents').delete().eq('id', id); loadAll(); });
-};
-document.getElementById('btnClearIncidents').onclick = () => {
-  askConfirm('Очистить журнал?', '', async () => { await sb.from('incidents').delete().neq('id', 0); toast('Очищено', 'success'); loadAll(); });
-};
-
 document.getElementById('recordsFilter').onchange = renderRecords;
 function renderRecords() {
   const filter = document.getElementById('recordsFilter').value;
@@ -1004,7 +880,7 @@ function renderRecords() {
   items = items.slice(0, 100);
   if (items.length === 0) { list.innerHTML = '<div class="empty"><div class="empty-icon">🏆</div>Пока нет рекордов</div>'; return; }
   list.innerHTML = items.map((r, i) => {
-    let rc = ''; if (i === 0) rc = 'gold'; else if (i === 1) rc = 'silver'; else if (i === 2) rc = 'bronze';
+    let rc = ''; if (i === 0) rc = 'gold';
     return `<div class="record-row"><div class="rank ${rc}">#${i+1}</div><div><b>${esc(r.player_name)}</b><div style="font-size:11px;color:#888;">${esc(r._gid || r.game_id || '')}</div></div><div style="font-weight:900;color:#00ff88;">${r.score}</div><div style="font-size:11px;color:#888;">${fmtDate(r.created_at)}</div></div>`;
   }).join('');
 }
@@ -1038,27 +914,21 @@ document.getElementById('btnSaveDevCode').onclick = async () => {
   toast('Мастер-код сохранён', 'success');
 };
 document.getElementById('btnSaveGitHub').onclick = async () => {
-  const owner = document.getElementById('ghOwner').value.trim();
-  const repo = document.getElementById('ghRepo').value.trim();
-  const branch = document.getElementById('ghBranch').value.trim() || 'main';
-  const folder = document.getElementById('ghFolder').value.trim() || 'games';
-  const token = document.getElementById('ghToken').value.trim();
+  const fields = {
+    github_owner: document.getElementById('ghOwner').value.trim(),
+    github_repo: document.getElementById('ghRepo').value.trim(),
+    github_branch: document.getElementById('ghBranch').value.trim() || 'main',
+    github_folder: document.getElementById('ghFolder').value.trim() || 'games',
+    github_token: document.getElementById('ghToken').value.trim()
+  };
   try {
-    await sb.from('config').upsert({ key:'github_owner', value: owner });
-    await sb.from('config').upsert({ key:'github_repo', value: repo });
-    await sb.from('config').upsert({ key:'github_branch', value: branch });
-    await sb.from('config').upsert({ key:'github_folder', value: folder });
-    await sb.from('config').upsert({ key:'github_token', value: token });
-    State.config.github_owner = owner;
-    State.config.github_repo = repo;
-    State.config.github_branch = branch;
-    State.config.github_folder = folder;
-    State.config.github_token = token;
+    for (const [k,v] of Object.entries(fields)) await sb.from('config').upsert({ key: k, value: v });
+    Object.assign(State.config, fields);
     toast('GitHub сохранён', 'success');
   } catch(e) { toast('Ошибка: ' + e.message, 'error'); }
 };
 document.getElementById('btnExport').onclick = () => {
-  const data = { exported_at: new Date().toISOString(), tickets: State.tickets, incidents: State.incidents, records: State.records, config: State.config, games: State.games };
+  const data = { exported_at: new Date().toISOString(), tickets: State.tickets, records: State.records, config: State.config, games: State.games };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1080,95 +950,41 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 document.getElementById('btnReloadT').onclick = () => { loadAll(); toast('Обновлено', 'success'); };
 document.getElementById('btnReloadD').onclick = () => { loadAll(); toast('Обновлено', 'success'); };
 
-const PLATFORM_INFO = {
-  html: {
-    inputType: 'html',
-    instructions: `<b>📦 HTML или ZIP</b><br>
-      • HTML ≤ 10 МБ → Supabase Storage<br>
-      • HTML > 10 МБ → GitHub<br>
-      • ZIP (любой размер) → GitHub одним коммитом → raw.githack CDN<br>
-      Внутри ZIP должен быть <code>index.html</code>.`
-  },
-  url: {
-    inputType: 'url',
-    instructions: `<b>🔗 Готовая ссылка</b><br>
-      Подойдёт: GitHub Pages, itch.io, Vercel, любой статический хостинг.`
-  }
-};
-document.querySelectorAll('.platform-card').forEach(card => {
-  card.onclick = () => {
-    document.querySelectorAll('.platform-card').forEach(c => c.classList.remove('active'));
-    card.classList.add('active');
-    State.platform = card.getAttribute('data-plat');
-    selectPlatform(State.platform);
-  };
-});
-function selectPlatform(plat) {
-  const info = PLATFORM_INFO[plat];
-  if (!info) return;
-  document.getElementById('platformInstructions').innerHTML = info.instructions;
-  document.getElementById('addGameCard').style.display = 'block';
-  document.getElementById('htmlBlock').style.display = info.inputType === 'html' ? 'block' : 'none';
-  document.getElementById('urlBlock').style.display = info.inputType === 'url' ? 'block' : 'none';
-}
-
+/* =====================================================================
+   ЗАГРУЗКА ПАПКИ
+   ===================================================================== */
 const dropZone = document.getElementById('dropZone');
-const fileInput = document.getElementById('devGameFile');
-const htmlTextarea = document.getElementById('devGameHtml');
-const sizeIndicator = document.getElementById('sizeIndicator');
+const folderInput = document.getElementById('folderInput');
+const fileInput = document.getElementById('fileInput');
+const fileTree = document.getElementById('fileTree');
+const manifestPreview = document.getElementById('manifestPreview');
 
-dropZone.onclick = () => fileInput.click();
-fileInput.onchange = async (e) => { const f = e.target.files[0]; if (f) await handleGameFile(f); };
+document.getElementById('btnPickFolder').onclick = () => folderInput.click();
+document.getElementById('btnPickZip').onclick = () => fileInput.click();
+dropZone.onclick = () => folderInput.click();
 
-async function handleGameFile(file) {
-  const fname = file.name.toLowerCase();
+/* Обработка выбранной папки через webkitdirectory */
+folderInput.onchange = async (e) => {
+  const files = Array.from(e.target.files);
+  if (!files.length) return;
+  const map = new Map();
+  files.forEach(f => {
+    const p = f.webkitRelativePath || f.name;
+    // убираем первую папку (имя корня)
+    const clean = p.split('/').slice(1).join('/');
+    if (clean) map.set(clean, f);
+  });
+  await processFilesMap(map, 'folder');
+};
 
-  if (fname.endsWith('.html') || fname.endsWith('.htm')) {
-    State.loadedZip = null;
-    const text = await file.text();
-    htmlTextarea.value = text;
-    const size = new Blob([text]).size;
-    sizeIndicator.className = 'size-indicator' + (size > SUPABASE_LIMIT_BYTES ? ' warn' : '');
-    sizeIndicator.innerHTML = `📄 <b>${file.name}</b> • ${humanSize(size)} • ${size <= SUPABASE_LIMIT_BYTES ? '→ Supabase' : '→ GitHub'}`;
-    if (!document.getElementById('devGameTitle').value) {
-      document.getElementById('devGameTitle').value = file.name.replace(/\.html?$/i, '').replace(/[-_]/g, ' ');
-    }
-    toast('HTML загружен: ' + humanSize(file.size), 'success');
-    return;
-  }
+/* Обработка обычного zip */
+fileInput.onchange = async (e) => {
+  const f = e.target.files[0];
+  if (!f) return;
+  await processZipFile(f);
+};
 
-  if (fname.endsWith('.zip')) {
-    toast('Распаковка архива...', 'success');
-    try {
-      const zip = await JSZip.loadAsync(file);
-      const allFiles = Object.keys(zip.files).filter(n => !zip.files[n].dir);
-      const indexPath = findIndexHtml(allFiles);
-      if (!indexPath) { toast('В архиве нет index.html!', 'error'); return; }
-
-      let totalSize = 0;
-      for (const n of allFiles) {
-        const blob = await zip.files[n].async('blob');
-        totalSize += blob.size;
-      }
-
-      State.loadedZip = zip;
-      State.loadedZipName = file.name;
-      htmlTextarea.value = '';
-
-      sizeIndicator.className = 'size-indicator' + (totalSize > 100 * 1024 * 1024 ? ' warn' : '');
-      sizeIndicator.innerHTML = `📦 <b>${file.name}</b> • файлов: <b>${allFiles.length}</b> • распаковано: <b>${humanSize(totalSize)}</b> • index: <b style="color:#00f0ff;">${indexPath}</b> • → GitHub`;
-
-      if (!document.getElementById('devGameTitle').value) {
-        document.getElementById('devGameTitle').value = file.name.replace(/\.zip$/i, '').replace(/[-_]/g, ' ');
-      }
-      toast(`ZIP распакован: ${allFiles.length} файлов`, 'success');
-    } catch (err) {
-      toast('Ошибка распаковки: ' + err.message, 'error');
-    }
-    return;
-  }
-  toast('Поддерживается только .html и .zip', 'error');
-}
+/* Drag & Drop — папка или файл */
 ['dragenter','dragover'].forEach(ev => {
   dropZone.addEventListener(ev, e => { e.preventDefault(); dropZone.classList.add('dragover'); });
 });
@@ -1176,98 +992,193 @@ async function handleGameFile(file) {
   dropZone.addEventListener(ev, e => { e.preventDefault(); dropZone.classList.remove('dragover'); });
 });
 dropZone.addEventListener('drop', async e => {
+  e.preventDefault();
+  const items = e.dataTransfer.items;
+  if (items && items.length) {
+    const entries = [];
+    for (let i = 0; i < items.length; i++) {
+      const entry = items[i].webkitGetAsEntry && items[i].webkitGetAsEntry();
+      if (entry) entries.push(entry);
+    }
+    if (entries.length) {
+      const map = new Map();
+      for (const en of entries) await readEntry(en, '', map);
+      if (map.size) { await processFilesMap(map, 'folder'); return; }
+    }
+  }
   const f = e.dataTransfer.files[0];
-  if (f) await handleGameFile(f);
-});
-htmlTextarea.addEventListener('input', () => {
-  if (State.loadedZip) return;
-  const size = new Blob([htmlTextarea.value]).size;
-  sizeIndicator.className = 'size-indicator' + (size > SUPABASE_LIMIT_BYTES ? ' warn' : '');
-  sizeIndicator.innerHTML = `HTML-код • ${humanSize(size)} • ${size <= SUPABASE_LIMIT_BYTES ? '→ Supabase' : '→ GitHub'}`;
+  if (f) {
+    if (f.name.toLowerCase().endsWith('.zip')) await processZipFile(f);
+    else toast('Перетащите папку или .zip', 'error');
+  }
 });
 
-document.getElementById('btnPreviewGame').onclick = () => {
+/* Обход папки через FileSystemEntry */
+async function readEntry(entry, path, map) {
+  if (entry.isFile) {
+    const file = await new Promise((res, rej) => entry.file(res, rej));
+    map.set(path + entry.name, file);
+  } else if (entry.isDirectory) {
+    const reader = entry.createReader();
+    const entries = await new Promise(res => {
+      const all = [];
+      const read = () => reader.readEntries(batch => {
+        if (!batch.length) res(all);
+        else { all.push(...batch); read(); }
+      });
+      read();
+    });
+    for (const e of entries) await readEntry(e, path + entry.name + '/', map);
+  }
+}
+
+/* Превратить zip в Map<path, File> */
+async function processZipFile(zipFile) {
+  try {
+    toast('Распаковка архива...', 'success');
+    const zip = await JSZip.loadAsync(zipFile);
+    const map = new Map();
+    const tasks = [];
+    zip.forEach((relPath, entry) => {
+      if (entry.dir) return;
+      tasks.push((async () => {
+        const blob = await entry.async('blob');
+        const file = new File([blob], entry.name.split('/').pop(), { type: blob.type });
+        map.set(relPath, file);
+      })());
+    });
+    await Promise.all(tasks);
+    await processFilesMap(map, 'zip');
+  } catch(err) {
+    toast('Ошибка распаковки: ' + err.message, 'error');
+  }
+}
+
+/* Обработка Map<path, File> — поиск манифеста и index */
+async function processFilesMap(map, srcType) {
+  // Убираем возможную общую папку-обёртку
+  const paths = Array.from(map.keys());
+  const commonPrefix = findCommonPrefix(paths);
+  if (commonPrefix) {
+    const newMap = new Map();
+    map.forEach((f, p) => { newMap.set(p.slice(commonPrefix.length), f); });
+    map = newMap;
+  }
+
+  // Ищем index.html
+  const indexPath = findIndexHtml(Array.from(map.keys()));
+  if (!indexPath) {
+    toast('В папке нет index.html!', 'error');
+    return;
+  }
+
+  // ОБЯЗАТЕЛЬНО: манифест
+  const manifestFile = map.get('manifest.json');
+  if (!manifestFile) {
+    toast('ОБЯЗАТЕЛЬНО: manifest.json в корне папки!', 'error');
+    return;
+  }
+
+  let manifest;
+  try {
+    const text = await manifestFile.text();
+    manifest = JSON.parse(text);
+  } catch(err) {
+    toast('manifest.json — ошибка JSON: ' + err.message, 'error');
+    return;
+  }
+
+  if (!manifest.title || !manifest.author) {
+    toast('Манифест: обязательны title и author', 'error');
+    return;
+  }
+
+  State.folderFiles = map;
+  State.folderManifest = manifest;
+  State.isZip = srcType === 'zip';
+
+  // Рисуем дерево файлов
+  renderFileTree(map, indexPath);
+
+  // Заполняем форму
+  document.getElementById('devGameTitle').value = manifest.title || '';
+  document.getElementById('devGameAuthor').value = manifest.author || '';
+  document.getElementById('devGameGenre').value = manifest.genre || '';
+  document.getElementById('devGameBadge').value = manifest.badge || '';
+  document.getElementById('devGameVersion').value = manifest.version || '';
+  document.getElementById('devGameAccent').value = manifest.accent || '#00f0ff';
+  document.getElementById('devGameDesc').value = manifest.description || '';
+
+  // Превью манифеста
+  manifestPreview.classList.add('show');
+  document.getElementById('manTitle').textContent = manifest.title;
+  document.getElementById('manAuthor').textContent = '👤 ' + manifest.author + (manifest.version ? ' • v' + manifest.version : '');
+  document.getElementById('manInfo').innerHTML = `
+    Жанр: <b>${esc(manifest.genre || '—')}</b><br>
+    Файлов: <b>${map.size}</b><br>
+    Точка входа: <b style="color:#00f0ff;">${esc(indexPath)}</b>`;
+
+  // Превью иконки
+  const iconName = manifest.icon || 'icon.png';
+  const iconFile = map.get(iconName);
+  if (iconFile) {
+    const url = URL.createObjectURL(iconFile);
+    const img = document.getElementById('manIcon');
+    img.src = url; img.style.display = 'block';
+  } else {
+    document.getElementById('manIcon').style.display = 'none';
+  }
+
+  toast('Папка загружена: ' + map.size + ' файлов', 'success');
+}
+
+function renderFileTree(map, indexPath) {
+  fileTree.style.display = 'block';
+  const items = Array.from(map.keys()).sort();
+  fileTree.innerHTML = items.map(p => {
+    let cls = 'f';
+    if (p === indexPath) cls = 'i';
+    if (p === 'manifest.json') cls = 'm';
+    const size = map.get(p).size;
+    return `<div class="${cls}">${esc(p)} <span style="color:#666;">(${humanSize(size)})</span></div>`;
+  }).join('');
+}
+
+function findCommonPrefix(paths) {
+  if (paths.length === 0) return '';
+  const first = paths[0];
+  const lastSlash = first.indexOf('/');
+  if (lastSlash === -1) return '';
+  const candidate = first.slice(0, lastSlash + 1);
+  for (const p of paths) if (!p.startsWith(candidate)) return '';
+  return candidate;
+}
+function findIndexHtml(paths) {
+  if (paths.includes('index.html')) return 'index.html';
+  const nested = paths.find(p => /(^|\/)index\.html?$/i.test(p));
+  return nested || null;
+}
+
+/* =====================================================================
+   ПРЕДПРОСМОТР
+   ===================================================================== */
+document.getElementById('btnPreviewGame').onclick = async () => {
+  if (!State.folderFiles) { toast('Сначала загрузите папку', 'error'); return; }
+  const indexFile = State.folderFiles.get('index.html') || State.folderFiles.get(findIndexHtml(Array.from(State.folderFiles.keys())));
+  if (!indexFile) { toast('index.html не найден', 'error'); return; }
+  let html = await indexFile.text();
+  // Встраиваем все ресурсы как blob URL (упрощённо — только для предпросмотра)
   const box = document.getElementById('previewBox');
   const frame = document.getElementById('previewFrame');
   box.style.display = 'block';
-  if (State.platform === 'html') {
-    const html = htmlTextarea.value.trim();
-    if (!html) { toast('Загрузите HTML', 'error'); return; }
-    frame.removeAttribute('src');
-    frame.srcdoc = html;
-  } else {
-    const url = document.getElementById('devGameUrl').value.trim();
-    if (!url) { toast('Укажите URL', 'error'); return; }
-    frame.removeAttribute('srcdoc');
-    frame.src = url;
-  }
+  frame.removeAttribute('src');
+  frame.srcdoc = html;
 };
 
-async function uploadHtmlToSupabase(htmlCode, gameId) {
-  const path = `${gameId}/index.html`;
-  const blob = new Blob([htmlCode], { type: 'text/html;charset=utf-8' });
-  const { error } = await sb.storage.from('games').upload(path, blob, {
-    contentType: 'text/html;charset=utf-8', upsert: true, cacheControl: '3600'
-  });
-  if (error) throw error;
-  const { data } = sb.storage.from('games').getPublicUrl(path);
-  return data.publicUrl;
-}
-
-async function uploadHtmlToGitHub(htmlCode, gameId, meta) {
-  const owner = State.config.github_owner;
-  const repo = State.config.github_repo;
-  const branch = State.config.github_branch || 'main';
-  const folder = State.config.github_folder || 'games';
-  const token = State.config.github_token;
-  if (!owner || !repo || !token) throw new Error('GitHub не настроен (owner/repo/token)');
-
-  const path = `${folder}/${gameId}/index.html`;
-  const apiHeaders = {
-    'Authorization': `Bearer ${token}`,
-    'Accept': 'application/vnd.github+json',
-    'Content-Type': 'application/json'
-  };
-
-  const refRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/ref/heads/${branch}`, { headers: apiHeaders });
-  if (!refRes.ok) throw new Error(`GitHub ref: ${refRes.status}`);
-  const baseSha = (await refRes.json()).object.sha;
-
-  const commitRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/commits/${baseSha}`, { headers: apiHeaders });
-  const baseCommit = await commitRes.json();
-
-  const blobRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/blobs`, {
-    method: 'POST', headers: apiHeaders,
-    body: JSON.stringify({ content: utf8ToBase64(htmlCode), encoding: 'base64' })
-  });
-  if (!blobRes.ok) throw new Error(`GitHub blob: ${blobRes.status}`);
-  const blob = await blobRes.json();
-
-  const treeRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/trees`, {
-    method: 'POST', headers: apiHeaders,
-    body: JSON.stringify({ base_tree: baseCommit.tree.sha, tree: [{ path, mode: '100644', type: 'blob', sha: blob.sha }] })
-  });
-  if (!treeRes.ok) throw new Error(`GitHub tree: ${treeRes.status}`);
-  const tree = await treeRes.json();
-
-  const newCommitRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/commits`, {
-    method: 'POST', headers: apiHeaders,
-    body: JSON.stringify({ message: `Add game: ${meta.title || gameId}`, tree: tree.sha, parents: [baseSha] })
-  });
-  if (!newCommitRes.ok) throw new Error(`GitHub commit: ${newCommitRes.status}`);
-  const newCommit = await newCommitRes.json();
-
-  const updRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/refs/heads/${branch}`, {
-    method: 'PATCH', headers: apiHeaders,
-    body: JSON.stringify({ sha: newCommit.sha })
-  });
-  if (!updRes.ok) throw new Error(`GitHub ref update: ${updRes.status}`);
-
-  // ✅ raw.githack — правильный Content-Type для HTML
-  return `https://raw.githack.com/${owner}/${repo}/${branch}/${path}`;
-}
-
-async function uploadZipToGitHub(zip, gameId, meta, onProgress) {
+/* =====================================================================
+   ПУБЛИКАЦИЯ В GITHUB
+   ===================================================================== */
+async function uploadFolderToGitHub(map, gameId, manifest, onProgress) {
   const owner = State.config.github_owner;
   const repo = State.config.github_repo;
   const branch = State.config.github_branch || 'main';
@@ -1281,13 +1192,7 @@ async function uploadZipToGitHub(zip, gameId, meta, onProgress) {
     'Content-Type': 'application/json'
   };
 
-  const allFiles = Object.keys(zip.files).filter(n => !zip.files[n].dir);
-  const commonPrefix = findCommonPrefix(allFiles);
-  const indexPath = findIndexHtml(allFiles);
-  if (!indexPath) throw new Error('index.html не найден в архиве');
-
-  onProgress && onProgress(0, allFiles.length, 'Получение ветки...');
-
+  onProgress && onProgress(0, map.size, 'Получение ветки...');
   const refRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/ref/heads/${branch}`, { headers: apiHeaders });
   if (!refRes.ok) throw new Error(`GitHub ref: ${refRes.status} — проверьте owner/repo/token`);
   const baseSha = (await refRes.json()).object.sha;
@@ -1295,10 +1200,11 @@ async function uploadZipToGitHub(zip, gameId, meta, onProgress) {
   const commitRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/commits/${baseSha}`, { headers: apiHeaders });
   const baseCommit = await commitRes.json();
 
+  const allPaths = Array.from(map.keys());
   let done = 0;
-  const treeItems = await parallelLimit(allFiles, GITHUB_PARALLEL, async (filePath) => {
-    const blob = await zip.files[filePath].async('blob');
-    const buf = await blob.arrayBuffer();
+  const treeItems = await parallelLimit(allPaths, GITHUB_PARALLEL, async (filePath) => {
+    const file = map.get(filePath);
+    const buf = await file.arrayBuffer();
     const base64 = arrayBufferToBase64(buf);
 
     const blobRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/blobs`, {
@@ -1309,22 +1215,17 @@ async function uploadZipToGitHub(zip, gameId, meta, onProgress) {
     const blobData = await blobRes.json();
 
     done++;
-    onProgress && onProgress(done, allFiles.length, filePath);
-
-    const cleanPath = (commonPrefix && filePath.startsWith(commonPrefix))
-      ? filePath.slice(commonPrefix.length)
-      : filePath;
+    onProgress && onProgress(done, allPaths.length, filePath);
 
     return {
-      path: `${folder}/${gameId}/${cleanPath}`,
+      path: `${folder}/${gameId}/${filePath}`,
       mode: '100644',
       type: 'blob',
       sha: blobData.sha
     };
   });
 
-  onProgress && onProgress(allFiles.length, allFiles.length, 'Создание tree...');
-
+  onProgress && onProgress(allPaths.length, allPaths.length, 'Создание tree...');
   const treeRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/trees`, {
     method: 'POST', headers: apiHeaders,
     body: JSON.stringify({ base_tree: baseCommit.tree.sha, tree: treeItems })
@@ -1335,9 +1236,8 @@ async function uploadZipToGitHub(zip, gameId, meta, onProgress) {
   const newCommitRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/commits`, {
     method: 'POST', headers: apiHeaders,
     body: JSON.stringify({
-      message: `Add game: ${meta.title || gameId} (${allFiles.length} files)`,
-      tree: tree.sha,
-      parents: [baseSha]
+      message: `Add game: ${manifest.title || gameId} (${allPaths.length} files)`,
+      tree: tree.sha, parents: [baseSha]
     })
   });
   if (!newCommitRes.ok) throw new Error(`GitHub commit: ${newCommitRes.status}`);
@@ -1349,27 +1249,28 @@ async function uploadZipToGitHub(zip, gameId, meta, onProgress) {
   });
   if (!updRes.ok) throw new Error(`GitHub ref update: ${updRes.status}`);
 
-  const cleanIndex = (commonPrefix && indexPath.startsWith(commonPrefix))
-    ? indexPath.slice(commonPrefix.length)
-    : indexPath;
-
-  // ✅ raw.githack — HTML, WASM, изображения — все с правильным Content-Type
-  return `https://raw.githack.com/${owner}/${repo}/${branch}/${folder}/${gameId}/${cleanIndex}`;
+  const base = `https://raw.githack.com/${owner}/${repo}/${branch}/${folder}/${gameId}`;
+  const entry = manifest.entry || 'index.html';
+  return {
+    url: `${base}/${entry}`,
+    iconUrl: manifest.icon ? `${base}/${manifest.icon}` : '',
+    coverUrl: manifest.cover ? `${base}/${manifest.cover}` : '',
+    bgUrl: manifest.bg ? `${base}/${manifest.bg}` : (manifest.cover ? `${base}/${manifest.cover}` : '')
+  };
 }
 
 document.getElementById('btnSaveGame').onclick = async () => {
   const title = document.getElementById('devGameTitle').value.trim();
+  const author = document.getElementById('devGameAuthor').value.trim();
   const genre = document.getElementById('devGameGenre').value.trim();
-  const badge = document.getElementById('devGameBadge').value.trim() || 'WEB GAME';
+  const badge = document.getElementById('devGameBadge').value.trim();
+  const version = document.getElementById('devGameVersion').value.trim();
   const accent = document.getElementById('devGameAccent').value || '#00f0ff';
-  const cover = document.getElementById('devGameCover').value.trim();
-  const bg = document.getElementById('devGameBg').value.trim() || cover;
-  const desc = document.getElementById('devGameDesc').value.trim() || `Игра: ${title}`;
+  const desc = document.getElementById('devGameDesc').value.trim();
 
-  if (!title || !genre) { toast('Заполните Название и Жанр', 'error'); return; }
-
-  const info = PLATFORM_INFO[State.platform];
-  if (!info) { toast('Выберите источник', 'error'); return; }
+  if (!State.folderFiles) { toast('Загрузите папку с игрой', 'error'); return; }
+  if (!State.folderManifest) { toast('Манифест не найден', 'error'); return; }
+  if (!title || !author || !genre) { toast('Нужны: Название, Автор, Жанр', 'error'); return; }
 
   const prog = document.getElementById('uploadProgress');
   const fill = document.getElementById('uploadFill');
@@ -1379,55 +1280,39 @@ document.getElementById('btnSaveGame').onclick = async () => {
   document.getElementById('btnSaveGame').disabled = true;
 
   try {
-    let url = '', storageMode = '';
     const gameId = 'g-' + Date.now().toString(36);
+    const manifest = {
+      ...State.folderManifest,
+      title, author, genre, badge, version, accent,
+      description: desc || State.folderManifest.description || ''
+    };
 
-    if (info.inputType === 'html') {
-      if (State.loadedZip) {
-        const fileCount = Object.keys(State.loadedZip.files).filter(n => !State.loadedZip.files[n].dir).length;
-        stat.textContent = `Загрузка ZIP в GitHub (${fileCount} файлов)...`;
-        fill.style.width = '10%';
-        url = await uploadZipToGitHub(State.loadedZip, gameId, { title }, (done, total, name) => {
-          const pct = 10 + (done / total) * 85;
-          fill.style.width = pct + '%';
-          stat.textContent = `GitHub: ${done}/${total} — ${name.split('/').pop()}`;
-        });
-        storageMode = 'github-zip';
-        fill.style.width = '95%';
-      } else {
-        const html = htmlTextarea.value.trim();
-        if (!html) throw new Error('Загрузите HTML или ZIP');
-        const bytes = new Blob([html]).size;
-        if (bytes <= SUPABASE_LIMIT_BYTES) {
-          stat.textContent = `Supabase (${humanSize(bytes)})...`;
-          fill.style.width = '40%';
-          url = await uploadHtmlToSupabase(html, gameId);
-          storageMode = 'supabase';
-          fill.style.width = '90%';
-        } else {
-          stat.textContent = `GitHub (${humanSize(bytes)})...`;
-          fill.style.width = '20%';
-          url = await uploadHtmlToGitHub(html, gameId, { title });
-          storageMode = 'github';
-          fill.style.width = '90%';
-        }
-      }
-    } else {
-      url = document.getElementById('devGameUrl').value.trim();
-      if (!url) throw new Error('Укажите URL');
-      if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
-      storageMode = 'external';
-      fill.style.width = '90%';
-    }
-
-    stat.textContent = 'Публикация в каталог...';
+    stat.textContent = `Загрузка ${State.folderFiles.size} файлов в GitHub...`;
+    const res = await uploadFolderToGitHub(State.folderFiles, gameId, manifest, (done, total, name) => {
+      const pct = 10 + (done / total) * 85;
+      fill.style.width = pct + '%';
+      stat.textContent = `GitHub: ${done}/${total} — ${name.split('/').pop()}`;
+    });
     fill.style.width = '95%';
 
     const newGame = {
-      id: gameId, title, genre, badge, desc, cover, bg, accent,
-      url, platform: State.platform, storage: storageMode,
+      id: gameId,
+      title, author, genre,
+      badge: badge || 'NEW',
+      version: version || '1.0.0',
+      desc: manifest.description,
+      description: manifest.description,
+      accent,
+      url: res.url,
+      iconUrl: res.iconUrl,
+      coverUrl: res.coverUrl,
+      bgUrl: res.bgUrl,
+      platform: 'github-folder',
+      storage: 'github',
+      manifestId: manifest.id || '',
       created_at: new Date().toISOString()
     };
+
     const updated = [...State.games, newGame];
     const { error } = await sb.from('config').upsert({ key: 'games_json', value: JSON.stringify(updated) });
     if (error) throw error;
@@ -1435,8 +1320,8 @@ document.getElementById('btnSaveGame').onclick = async () => {
     State.games = updated;
     fill.style.width = '100%';
     stat.textContent = '✅ Опубликовано!';
-    toast(`Игра "${title}" опубликована (${storageMode})`, 'success');
-    resetAddGameForm();
+    toast(`Игра "${title}" опубликована`, 'success');
+    resetForm();
     renderDevGamesList();
   } catch(e) {
     stat.textContent = '❌ ' + e.message;
@@ -1447,19 +1332,24 @@ document.getElementById('btnSaveGame').onclick = async () => {
   }
 };
 
-function resetAddGameForm() {
-  ['devGameTitle','devGameGenre','devGameBadge','devGameCover','devGameBg','devGameDesc','devGameUrl']
+function resetForm() {
+  ['devGameTitle','devGameAuthor','devGameGenre','devGameBadge','devGameVersion','devGameDesc']
     .forEach(id => document.getElementById(id).value = '');
-  htmlTextarea.value = '';
-  State.loadedZip = null;
-  State.loadedZipName = '';
-  sizeIndicator.className = 'size-indicator';
-  sizeIndicator.textContent = 'Файл не загружен';
+  document.getElementById('devGameAccent').value = '#00f0ff';
+  State.folderFiles = null;
+  State.folderManifest = null;
+  State.isZip = false;
+  fileTree.style.display = 'none';
+  manifestPreview.classList.remove('show');
   document.getElementById('previewBox').style.display = 'none';
   document.getElementById('previewFrame').src = 'about:blank';
+  folderInput.value = '';
   fileInput.value = '';
 }
 
+/* =====================================================================
+   СПИСОК ИГР У РАЗРАБОТЧИКА
+   ===================================================================== */
 function renderDevGamesList() {
   const list = document.getElementById('devGamesList');
   if (!list) return;
@@ -1468,12 +1358,24 @@ function renderDevGamesList() {
     return;
   }
   list.innerHTML = State.games.map((g, i) => {
-    const thumb = g.cover ? `<img src="${esc(g.cover)}" onerror="this.style.display='none'">` : '🎮';
-    const storageIcon = g.storage === 'github-zip' ? '📦 GitHub ZIP'
-                      : g.storage === 'github' ? '📦 GitHub'
+    const thumb = g.iconUrl || g.coverUrl
+      ? `<img src="${esc(g.iconUrl || g.coverUrl)}" onerror="this.parentNode.textContent='🎮'">`
+      : '🎮';
+    const storageIcon = g.storage === 'github' ? '📦 GitHub'
                       : g.storage === 'supabase' ? '☁️ Supabase'
                       : '🔗 URL';
-    return `<div class="game-item"><div class="game-thumb">${thumb}</div><div><div class="game-title">${esc(g.title)}</div><div class="game-meta">${esc(g.genre)} • ${storageIcon}</div><div class="game-meta" style="font-family:monospace;color:#00f0ff;font-size:11px;margin-top:3px;overflow:hidden;text-overflow:ellipsis;">${esc(g.url || '—')}</div></div><div class="row-actions"><button class="btn btn-sm" onclick="devPreviewGame(${i})">👁️</button><button class="btn btn-sm danger" onclick="devDeleteGame(${i})">✕</button></div></div>`;
+    return `<div class="game-item">
+      <div class="game-thumb">${thumb}</div>
+      <div>
+        <div class="game-title">${esc(g.title)}</div>
+        <div class="game-meta">👤 ${esc(g.author || '—')} • ${esc(g.genre || '')} • ${storageIcon}</div>
+        <div class="game-meta" style="font-family:monospace;color:#00f0ff;font-size:11px;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(g.url || '—')}</div>
+      </div>
+      <div class="row-actions">
+        <button class="btn btn-sm" onclick="devPreviewGame(${i})">👁️</button>
+        <button class="btn btn-sm danger" onclick="devDeleteGame(${i})">✕</button>
+      </div>
+    </div>`;
   }).join('');
 }
 window.devPreviewGame = (i) => {
@@ -1483,7 +1385,7 @@ window.devPreviewGame = (i) => {
 };
 window.devDeleteGame = (i) => {
   const g = State.games[i];
-  askConfirm('Удалить игру?', `"${g.title}"`, async () => {
+  askConfirm('Удалить игру?', `"${g.title}" (файлы в GitHub останутся)`, async () => {
     State.games.splice(i, 1);
     try {
       await sb.from('config').upsert({ key: 'games_json', value: JSON.stringify(State.games) });
@@ -1493,5 +1395,6 @@ window.devDeleteGame = (i) => {
   });
 };
 </script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 </body>
 </html>
