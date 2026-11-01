@@ -1,0 +1,11 @@
+# Все три функции проверяют JWT на gateway.
+# kiosk-api принимает anon JWT из публичного kiosk client, затем проверяет
+# одноразовый QR/session_key на сервере и выполняет записи с service_role.
+[functions.admin-api]
+verify_jwt = true
+
+[functions.kiosk-api]
+verify_jwt = true
+
+[functions.publish-game]
+verify_jwt = true
