@@ -13,7 +13,7 @@ assets/teacher.css                стили панели
 js/audio.js                        перенесённая звуковая система старого автомата
 js/shared.js                       общие функции и IndexedDB
 js/kiosk.js                        карусель, QR, таймер, рекорды, Arduino, настройки
-js/teacher.js                      Supabase Auth, QR, ZIP, модерация
+js/teacher.js                      вход по раздельным паролям, QR, ZIP, модерация
 sw.js                              shell cache + офлайн-файлы игр из IndexedDB
 games/snake/                       тестовая «Змейка»
 games/reaction/                    тестовая «Реакция»
@@ -50,18 +50,30 @@ supabase/config.toml               JWT-настройки функций
 
 **Важное ограничение перехода:** старые QR-билеты из `tickets` остаются в базе, старые автоматы могут их прочитать и пометить использованными. Старый `teacher.html` с PIN/статическим токеном после новой RLS-схемы не сможет выпускать билеты или менять административные данные. Для новых QR используйте новый `teacher.html` и Auth. Это намеренный отказ от небезопасной старой авторизации.
 
-## 4. Подготовка Supabase Auth
+## 4. Подготовка отдельного входа учителя и разработчика
 
-1. В Supabase → Authentication → Users создайте пользователей учителей и разработчиков. Отключите публичную регистрацию пользователей, если она не требуется.
-2. Для каждого пользователя скопируйте UUID из `auth.users` и назначьте роль SQL-командой:
+Панель предлагает два типа доступа. Учителя используют один общий пароль и одну выделенную Auth-учётную запись с ролью `teacher`. Разработчик использует отдельный пароль и отдельную Auth-учётную запись с ролью `developer`. Пароли проверяет `login-api` на сервере; в HTML/JS их нет.
+
+1. В Supabase → Authentication → Users создай **две** учётные записи с email, к которым у тебя есть доступ: одну для общей учётной записи учителей, вторую для разработчика. Публичную регистрацию отключи, если она не нужна.
+2. Скопируй UUID пользователей и назначь роли в SQL Editor:
 
 ```sql
-insert into public.admins(id, role)
-values ('UUID_ИЗ_AUTH_USERS', 'teacher');
--- Для разработчика используйте role = 'developer'.
+insert into public.admins(id, role) values
+  ('UUID_ОБЩЕЙ_УЧЁТНОЙ_ЗАПИСИ_УЧИТЕЛЕЙ', 'teacher'),
+  ('UUID_УЧЁТНОЙ_ЗАПИСИ_РАЗРАБОТЧИКА', 'developer')
+on conflict (id) do update set role = excluded.role;
 ```
 
-3. Никогда не назначайте роль из браузера. Запись `admins` создаётся владельцем проекта через SQL Editor.
+3. Выполни миграцию `supabase/migrations/002_admin_shared_password_login.sql` в SQL Editor.
+4. Скопируй `.env.supabase.example` в `.env.supabase.local`, заполни четыре значения локально и не добавляй этот файл в Git. `.gitignore` уже исключает локальные env-файлы. Затем из корня проекта выполни:
+
+```powershell
+Copy-Item .env.supabase.example .env.supabase.local
+# Открой .env.supabase.local в редакторе и задай собственные значения.
+supabase secrets set --env-file .env.supabase.local
+```
+
+5. Не используй одинаковые пароли для двух типов доступа. Пароль разработчика должен быть известен только разработчику. Сервер ограничивает неудачные попытки входа: до 5 попыток за 10 минут с одного IP-хеша.
 
 ## 5. GitHub и Supabase Edge Functions
 
@@ -85,16 +97,17 @@ supabase secrets set GITHUB_TOKEN=ВСТАВЬ_ТОКЕН_ЛОКАЛЬНО GITHU
 Разверните функции:
 
 ```powershell
+supabase functions deploy login-api --no-verify-jwt
 supabase functions deploy admin-api
 supabase functions deploy kiosk-api
 supabase functions deploy publish-game
 ```
 
-`supabase/config.toml` включает JWT-проверку gateway. `admin-api` дополнительно проверяет пользователя через Supabase Auth и роль `admins`. `kiosk-api` вызывается публичным автоматом с anon JWT, но каждая операция защищена одноразовым QR-токеном или session key. `publish-game` повторно проверяет Auth и роль перед доступом к GitHub.
+`supabase/config.toml` включает JWT-проверку gateway. `login-api` выполняет предварительную проверку общего/отдельного пароля по серверным Secrets и выдаёт одноразовый Auth magic-link hash; затем браузер обменивает его на обычную Supabase Auth-сессию. `admin-api` дополнительно проверяет пользователя через Supabase Auth и роль `admins`. `kiosk-api` вызывается публичным автоматом с anon JWT, но каждая операция защищена одноразовым QR-токеном или session key. `publish-game` повторно проверяет Auth и роль перед доступом к GitHub.
 
 ## 6. Публикация статики
 
-Скопируйте содержимое каталога `SibCodeBox_vNext` в корень репозитория `NasDail/SibCodeBox` и закоммитьте изменения. Не заменяйте старую папку `Games/` автоматически. Убедитесь, что в репозитории присутствуют `games/snake`, `games/reaction`, `games/guess-number`, `assets/`, `js/`, `app-config.js`, `sw.js`, `index.html`, `teacher.html` и `supabase/`.
+Скопируйте содержимое каталога `SibCodeBox-main` в корень репозитория `NasDail/SibCodeBox` и закоммитьте изменения. Не заменяйте старую папку `Games/` автоматически. Убедитесь, что в репозитории присутствуют `games/snake`, `games/reaction`, `games/guess-number`, `assets/`, `js/`, `app-config.js`, `sw.js`, `index.html`, `teacher.html` и `supabase/`.
 
 Автомат открывайте по HTTPS (GitHub Pages/другой HTTPS-хостинг) или на `localhost`. Камера и Service Worker не работают на обычном HTTP в локальной сети. После первой загрузки в онлайне дождитесь статуса «ОФЛАЙН-КЭШ: ГОТОВ» и синхронизации каталога.
 

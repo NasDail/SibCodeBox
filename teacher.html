@@ -21,9 +21,14 @@
       <div class="brand-icon">S<span>+</span></div>
       <div class="eyebrow">SIBCODEBOX CONTROL</div>
       <h1>Панель управления</h1>
-      <p>Вход через Supabase Auth. PIN-код в браузере больше не используется.</p>
-      <label>Email<input id="loginEmail" type="email" autocomplete="username" required placeholder="teacher@example.com"></label>
-      <label>Пароль<input id="loginPassword" type="password" autocomplete="current-password" required placeholder="Пароль учётной записи"></label>
+      <p>Выбери тип доступа. У учителей общий пароль, у разработчика — отдельный.</p>
+      <label>Тип доступа
+        <select id="loginRole" autocomplete="off" required>
+          <option value="teacher">Учитель</option>
+          <option value="developer">Разработчик</option>
+        </select>
+      </label>
+      <label>Пароль<input id="loginPassword" type="password" autocomplete="current-password" required placeholder="Введите пароль доступа"></label>
       <button class="btn primary" type="submit" id="loginButton">ВОЙТИ</button>
       <div id="loginStatus" class="status"></div>
     </form>
